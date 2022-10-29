@@ -13,35 +13,20 @@ import java.text.SimpleDateFormat;
 
 public class DB_account {
 	private static ComboPooledDataSource dataSource = null;
-	private static String dbDriverClass, dbJdbcURL, dbUser, dbPassword;
 	
 	// Initial setup for the database
 	static {
-		// TODO: Colocar os dados do ficheiro encriptados
-		// Retira os dados de login de um .properties file
-		try (InputStream in = new FileInputStream("C:\\Users\\Drago\\git\\a05_2\\src\\low\\level\\database\\DBservice.properties")){
-			Properties prop = new Properties();
-			prop.load(in);
-			
-			dbDriverClass = prop.getProperty("dbDriver");
-			dbJdbcURL = prop.getProperty("dbURL");
-			dbUser = prop.getProperty("dbUser");
-			dbPassword = prop.getProperty("dbPassword");
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		
 		// Cria uma forma de manter a conecção persistente
 		dataSource = new ComboPooledDataSource();
 		try {
-			dataSource.setDriverClass(dbDriverClass);
+			dataSource.setDriverClass("org.postgresql.Driver");
 		} catch (Exception e){
 			System.out.println(e);
 		}
-		dataSource.setJdbcUrl(dbJdbcURL);
-		dataSource.setUser(dbUser);
-		dataSource.setPassword(dbPassword);
+		dataSource.setJdbcUrl("jdbc:postgresql://db.fe.up.pt:5432/pswa0502");
+		dataSource.setUser("pswa0502");
+		dataSource.setPassword("jKWlEeAs");
 		
 		// Inicializa a tabela se não existir - não utilizado na prática, mas é uma boa prática
 		String query =    "CREATE SCHEMA IF NOT EXISTS projeto;" 
