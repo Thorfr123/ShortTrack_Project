@@ -11,15 +11,8 @@ import javafx.scene.image.Image;
 
 public class Main extends Application {
 	
-	private AccountsDatabase dataBase;
-	
 	@Override
-	public void start(Stage primaryStage) {
-		
-		dataBase = new AccountsDatabase();
-		Account a = new Account("Valid","1234","Jorge Ribeiro","email1@gmail.com");
-		dataBase.addAccount(a);
-		
+	public void start(Stage primaryStage) {		
 		try {
 			Image icon = new Image("/teste_icon.png");
 			primaryStage.getIcons().add(icon);
@@ -39,7 +32,7 @@ public class Main extends Application {
 		}
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) {		
 		launch(args);
 	}
 }

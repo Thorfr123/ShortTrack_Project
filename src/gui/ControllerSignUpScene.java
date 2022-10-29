@@ -54,9 +54,8 @@ public class ControllerSignUpScene {
 		}
 		String name = firstName + " " +  lastName;
 		
-		AccountsDatabase dataBase = new AccountsDatabase();
 		Account account = new Account(username, password, name, email);
-		dataBase.addAccount(account);
+		AccountsDatabase.createAccount(username, password, email, firstName, lastName);
 		
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("LogoutScene.fxml"));
 		root = loader.load();
@@ -110,8 +109,7 @@ public class ControllerSignUpScene {
 			return false;
 		}
 		
-		AccountsDatabase dataBase = new AccountsDatabase();
-		if(!dataBase.checkEmail(email)) {
+		if(!AccountsDatabase.checkEmail(email)) {
 			showNotification("Email already in use!");
 			return false;
 		}

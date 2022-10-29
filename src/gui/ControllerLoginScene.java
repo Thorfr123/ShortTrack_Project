@@ -39,13 +39,12 @@ public class ControllerLoginScene {
 		String username = usernameField.getText();
 		String password = passwordField.getText();
 		
-		AccountsDatabase dataBase = new AccountsDatabase();
-		if(!dataBase.checkLogin(username,password)) {
+		if(!AccountsDatabase.checkLogin(username, password)) {
 			System.out.println("Invalid username or password!");
 			return;
 		}
 		
-		Account account = dataBase.getAccount(username, password);
+		Account account = AccountsDatabase.getAccount(username, password);
 		String name = account.getName();
 		String email = account.getEmail();
 		
