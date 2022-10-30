@@ -13,22 +13,28 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class ControllerLoginScene {
 	
 	@FXML 
-	TextField usernameField;
+	private TextField usernameField;
 	@FXML 
-	PasswordField passwordField;
+	private PasswordField passwordField;
 	@FXML
-	Button loginButton;
+	private Button loginButton;
 	@FXML
-	Button signUpButton;
+	private Button signUpButton;
 	@FXML
-	Label usernameLabel;
+	private Label usernameLabel;
 	@FXML
-	Label passwordLabel;
+	private Label passwordLabel;
+	@FXML 
+	private Label notificationLabel;
+	@FXML 
+	private VBox loginBox;
 	
 	private Stage stage;
 	private Scene scene;
@@ -40,9 +46,18 @@ public class ControllerLoginScene {
 		String password = passwordField.getText();
 		
 		if(!AccountsDatabase.checkLogin(username, password)) {
+			
+			if(notificationLabel == null) {
+				notificationLabel = new Label("Invalid username or password!");
+				notificationLabel.setTextFill(Color.RED);
+				loginBox.getChildren().add(notificationLabel);
+			}
+			
 			System.out.println("Invalid username or password!");
 			return;
 		}
+		
+		loginBox.getChildren().remove(notificationLabel);
 		
 		Account account = AccountsDatabase.getAccount(username, password);
 		String name = account.getName();

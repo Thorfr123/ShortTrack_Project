@@ -1,7 +1,5 @@
 package gui;
 
-import data.Account;
-import database.AccountsDatabase;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -19,7 +17,6 @@ public class Main extends Application {
 			primaryStage.setMinWidth(820.0);
 			primaryStage.setMinHeight(380.0);
 			primaryStage.setMaxWidth(820.0);
-			
 			
 			Parent root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 			Scene scene = new Scene(root);

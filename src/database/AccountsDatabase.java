@@ -8,7 +8,7 @@ import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-public class AccountsDatabase {							//Just for test
+public class AccountsDatabase {
 	
 	private static ComboPooledDataSource dataSource = null;
 	
@@ -109,8 +109,8 @@ public class AccountsDatabase {							//Just for test
 		return -1;
 	}
 	
-	public static boolean deleteAccount(String username) {
-		String query = "DELETE FROM projeto.account WHERE username='" + username + "'";
+	public static boolean deleteAccount(String email) {
+		String query = "DELETE FROM projeto.account WHERE email='" + email + "'";
 		
 		if (executeUpdate(query) > 0)
 			return true;

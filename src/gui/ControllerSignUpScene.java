@@ -1,7 +1,6 @@
 package gui;
 
 import java.io.IOException;
-import data.Account;
 import database.AccountsDatabase;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,17 +17,17 @@ import javafx.stage.Stage;
 public class ControllerSignUpScene {
 	
 	@FXML 
-	TextField firstNameField;
+	private TextField firstNameField;
 	@FXML 
-	TextField lastNameField;
+	private TextField lastNameField;
 	@FXML 
-	TextField emailField;
+	private TextField emailField;
 	@FXML 
-	TextField usernameField;
+	private TextField usernameField;
 	@FXML 
-	PasswordField passwordField;
+	private PasswordField passwordField;
 	@FXML 
-	Label notificationLabel;
+	private Label notificationLabel;
 	
 	private Stage stage;
 	private Scene scene;
@@ -54,7 +53,6 @@ public class ControllerSignUpScene {
 		}
 		String name = firstName + " " +  lastName;
 		
-		Account account = new Account(username, password, name, email);
 		AccountsDatabase.createAccount(username, password, email, firstName, lastName);
 		
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("LogoutScene.fxml"));
