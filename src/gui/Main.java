@@ -13,6 +13,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {		
 		try {
 			Image icon = new Image("/teste_icon.png");
+			primaryStage.setTitle("ShortTrack");
 			primaryStage.getIcons().add(icon);
 			primaryStage.setMinWidth(820.0);
 			primaryStage.setMinHeight(380.0);
