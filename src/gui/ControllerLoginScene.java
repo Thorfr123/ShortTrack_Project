@@ -103,7 +103,6 @@ public class ControllerLoginScene {
 				loginBox.getChildren().add(notificationLabel);
 			}
 			
-			System.out.println("Invalid username or password!");
 			return;
 		}
 		
@@ -245,13 +244,37 @@ public class ControllerLoginScene {
 	public void editTask(ActionEvent e) {
 		
 		String text = e.getSource().toString();
-		String value = text.substring(text.indexOf("'")+1, 
+		String taskName = text.substring(text.indexOf("'")+1, 
 	               text.indexOf("'", text.indexOf("'")+1));
-		System.out.println(value);
+		
+		Task task = null;
+		ArrayList<Task> tasks = list.getTaskList();
+		for(Task t : tasks) {
+			if(t.getName().equals(taskName))
+				task = t;
+		}
+		
+		try {
+			
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditTaskScene.fxml"));
+			root = loader.load();
+			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+			scene = new Scene(root);
+			stage.setScene(scene);
+			stage.setMinWidth(320.0);
+			
+			ControllerEditTaskScene controller = loader.getController();
+			controller.initData(task, list);	
+
+			stage.show();
+			
+		} catch (IOException exeption) {
+			exeption.printStackTrace();
+		}
 		
 	}
 	
-	public void checkTask(ActionEvent e) {
+	public void checkTask(ActionEvent e) {				// Falta Check task
 		
 		/*String text = e.getSource().toString();
 		System.out.println(text);

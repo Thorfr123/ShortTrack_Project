@@ -25,19 +25,19 @@ public class Task {
 		return ID;
 	}
 	
-	public String description() {
+	public String getDescription() {
 		return description;
 	}
 	
-	public LocalDateTime createdDateTime() {
+	public LocalDateTime getCreatedDateTime() {
 		return createdDateTime;
 	}
 	
-	public LocalDateTime deadlineDateTime() {
+	public LocalDateTime getDeadlineDateTime() {
 		return deadlineDateTime;
 	}
 	
-	public boolean completed() {
+	public boolean chekCompleted() {
 		return completed;
 	}
 	

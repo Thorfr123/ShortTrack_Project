@@ -16,7 +16,7 @@ public class Main extends Application {
 			primaryStage.setTitle("ShortTrack");
 			primaryStage.getIcons().add(icon);
 			primaryStage.setMinWidth(820.0);
-			primaryStage.setMinHeight(380.0);
+			primaryStage.setMinHeight(410.0);
 			primaryStage.setMaxWidth(820.0);
 			
 			Parent root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
