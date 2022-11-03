@@ -3,16 +3,21 @@ package gui;
 import database.*;
 import data.*;
 import java.io.IOException;
+import java.util.ArrayList;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -31,14 +36,54 @@ public class ControllerLoginScene {
 	private Label usernameLabel;
 	@FXML
 	private Label passwordLabel;
+	@FXML
+	private Label listNameLabel;
 	@FXML 
 	private Label notificationLabel;
 	@FXML 
+	private TextField newListName;
+	@FXML 
+	private TextField newTaskName;
+	@FXML 
 	private VBox loginBox;
+	@FXML 
+	private VBox listsBox;
+	@FXML 
+	private VBox tasksBox;
 	
 	private Stage stage;
 	private Scene scene;
 	private Parent root;
+	
+	private static ArrayList<List> lists;
+	private static ArrayList<ListButton> listButtons;
+	private static ArrayList<TaskBar> taskBars;
+	private List list;
+	
+	@FXML
+    public void initialize() {
+		if(lists == null) {
+			lists = new ArrayList<List>();
+			listButtons = new ArrayList<ListButton>();
+			taskBars = new ArrayList<TaskBar>();
+			return;
+		}
+		
+		for(List l : lists) {
+			ListButton list = new ListButton(l.getName());
+			listButtons.add(list);
+			listsBox.getChildren().add(list.getButton());
+		}
+		
+		listNameLabel.setText("Choose one List!");
+		
+		/*ArrayList<Task> tasks = list.getTaskList();
+		for(Task t : tasks) {
+			TaskBar task = new TaskBar(t.getName());
+			taskBars.add(task);
+			tasksBox.getChildren().add(task.getHBox());
+		}*/
+    }
 
 	public void login(ActionEvent e) throws IOException {
 		
@@ -86,5 +131,51 @@ public class ControllerLoginScene {
 		stage.show();
 		
 	}
+	
+	public void addList(ActionEvent e) {
+		
+		String listName = newListName.getText();
+		
+		if(listName.isBlank())
+			return;
+		
+		newListName.clear();
+		
+		for(List l : lists) {
+			if(l.getName().equals(listName)) {
+				System.out.println("Ja existe uma lista com esse nome!");
+				return;
+			}
+		}
+		
+		List newList = new List(listName);
+		lists.add(newList);
+		
+		ListButton list = new ListButton(listName);
+		listButtons.add(list);
+		listsBox.getChildren().add(list.getButton());
+		
+	}
+	
+	public void addTask(ActionEvent e) {
+				
+		String taskName = newTaskName.getText();
+		
+		if(taskName.isBlank())
+			return;
+		
+		newTaskName.clear();
+		
+		/*if(list.checkName(taskName)) {
+			System.out.println("Ja existe uma task com esse nome nesta lista!");
+			return;
+		}*/
+		
+		TaskBar task = new TaskBar(taskName);
+		taskBars.add(task);
+		tasksBox.getChildren().add(task.getHBox());
+		
+	}
+	
 	
 }
