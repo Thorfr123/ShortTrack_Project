@@ -1,8 +1,13 @@
 package data;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class Task {
+public class Task implements Serializable {
+	/**
+	 * Variavel para a escrita/leitura offline dos dados
+	 */
+	private static final long serialVersionUID = -5301804573647411576L;
 	private String name; 
 	private int ID;
 	private String description;

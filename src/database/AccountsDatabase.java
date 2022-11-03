@@ -131,7 +131,7 @@ public class AccountsDatabase {
 					email = rs.getString("email");
 					firstName = rs.getString("first_name");
 					lastName = rs.getString("last_name");
-					return new Account(username, password, firstName + lastName, email);
+					return new Account(username, password, firstName + " " + lastName, email);
 				}
 			} else {
 				System.out.println("Connection failed");
