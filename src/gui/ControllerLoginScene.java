@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -24,65 +23,71 @@ import javafx.stage.Stage;
 
 public class ControllerLoginScene {
 	
+	@FXML
+	private Label usernameLabel;
+	@FXML
+	private Label passwordLabel;
+	@FXML 
+	private Label notificationLabel;
+	@FXML
+	private Label listNameLabel;
+	
 	@FXML 
 	private TextField usernameField;
 	@FXML 
 	private PasswordField passwordField;
+	@FXML 
+	private TextField newListName;
+	@FXML 
+	private TextField newTaskName;
+	
 	@FXML
 	private Button loginButton;
 	@FXML
 	private Button signUpButton;
 	@FXML
-	private Label usernameLabel;
-	@FXML
-	private Label passwordLabel;
-	@FXML
-	private Label listNameLabel;
-	@FXML 
-	private Label notificationLabel;
-	@FXML 
-	private TextField newListName;
-	@FXML 
-	private TextField newTaskName;
+	private Button editListButton;
+	
 	@FXML 
 	private VBox loginBox;
 	@FXML 
 	private VBox listsBox;
 	@FXML 
 	private VBox tasksBox;
+	@FXML 
+	private HBox addTaskBox;
 	
 	private Stage stage;
 	private Scene scene;
 	private Parent root;
 	
 	private static ArrayList<List> lists;
-	private static ArrayList<ListButton> listButtons;
-	private static ArrayList<TaskBar> taskBars;
-	private List list;
+	private static List list;
 	
 	@FXML
     public void initialize() {
+		
 		if(lists == null) {
 			lists = new ArrayList<List>();
-			listButtons = new ArrayList<ListButton>();
-			taskBars = new ArrayList<TaskBar>();
+			listNameLabel.setText("Choose one List!");
 			return;
 		}
 		
 		for(List l : lists) {
 			ListButton list = new ListButton(l.getName());
-			listButtons.add(list);
-			listsBox.getChildren().add(list.getButton());
+			Button listButton = list.getButton();
+			listButton.setOnAction(event -> {
+		        changeList(event);
+		    });
+			listsBox.getChildren().add(listButton);
 		}
 		
-		listNameLabel.setText("Choose one List!");
+		if(list == null) {
+			listNameLabel.setText("Choose one List!");
+			return;
+		}	
 		
-		/*ArrayList<Task> tasks = list.getTaskList();
-		for(Task t : tasks) {
-			TaskBar task = new TaskBar(t.getName());
-			taskBars.add(task);
-			tasksBox.getChildren().add(task.getHBox());
-		}*/
+		loadTasks();
     }
 
 	public void login(ActionEvent e) throws IOException {
@@ -152,8 +157,11 @@ public class ControllerLoginScene {
 		lists.add(newList);
 		
 		ListButton list = new ListButton(listName);
-		listButtons.add(list);
-		listsBox.getChildren().add(list.getButton());
+		Button listButton = list.getButton();
+		listButton.setOnAction(event -> {
+	        changeList(event);
+	    });
+		listsBox.getChildren().add(listButton);
 		
 	}
 	
@@ -166,16 +174,90 @@ public class ControllerLoginScene {
 		
 		newTaskName.clear();
 		
-		/*if(list.checkName(taskName)) {
+		if(list.checkName(taskName)) {
 			System.out.println("Ja existe uma task com esse nome nesta lista!");
 			return;
-		}*/
+		}
+		
+		Task newTask = new Task(taskName);
+		list.addTask(newTask);
 		
 		TaskBar task = new TaskBar(taskName);
-		taskBars.add(task);
+		CheckBox taskCheckBox = task.getCheckBox();
+		Button taskButton = task.getButton();
+		
+		taskCheckBox.setOnAction(event -> {
+            checkTask(event);
+        });
+		taskButton.setOnAction(event -> {
+            editTask(event);
+        });
+		
 		tasksBox.getChildren().add(task.getHBox());
 		
 	}
 	
+	public void changeList(ActionEvent e) {
+		
+		String text = e.getSource().toString();
+		String listName = text.substring(text.indexOf("'")+1, 
+	               text.indexOf("'", text.indexOf("'")+1));
+		
+		for(List l : lists) {
+			if(l.getName().equals(listName))
+				list = l;
+		}
+		
+		tasksBox.getChildren().clear();
+		
+		loadTasks();
+	}
 	
+	public void loadTasks() {
+		listNameLabel.setText(list.getName());
+		
+		ArrayList<Task> tasks = list.getTaskList();
+		for(Task t : tasks) {
+			TaskBar task = new TaskBar(t.getName());
+			CheckBox taskCheckBox = task.getCheckBox();
+			Button taskButton = task.getButton();
+			
+			taskCheckBox.setOnAction(event -> {
+	            checkTask(event);
+	        });
+			taskButton.setOnAction(event -> {
+	            editTask(event);
+	        });
+			
+			tasksBox.getChildren().add(task.getHBox());
+		}
+		
+		editListButton.setVisible(true);
+		addTaskBox.setVisible(true);
+	}
+	
+	public void editList(ActionEvent e) {
+		
+		System.out.println(list.getName());
+		
+	}
+	
+	public void editTask(ActionEvent e) {
+		
+		String text = e.getSource().toString();
+		String value = text.substring(text.indexOf("'")+1, 
+	               text.indexOf("'", text.indexOf("'")+1));
+		System.out.println(value);
+		
+	}
+	
+	public void checkTask(ActionEvent e) {
+		
+		/*String text = e.getSource().toString();
+		System.out.println(text);
+		String value = text.substring(text.indexOf("'")+1, 
+	               text.indexOf("'", text.indexOf("'")+1));
+		System.out.println(value);*/
+		
+	}
 }

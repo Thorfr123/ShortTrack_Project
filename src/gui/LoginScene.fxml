@@ -51,7 +51,7 @@
          <center>
             <ScrollPane hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: transparent;">
                <content>
-                  <VBox fx:id="listsBox" prefHeight="280.0" prefWidth="200.0" spacing="10.0">
+                  <VBox fx:id="listsBox" prefHeight="266.0" prefWidth="200.0" spacing="10.0">
                      <padding>
                         <Insets left="10.0" top="10.0" />
                      </padding>
@@ -88,17 +88,25 @@
    <center>
       <BorderPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #f3f3f3; -fx-background-radius: 8;" BorderPane.alignment="CENTER">
          <top>
-            <Label fx:id="listNameLabel" text="COLOCAR AQUI O NOME DA LISTA" BorderPane.alignment="CENTER">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
+            <HBox BorderPane.alignment="CENTER">
                <BorderPane.margin>
                   <Insets top="2.0" />
                </BorderPane.margin>
-            </Label>
+               <children>
+                  <Label fx:id="listNameLabel" prefHeight="27.0" prefWidth="488.0" text="COLOCAR AQUI O NOME DA LISTA">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
+                  <Button fx:id="editListButton" mnemonicParsing="false" onAction="#editList" prefWidth="59.0" text="Edit List" visible="false" />
+               </children>
+               <padding>
+                  <Insets left="10.0" />
+               </padding>
+            </HBox>
          </top>
          <bottom>
-            <HBox alignment="CENTER_LEFT" prefHeight="15.0" prefWidth="590.0" spacing="10.0" BorderPane.alignment="CENTER">
+            <HBox fx:id="addTaskBox" alignment="CENTER_LEFT" prefHeight="15.0" prefWidth="590.0" spacing="10.0" visible="false" BorderPane.alignment="CENTER">
                <children>
                   <TextField fx:id="newTaskName" prefHeight="26.0" prefWidth="495.0" promptText="New Task Name " />
                   <Button mnemonicParsing="false" onAction="#addTask" text="+" />
