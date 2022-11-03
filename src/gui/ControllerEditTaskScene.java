@@ -1,6 +1,8 @@
 package gui;
 
 import java.io.IOException;
+import java.time.LocalDate;
+
 import data.List;
 import data.Task;
 import javafx.event.ActionEvent;
@@ -46,10 +48,20 @@ public class ControllerEditTaskScene {
 		
 		taskNameField.setText(task.getName());
 		descriptionField.setText(task.getDescription());
+		dueDateField.setValue(task.getDeadlineDate());
+		
+		if(task.chekCompleted()) {
+			checkButton.setSelected(true);
+			checkButton.setText("Completed");
+		}
+		else {
+			checkButton.setSelected(false);
+			checkButton.setText("To be started");
+		}
+
     }
 	
 	public void delete(ActionEvent e) throws IOException {
-		
 		
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("Delete Task");
@@ -71,7 +83,7 @@ public class ControllerEditTaskScene {
 		
 	}
 	
-	public void save(ActionEvent e) throws IOException {			// falta Check e DueDate
+	public void save(ActionEvent e) throws IOException {
 		
 		String newTaskName = taskNameField.getText();
 		if(newTaskName.isBlank()) {
@@ -85,17 +97,44 @@ public class ControllerEditTaskScene {
 		}
 		
 		String newDescription = descriptionField.getText();
+		LocalDate newDeadline = dueDateField.getValue();
+				
 		task.setName(newTaskName);
 		task.setDescription(newDescription);
+		task.setDeadline(newDeadline);
+		task.setCompleted(checkButton.isSelected());
 		
 		root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
 		scene = new Scene(root);
 		stage.setScene(scene);
+		stage.setMinHeight(410.0);
 		stage.setMinWidth(820.0);
 		stage.show();
 		
 	}
+	
+	public void cancel(ActionEvent e) throws IOException {
+		
+		root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
+		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+		scene = new Scene(root);
+		stage.setScene(scene);
+		stage.setMinHeight(410.0);
+		stage.setMinWidth(820.0);
+		stage.show();
+		
+	}
+	
+	public void changeState(ActionEvent e) {
+		
+		if(checkButton.isSelected())
+			checkButton.setText("Completed");
+		else
+			checkButton.setText("To be started");
+		
+	}
+	
 	
 	public void showNotification(String notification) {
 		

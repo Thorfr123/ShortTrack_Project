@@ -1,19 +1,19 @@
 package data;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class Task {
 	private String name; 
 	private int ID;
 	private String description;
-	private LocalDateTime createdDateTime;
-	private LocalDateTime deadlineDateTime;
+	private LocalDate createdDate;
+	private LocalDate deadline;
 	private boolean completed;
 	
 	public Task(String name) {
 		this.name = name;
 		
-		createdDateTime = LocalDateTime.now();
+		createdDate = LocalDate.now();
 		completed = false;
 	}
 	
@@ -29,12 +29,12 @@ public class Task {
 		return description;
 	}
 	
-	public LocalDateTime getCreatedDateTime() {
-		return createdDateTime;
+	public LocalDate getCreatedDate() {
+		return createdDate;
 	}
 	
-	public LocalDateTime getDeadlineDateTime() {
-		return deadlineDateTime;
+	public LocalDate getDeadlineDate() {
+		return deadline;
 	}
 	
 	public boolean chekCompleted() {
@@ -53,12 +53,12 @@ public class Task {
 		description = newDescription;
 	}
 	
-	public void setDeadlineDateTime(LocalDateTime newDeadlineDateTime) {
-		deadlineDateTime = newDeadlineDateTime;
+	public void setDeadline(LocalDate newDeadline) {
+		deadline = newDeadline;
 	}
 	
-	public void changeCompleted() {
-		completed = !completed;
+	public void setCompleted(boolean state) {
+		completed = state;
 	}
 	
 }

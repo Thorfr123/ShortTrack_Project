@@ -13,7 +13,7 @@
 
 <BorderPane prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControllerEditTaskScene">
    <center>
-      <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="340.0" prefWidth="240.0" spacing="10.0" BorderPane.alignment="CENTER">
+      <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="382.0" prefWidth="240.0" spacing="10.0" BorderPane.alignment="CENTER">
          <children>
             <Label prefHeight="18.0" prefWidth="170.0" style="-fx-font-size: 14;" text="Task Name" />
             <TextField fx:id="taskNameField" prefHeight="26.0" prefWidth="179.0" />
@@ -21,16 +21,17 @@
             <DatePicker fx:id="dueDateField" prefHeight="26.0" prefWidth="240.0" />
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <CheckBox fx:id="checkButton" mnemonicParsing="false" text="To be done" />
+                  <CheckBox fx:id="checkButton" mnemonicParsing="false" onAction="#changeState" text="To be done" />
                </children>
             </HBox>
             <Label style="-fx-font-size: 14;" text="Description" />
-            <TextArea fx:id="descriptionField" prefHeight="200.0" prefWidth="200.0" />
+            <TextArea fx:id="descriptionField" prefHeight="200.0" prefWidth="240.0" />
             <Label fx:id="notificationLabel" prefHeight="18.0" prefWidth="242.0" text="COLOCAR NOTIFICAÇÃO AQUI" visible="false" />
-            <HBox alignment="CENTER" prefHeight="2.0" prefWidth="230.0" spacing="50.0">
+            <HBox alignment="CENTER" prefHeight="2.0" prefWidth="230.0" spacing="20.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#delete" prefHeight="26.0" prefWidth="80.0" text="Delete Task" />
-                  <Button mnemonicParsing="false" onAction="#save" prefHeight="26.0" prefWidth="80.0" text="Save" />
+                  <Button mnemonicParsing="false" onAction="#delete" prefHeight="26.0" prefWidth="80.0" style="-fx-background-color: #ff5400; -fx-text-fill: white;" text="Delete" />
+                  <Button mnemonicParsing="false" onAction="#cancel" prefHeight="26.0" prefWidth="80.0" style="-fx-background-color: #395cab; -fx-text-fill: white;" text="Cancel" />
+                  <Button mnemonicParsing="false" onAction="#save" prefHeight="26.0" prefWidth="80.0" style="-fx-background-color: #80c800; -fx-text-fill: white;" text="Save" />
                </children>
                <VBox.margin>
                   <Insets top="10.0" />

@@ -95,6 +95,11 @@ public class ControllerLoginScene {
 		String username = usernameField.getText();
 		String password = passwordField.getText();
 		
+		if(username.isBlank() || password.isBlank()) {
+			System.out.println("Necessario colocar username e password!");
+			return;
+		}
+		
 		if(!AccountsDatabase.checkLogin(username, password)) {
 			
 			if(notificationLabel == null) {
@@ -198,9 +203,8 @@ public class ControllerLoginScene {
 	
 	public void changeList(ActionEvent e) {
 		
-		String text = e.getSource().toString();
-		String listName = text.substring(text.indexOf("'")+1, 
-	               text.indexOf("'", text.indexOf("'")+1));
+		Button listButton = (Button)e.getSource();
+		String listName = listButton.getText();
 		
 		for(List l : lists) {
 			if(l.getName().equals(listName))
@@ -220,6 +224,9 @@ public class ControllerLoginScene {
 			TaskBar task = new TaskBar(t.getName());
 			CheckBox taskCheckBox = task.getCheckBox();
 			Button taskButton = task.getButton();
+			
+			if(t.chekCompleted())
+				taskCheckBox.setSelected(true);
 			
 			taskCheckBox.setOnAction(event -> {
 	            checkTask(event);
@@ -243,9 +250,8 @@ public class ControllerLoginScene {
 	
 	public void editTask(ActionEvent e) {
 		
-		String text = e.getSource().toString();
-		String taskName = text.substring(text.indexOf("'")+1, 
-	               text.indexOf("'", text.indexOf("'")+1));
+		Button taskButton = (Button)e.getSource();
+		String taskName = taskButton.getText();
 		
 		Task task = null;
 		ArrayList<Task> tasks = list.getTaskList();
@@ -261,7 +267,8 @@ public class ControllerLoginScene {
 			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
 			scene = new Scene(root);
 			stage.setScene(scene);
-			stage.setMinWidth(320.0);
+			stage.setMinHeight(480.0);
+			stage.setMinWidth(350.0);
 			
 			ControllerEditTaskScene controller = loader.getController();
 			controller.initData(task, list);	
@@ -274,13 +281,20 @@ public class ControllerLoginScene {
 		
 	}
 	
-	public void checkTask(ActionEvent e) {				// Falta Check task
+	public void checkTask(ActionEvent e) {
 		
-		/*String text = e.getSource().toString();
-		System.out.println(text);
-		String value = text.substring(text.indexOf("'")+1, 
-	               text.indexOf("'", text.indexOf("'")+1));
-		System.out.println(value);*/
+		CheckBox taskCheckBox = (CheckBox)e.getSource();
+		HBox taskBox = (HBox)taskCheckBox.getParent();
+		Button taskButton = (Button)taskBox.getChildren().get(1);
+		String taskName = taskButton.getText();
+
+		Task task = null;
+		ArrayList<Task> tasks = list.getTaskList();
+		for(Task t : tasks) {
+			if(t.getName().equals(taskName))
+				task = t;
+		}
 		
+		task.setCompleted(taskCheckBox.isSelected());
 	}
 }

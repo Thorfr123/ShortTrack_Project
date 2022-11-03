@@ -2,8 +2,6 @@ package data;
 
 import java.util.ArrayList;
 
-import gui.ListButton;
-
 public class List {
 	private String name;
 	private ArrayList<Task> taskList; 
