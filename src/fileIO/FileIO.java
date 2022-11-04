@@ -22,6 +22,7 @@ public class FileIO {
 	 */
 	public static void writePersonalListsToFile(ArrayList<List> arrayList) throws IOException{
 		File file = new File(personalListFileName);
+		file.createNewFile();
 		file.setWritable(true);
 		
 		try (FileOutputStream fos = new FileOutputStream(personalListFileName);
@@ -29,8 +30,9 @@ public class FileIO {
 
 			for (List lst : arrayList) {
 				oos.writeObject(lst);
-				System.out.println(lst);
 			}
+			
+			System.out.println("List successfully written in local file");
 			
 		}
 		
@@ -51,11 +53,10 @@ public class FileIO {
 			while(true) {
 				List lst = (List)ois.readObject();
 				arrayList.add(lst);
-				System.out.println(lst);
 			}
 			
 		} catch (EOFException eof) {
-			System.out.println("Read all lists successfully");
+			System.out.println("List successfully read from local file");
 			return arrayList;
 		}
 	}

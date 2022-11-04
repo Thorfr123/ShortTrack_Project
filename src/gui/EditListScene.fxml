@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControllerEditListScene">
+   <center>
+      <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label style="-fx-font-size: 14;" text="Personal List Name" />
+            <TextField fx:id="listNameField" />
+            <Label fx:id="notificationLabel" text="SHOW NOTIFICATION" visible="false" />
+            <HBox alignment="CENTER" spacing="20.0">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#delete" prefHeight="25.6" prefWidth="66.4" style="-fx-background-color: #ff5400; -fx-text-fill: white;" text="Delete" />
+                  <Button mnemonicParsing="false" onAction="#cancel" prefHeight="25.6" prefWidth="66.4" style="-fx-background-color: #395cab; -fx-text-fill: white;" text="Cancel" />
+                  <Button mnemonicParsing="false" onAction="#save" prefHeight="25.6" prefWidth="66.4" style="-fx-background-color: #80c800; -fx-text-fill: white;" text="Save" />
+               </children>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </HBox>
+         </children>
+         <BorderPane.margin>
+            <Insets left="10.0" right="10.0" />
+         </BorderPane.margin>
+      </VBox>
+   </center>
+</BorderPane>

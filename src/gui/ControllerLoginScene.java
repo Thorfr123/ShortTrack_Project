@@ -71,24 +71,49 @@ public class ControllerLoginScene {
 			lists = User.getLists();
 		}
 		
+		/*
+		 * Coloquei o array a inicializar na classe User, porque ele vai ser sempre preciso e assim já não é necessário
+		 * o código abaixo
+		 */
+		/*
 		if(User.getLists() == null) {
+			System.out.println("A");
 			lists = new ArrayList<List>();
 			User.setLists(lists);
 		}
+		*/
 		
 		for(List l : lists) {
-			ListButton list = new ListButton(l.getName());
-			Button listButton = list.getButton();
+			ListButton lst = new ListButton(l.getName());
+			Button listButton = lst.getButton();
 			listButton.setOnAction(event -> {
 		        changeList(event);
 		    });
 			listsBox.getChildren().add(listButton);
 		}
 		
+		/*
+		 * Verifica se existe a lista selecionada, porque quando se apagava a lista no scene de editList
+		 * a lista não era apagada neste scene.
+		 * Então o nome da lista e o botao continuavam a aparecer
+		 */
+		if (list != null) {
+			List temp = null;
+			for (List lst : lists) {
+				if (lst.getName().equals(list.getName())) {
+					temp = lst;
+					break;
+				}
+			}
+			if (temp == null) {
+				list = null;
+			}
+		}
+		
 		if(list == null) {
 			listNameLabel.setText("Choose one List!");
 			return;
-		}	
+		}
 		
 		loadTasks();
     }
@@ -247,7 +272,35 @@ public class ControllerLoginScene {
 	
 	public void editList(ActionEvent e) {
 		
-		System.out.println(list.getName());
+		String listName = listNameLabel.getText();
+
+		List list = null;
+		for (List l : lists) {
+			if (l.getName().equals(listName)) {
+				list = l;
+			}
+		}
+		if (list == null) {
+			return;
+		}
+		
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditListScene.fxml"));
+			root = loader.load();
+			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+			scene = new Scene(root);
+			stage.setScene(scene);
+			stage.setMinHeight(480.0);
+			stage.setMinWidth(350.0);
+			
+			ControllerEditListScene controller = loader.getController();
+			controller.initData(list, lists);	
+
+			stage.show();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
 		
 	}
 	

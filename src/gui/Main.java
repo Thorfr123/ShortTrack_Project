@@ -1,6 +1,6 @@
 package gui;
 
-import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -22,9 +22,10 @@ public class Main extends Application {
 		try {
 			ArrayList<List> lists = FileIO.readPersonalListsFromFile();
 			User.setLists(lists);
+		} catch (FileNotFoundException fnfe) {
+			System.out.println("Couldn't find local backup file");
 		} catch (ClassNotFoundException | IOException e) {
-			System.out.println("Erro a tentar ler o ficheiro.dat!");
-			//e.printStackTrace();
+			System.out.println("Erro a tentar ler o ficheiro de backup local!");
 		}
 		
 		try {
@@ -41,17 +42,11 @@ public class Main extends Application {
 			primaryStage.centerOnScreen();
 			
 			primaryStage.setOnCloseRequest(event -> {
-				
-				if(User.getLists() == null)
-					System.out.println("null!");
-				else
-					System.out.println("not null!");
-			    
+							    
 				try {
 					FileIO.writePersonalListsToFile(User.getLists());
 				} catch (IOException e) {
-					System.out.println("Erro a tentar escrever o ficheiro.dat!");
-					//e.printStackTrace();
+					System.out.println("Erro a tentar escrever o ficheiro de backup local!");
 				}
 				
 			});

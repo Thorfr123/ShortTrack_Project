@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class User {
 	
-	private static ArrayList<List> lists;
+	private static ArrayList<List> lists = new ArrayList<List>(0);
 	private static Account account;
 	
 	public static ArrayList<List> getLists() {
