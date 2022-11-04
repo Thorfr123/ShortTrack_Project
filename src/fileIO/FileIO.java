@@ -1,40 +1,49 @@
 package fileIO;
 
 import java.io.EOFException;
+import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-import data.Task;
 import data.List;
 
 public class FileIO {
-	private static String personalListFileName = "personalLists.txt";
+	private static String personalListFileName = "personalLists.dat";
 	
-	/*
-	 * Com esta implementação, a função escreve todo o objeto e não tem de lidar com typings para datas e coisas do genero
+	/**
+	 * Writes all Personal Lists within the arrayList to a read-only local file
+	 * 
+	 * @param arrayList ArrayList with all Personal Lists to save
+	 * @throws IOException If an error occurs while writing to the file
 	 */
-	public static void writePersonalListsToFile(ArrayList<List> l) {
-
+	public static void writePersonalListsToFile(ArrayList<List> arrayList) throws IOException{
+		File file = new File(personalListFileName);
+		file.setWritable(true);
+		
 		try (FileOutputStream fos = new FileOutputStream(personalListFileName);
 			 ObjectOutputStream oos = new ObjectOutputStream(fos); ){
 
-			for (List list : l) {
-				oos.writeObject(list);
+			for (List lst : arrayList) {
+				oos.writeObject(lst);
+				System.out.println(lst);
 			}
 			
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 		
+		file.setReadOnly();
 	}
 	
-	
-	public static ArrayList<List> readPersonalListsFromFile() {
+	/**
+	 * Reads all saved Personal Lists from the local file
+	 * @return All read Personal Lists
+	 * @throws IOException If there is an error while reading the file
+	 * @throws ClassNotFoundException If it is not possible to reassemble objects from the file
+	 */
+	public static ArrayList<List> readPersonalListsFromFile() throws IOException, ClassNotFoundException{
 		ArrayList<List> arrayList = new ArrayList<List>();
 		try (FileInputStream fis = new FileInputStream(personalListFileName);
 			 ObjectInputStream ois = new ObjectInputStream(fis)){
@@ -42,29 +51,13 @@ public class FileIO {
 			while(true) {
 				List lst = (List)ois.readObject();
 				arrayList.add(lst);
+				System.out.println(lst);
 			}
 			
-		} catch (EOFException e) {
-			System.out.println("No more objects");
+		} catch (EOFException eof) {
+			System.out.println("Read all lists successfully");
 			return arrayList;
-		} catch (IOException | ClassNotFoundException e) {
-			e.printStackTrace();
 		}
-		
-		return null;
 	}
 	
-	
-	/*public static void main(String args[]) {
-		List l1 = new List("list1");
-		List l2 = new List("list2");
-		
-		ArrayList<List> lists = new ArrayList<List>();
-		lists.add(l1);
-		lists.add(l2);
-		
-		writePersonalListsToFile(lists);
-		
-		
-	}*/
 }
