@@ -1,8 +1,13 @@
 package data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class List {
+public class List implements Serializable{
+	/**
+	 * Variavel para a escrita/leitura offline dos dados
+	 */
+	private static final long serialVersionUID = -6310572270119855024L;
 	private String name;
 	private ArrayList<Task> taskList; 
 	
