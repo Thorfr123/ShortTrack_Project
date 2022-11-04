@@ -41,8 +41,8 @@ public class ControllerSignUpScene {
 		String username = usernameField.getText();
 		String password = passwordField.getText();
 		
-		if((firstName.length() < 1) || (lastName.length() < 1) || (email.length() < 1) 
-				|| (username.length() < 1) || (password.length() < 1)) {
+		if((firstName.isBlank()) || (lastName.isBlank()) || (email.isBlank()) 
+				|| (username.isBlank()) || (password.isBlank())) {
 			showNotification("Please complete all the fields!");
 			return;
 		}
@@ -53,7 +53,19 @@ public class ControllerSignUpScene {
 		}
 		String name = firstName + " " +  lastName;
 		
-		AccountsDatabase.createAccount(username, password, email, firstName, lastName);
+		int rt = AccountsDatabase.createAccount(username, password, email, firstName, lastName);
+		
+		switch (rt) {
+			case -1:
+				showNotification("Connection error");
+				return;
+			case -2:
+				showNotification("Email already in use");
+				return;
+			case -3:
+				showNotification("Username already in use");
+				return;
+		}
 		
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("LogoutScene.fxml"));
 		root = loader.load();
