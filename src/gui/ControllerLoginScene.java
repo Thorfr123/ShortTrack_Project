@@ -68,9 +68,12 @@ public class ControllerLoginScene {
     public void initialize() {
 		
 		if(lists == null) {
+			lists = User.getLists();
+		}
+		
+		if(User.getLists() == null) {
 			lists = new ArrayList<List>();
-			listNameLabel.setText("Choose one List!");
-			return;
+			User.setLists(lists);
 		}
 		
 		for(List l : lists) {
