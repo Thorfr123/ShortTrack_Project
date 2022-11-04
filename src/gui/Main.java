@@ -24,7 +24,6 @@ public class Main extends Application {
 			User.setLists(lists);
 		} catch (ClassNotFoundException | IOException e) {
 			System.out.println("Erro a tentar ler o ficheiro.dat!");
-			//e.printStackTrace();
 		}
 		
 		try {
@@ -41,17 +40,11 @@ public class Main extends Application {
 			primaryStage.centerOnScreen();
 			
 			primaryStage.setOnCloseRequest(event -> {
-				
-				if(User.getLists() == null)
-					System.out.println("null!");
-				else
-					System.out.println("not null!");
 			    
 				try {
 					FileIO.writePersonalListsToFile(User.getLists());
 				} catch (IOException e) {
 					System.out.println("Erro a tentar escrever o ficheiro.dat!");
-					//e.printStackTrace();
 				}
 				
 			});
