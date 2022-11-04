@@ -2,6 +2,7 @@ package fileIO;
 
 import java.io.EOFException;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -12,91 +13,37 @@ import data.Task;
 import data.List;
 
 public class FileIO {
-	private static String fileName = "output.txt";	
+	private static String personalListFileName = "personalLists.txt";
 	
 	/*
 	 * Com esta implementação, a função escreve todo o objeto e não tem de lidar com typings para datas e coisas do genero
 	 */
-	public static void writeObjectToFile(ArrayList <Task> l) {
-		try {
-			FileOutputStream fos = new FileOutputStream(fileName);
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			
-			for (Task t : l) {
-				oos.writeObject(t);
-			}
+	public static void writePersonalListsToFile(ArrayList<List> l) {
 
-			oos.close();
+		try (FileOutputStream fos = new FileOutputStream(personalListFileName);
+			 ObjectOutputStream oos = new ObjectOutputStream(fos); ){
+
+			for (List list : l) {
+				oos.writeObject(list);
+			}
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public static void writeObjectToFile(List list) {
-		try {
-			FileOutputStream fos = new FileOutputStream(fileName);
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			
-			oos.writeObject(list);
-
-			oos.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-
-	public static void readObjectFromFile() {
-		try {
-			FileInputStream fis = new FileInputStream(fileName);
-			try (ObjectInputStream ois = new ObjectInputStream(fis)) {
-				while(true) {
-					Task t = (Task)ois.readObject();
-					
-					System.out.println(t.getID());
-					System.out.println(t.getName());
-					System.out.println(t.getDescription());
-					System.out.println(t.getCreatedDateTime());
-					System.out.println(t.getDeadlineDateTime());
-				}
-			}
-		} catch (EOFException e) {
-			System.out.println("No more objects");
-		} catch (IOException | ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+		
 	}
 	
 	
-	public static List readListObjectFromFile() {
-		try {
-			FileInputStream fis = new FileInputStream(fileName);
-			try (ObjectInputStream ois = new ObjectInputStream(fis)) {
-				List lst = (List)ois.readObject();
-				
-				System.out.println(lst.getName());
-				System.out.println(lst.getTaskList());
-				
-				return lst;
-			}
-		} catch (EOFException e) {
-			System.out.println("No more objects");
-		} catch (IOException | ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	public static ArrayList<List> readAllListObjectFromFile() {
+	public static ArrayList<List> readPersonalListsFromFile() {
 		ArrayList<List> arrayList = new ArrayList<List>();
-		try {
-			FileInputStream fis = new FileInputStream(fileName);
-			try (ObjectInputStream ois = new ObjectInputStream(fis)) {
-				while(true) {
-					List lst = (List)ois.readObject();
-					arrayList.add(lst);
-				}
+		try (FileInputStream fis = new FileInputStream(personalListFileName);
+			 ObjectInputStream ois = new ObjectInputStream(fis)){
+			
+			while(true) {
+				List lst = (List)ois.readObject();
+				arrayList.add(lst);
 			}
+			
 		} catch (EOFException e) {
 			System.out.println("No more objects");
 			return arrayList;
@@ -107,26 +54,17 @@ public class FileIO {
 		return null;
 	}
 	
-	public static void main(String args[]) {
+	
+	/*public static void main(String args[]) {
+		List l1 = new List("list1");
+		List l2 = new List("list2");
 		
-		Task t = new Task("Task 1");
-		t.setDescription("This is the first task");
-		t.setID(0);
-		Task t1 = new Task("Task 2");
-		t1.setDescription("This is the second task");
-		t1.setID(1);
+		ArrayList<List> lists = new ArrayList<List>();
+		lists.add(l1);
+		lists.add(l2);
 		
-		ArrayList<Task> list = new ArrayList<Task>();
-		list.add(t);
-		list.add(t1);
+		writePersonalListsToFile(lists);
 		
-		List lst = new List("List 1");
-		lst.addTask(t);
-		lst.addTask(t1);
 		
-		//writeObjectToFile(list);
-		writeObjectToFile(lst);
-		//writeObjectToFile(t1);
-		readListObjectFromFile();
-	}
+	}*/
 }
