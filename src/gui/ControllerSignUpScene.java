@@ -53,18 +53,9 @@ public class ControllerSignUpScene {
 		}
 		String name = firstName + " " +  lastName;
 		
-		int rt = AccountsDatabase.createAccount(username, password, email, firstName, lastName);
-		
-		switch (rt) {
-			case -1:
-				showNotification("Connection error");
-				return;
-			case -2:
-				showNotification("Email already in use");
-				return;
-			case -3:
-				showNotification("Username already in use");
-				return;
+		if (AccountsDatabase.createAccount(username, password, email, firstName, lastName) < 0) {
+			showNotification("There was an unknown error");
+			return;
 		}
 		
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("LogoutScene.fxml"));
@@ -128,7 +119,11 @@ public class ControllerSignUpScene {
 	}
 	
 	public boolean checkUsername(String username) { 		//Just a scratch
-
+		if(!AccountsDatabase.checkUsername(username)) {
+			showNotification("Username already in use!");
+			return false;
+		}
+		
 		return true;
 	}
 	

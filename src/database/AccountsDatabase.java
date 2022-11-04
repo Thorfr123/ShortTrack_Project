@@ -44,6 +44,13 @@ public class AccountsDatabase {
 	
 	public AccountsDatabase() {	};
 
+	/**
+	 * Verifies if the user can login
+	 * 
+	 * @param user String with user's username or email
+	 * @param password String with user's password
+	 * @return True - Successfully login; False - Otherwise
+	 */
 	public static boolean checkLogin(String user, String password) {
 		String query;
 		
@@ -59,6 +66,12 @@ public class AccountsDatabase {
 		return (rs.equals("t"));
 	}
 	
+	/**
+	 * Checks if the email is already in use
+	 * 
+	 * @param email String with email
+	 * @return True - There is no email; False - There is already
+	 */
 	public static boolean checkEmail(String email) {
 		String checkEmail =   "SELECT EXISTS(SELECT 1 FROM projeto.account "
 					+ "WHERE email = '" + email + "');";
@@ -68,11 +81,31 @@ public class AccountsDatabase {
 		return rs.equals("f");
 	}
 	
-	/*
-	 * return  1 = Conta criada com sucesso
-	 * return -1 = Conta não criada devido a erros de conecção
-	 * return -2 = Conta não criada porque já existe uma conta com o mesmo email
-	 * return -3 = Conta não criada porque já existe uma conta com o mesmo username
+	/**
+	 * Checks if the username is already in use
+	 * 
+	 * @param username String with username
+	 * @return True - There is no username; False - There is already
+	 */
+	public static boolean checkUsername(String username) {
+		String checkEmail =   "SELECT EXISTS(SELECT 1 FROM projeto.account "
+					+ "WHERE username = '" + username + "');";
+		
+		String rs = executeQuery_SingleColumn(checkEmail);
+		
+		return rs.equals("f");
+	}
+	
+	
+	/**
+	 * Adds a new account to the database
+	 * 
+	 * @param username String with user's username
+	 * @param password String with user's password
+	 * @param email String with user's email
+	 * @param first_name String with user's first name
+	 * @param last_name String with user's last name
+	 * @return Either (1) non negative integer if the account is created; (2) -1 if there was a connection error
 	 */
 	public static int createAccount(String username, String password, String email, String first_name, String last_name) {
 		Date registerDate = new Date();
@@ -82,31 +115,8 @@ public class AccountsDatabase {
 		String query = "INSERT INTO projeto.account (username, password, email, register_date, first_name, last_name)" +
 						"VALUES ('" + username + "', '" + password + "', '" + email +
 						"', '" + stringDate + "', '" + first_name + "', '" + last_name + "');";
-		// Não permite que sejam criadas novas contas com o mesmo username ou mail, ou seja, username unico e mail unico
-		String checkUsername =    "SELECT EXISTS(SELECT 1 FROM projeto.account "
-				 				+ "WHERE username = '" + username + "');";
-		String checkEmail =   "SELECT EXISTS(SELECT 1 FROM projeto.account "
- 							+ "WHERE email = '" + email + "');";
 		
-		String rs = executeQuery_SingleColumn(checkUsername);
-		if (rs != null) {
-			if (rs.equals("f")) {
-				rs = executeQuery_SingleColumn(checkEmail);
-				if (rs != null) {
-					if (rs.equals("f")) {
-						return executeUpdate(query);
-					} else {
-						System.out.println("Já existe uma conta com este email");
-						return -2;
-					}
-				}
-			} else {
-				System.out.println("Já existe uma conta com este username");
-				return -3;
-			}
-		}
-		
-		return -1;
+		return executeUpdate(query);
 	}
 	
 	public static boolean deleteAccount(String email) {
