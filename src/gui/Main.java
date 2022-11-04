@@ -42,7 +42,6 @@ public class Main extends Application {
 			primaryStage.centerOnScreen();
 			
 			primaryStage.setOnCloseRequest(event -> {
-							    
 				try {
 					FileIO.writePersonalListsToFile(User.getLists());
 				} catch (IOException e) {
