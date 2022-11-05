@@ -12,7 +12,7 @@
 
 <BorderPane prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControllerSignUpScene">
    <center>
-      <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="340.0" prefWidth="240.0" BorderPane.alignment="CENTER">
+      <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="420.0" prefWidth="240.0" BorderPane.alignment="CENTER">
          <children>
             <Label alignment="CENTER" text="Create New Account">
                <font>
@@ -58,9 +58,11 @@
                   <Insets bottom="10.0" />
                </VBox.margin>
             </PasswordField>
-            <Label fx:id="notificationLabel" prefHeight="18.0" prefWidth="174.0" textFill="RED">
+            <Label style="-fx-text-fill: #727272; -fx-font-size: 14;" text="Repeat Password" />
+            <PasswordField fx:id="repeatPasswordField" prefHeight="26.0" prefWidth="173.0" />
+            <Label fx:id="notificationLabel" prefHeight="18.0" prefWidth="244.0" textFill="RED">
                <VBox.margin>
-                  <Insets bottom="10.0" />
+                  <Insets bottom="10.0" top="10.0" />
                </VBox.margin>
             </Label>
             <HBox alignment="CENTER" prefHeight="2.0" prefWidth="230.0" spacing="50.0">

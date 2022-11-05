@@ -1,6 +1,9 @@
 package gui;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import database.AccountsDatabase;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,6 +30,8 @@ public class ControllerSignUpScene {
 	@FXML 
 	private PasswordField passwordField;
 	@FXML 
+	private PasswordField repeatPasswordField;
+	@FXML 
 	private Label notificationLabel;
 	
 	private Stage stage;
@@ -40,15 +45,16 @@ public class ControllerSignUpScene {
 		String email = emailField.getText();
 		String username = usernameField.getText();
 		String password = passwordField.getText();
+		String repeatPassword = repeatPasswordField.getText();
 		
 		if((firstName.isBlank()) || (lastName.isBlank()) || (email.isBlank()) 
-				|| (username.isBlank()) || (password.isBlank())) {
+				|| (username.isBlank()) || (password.isBlank()) || (repeatPassword.isBlank())) {
 			showNotification("Please complete all the fields!");
 			return;
 		}
 		
-		if(!checkName(firstName) || !checkName(lastName) || !checkEmail(email) 
-				|| !checkUsername(username) || !checkPassword(password)) {
+		if(!checkName(firstName) || !checkName(lastName) || !checkPassword(password,repeatPassword)
+				|| !checkEmail(email) || !checkUsername(username) ) {
 			return;
 		}
 		String name = firstName + " " +  lastName;
@@ -66,6 +72,8 @@ public class ControllerSignUpScene {
 		
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
 		scene = new Scene(root);
+		String css = this.getClass().getResource("application.css").toExternalForm();
+		scene.getStylesheets().add(css);
 		stage.setScene(scene);
 		stage.setMinWidth(820.0);
 		stage.show();
@@ -77,6 +85,8 @@ public class ControllerSignUpScene {
 		root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
 		scene = new Scene(root);
+		String css = this.getClass().getResource("application.css").toExternalForm();
+		scene.getStylesheets().add(css);
 		stage.setScene(scene);
 		stage.setMinWidth(820.0);
 		stage.show();
@@ -90,7 +100,7 @@ public class ControllerSignUpScene {
 		
 	}
 	
-	public boolean checkName(String name) {
+	public boolean checkName(String name) {				//Just Scratch
 		if(name.contains(" ")) {
 			showNotification("Invalid name!");
 			return false;
@@ -104,11 +114,19 @@ public class ControllerSignUpScene {
 		return true;
 	}
 	
-	public boolean checkEmail(String email) { 				//Just a scratch
-		if(!email.contains("@") || (email.length() < 1)) {
+	public boolean checkEmail(String email) {
+		//Regular Expression   
+        String regex = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}";  
+        //Compile regular expression to get the pattern  
+        Pattern pattern = Pattern.compile(regex);
+        
+        Matcher matcher = pattern.matcher(email);
+        
+        if(!matcher.matches()) {
 			showNotification("Invalid email!");
 			return false;
 		}
+        	
 		
 		if(!AccountsDatabase.checkEmail(email)) {
 			showNotification("Email already in use!");
@@ -118,7 +136,13 @@ public class ControllerSignUpScene {
 		return true;
 	}
 	
-	public boolean checkUsername(String username) { 		//Just a scratch
+	public boolean checkUsername(String username) {
+		
+		if(username.length() < 5) {
+			showNotification("Username to short!");
+			return false;
+		}
+		
 		if(!AccountsDatabase.checkUsername(username)) {
 			showNotification("Username already in use!");
 			return false;
@@ -127,12 +151,17 @@ public class ControllerSignUpScene {
 		return true;
 	}
 	
-	public boolean checkPassword(String password) { 
+	public boolean checkPassword(String password, String repeatPassword) { 
 		if(password.length() < 5) {
 			showNotification("Password to short!");
 			return false;
 		}
-
+		
+		if(!password.equals(repeatPassword)) {
+			showNotification("The passwords don't match!");
+			return false;
+		}
+		
 		return true;
 	}
 	

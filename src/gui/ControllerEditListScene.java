@@ -53,10 +53,7 @@ public class ControllerEditListScene {
 			
 			root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-			scene = new Scene(root);
-			stage.setScene(scene);
-			stage.setMinWidth(820.0);
-			stage.show();
+			loadScene();
 			
 		}
 		
@@ -83,11 +80,7 @@ public class ControllerEditListScene {
 		
 		root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-		scene = new Scene(root);
-		stage.setScene(scene);
-		stage.setMinHeight(410.0);
-		stage.setMinWidth(820.0);
-		stage.show();
+		loadScene();
 		
 	}
 	
@@ -95,11 +88,7 @@ public class ControllerEditListScene {
 		
 		root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-		scene = new Scene(root);
-		stage.setScene(scene);
-		stage.setMinHeight(410.0);
-		stage.setMinWidth(820.0);
-		stage.show();
+		loadScene();
 		
 	}
 	
@@ -109,6 +98,17 @@ public class ControllerEditListScene {
 		notificationLabel.setText(notification);
 		notificationLabel.setTextFill(Color.RED);
 		notificationLabel.setVisible(true);
+		
+	}
+	
+	public void loadScene() {
+		
+		scene = new Scene(root);
+		String css = this.getClass().getResource("application.css").toExternalForm();
+		scene.getStylesheets().add(css);
+		stage.setScene(scene);
+		stage.setMinWidth(820.0);
+		stage.show();
 		
 	}
 	

@@ -33,9 +33,7 @@ public class ControllerLogoutScene {
 		
 		root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-		scene = new Scene(root);
-		stage.setScene(scene);
-		stage.show();
+		loadScene();
 		
 	}
 	
@@ -55,9 +53,7 @@ public class ControllerLogoutScene {
 			
 			root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-			scene = new Scene(root);
-			stage.setScene(scene);
-			stage.show();
+			loadScene();
 			
 			System.out.println("Your account was successfully deleted!");  	    // Just to debug
 		}
@@ -70,5 +66,15 @@ public class ControllerLogoutScene {
 	
 	public void displayEmail(String email) {
 		printEmailLabel.setText(email);
+	}
+	
+	public void loadScene() {
+		
+		scene = new Scene(root);
+		String css = this.getClass().getResource("application.css").toExternalForm();
+		scene.getStylesheets().add(css);
+		stage.setScene(scene);
+		stage.show();
+		
 	}
 }

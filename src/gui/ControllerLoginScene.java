@@ -4,6 +4,7 @@ import database.*;
 import data.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,6 +18,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -51,6 +53,10 @@ public class ControllerLoginScene {
 	@FXML 
 	private VBox loginBox;
 	@FXML 
+	private VBox newListBox;
+	@FXML 
+	private VBox newTaskBox;
+	@FXML 
 	private VBox listsBox;
 	@FXML 
 	private VBox tasksBox;
@@ -67,21 +73,12 @@ public class ControllerLoginScene {
 	@FXML
     public void initialize() {
 		
+		notificationLabel = new Label();
+		notificationLabel.setTextFill(Color.RED);
+		
 		if(lists == null) {
 			lists = User.getLists();
 		}
-		
-		/*
-		 * Coloquei o array a inicializar na classe User, porque ele vai ser sempre preciso e assim já não é necessário
-		 * o código abaixo
-		 */
-		/*
-		if(User.getLists() == null) {
-			System.out.println("A");
-			lists = new ArrayList<List>();
-			User.setLists(lists);
-		}
-		*/
 		
 		for(List l : lists) {
 			ListButton lst = new ListButton(l.getName());
@@ -120,26 +117,32 @@ public class ControllerLoginScene {
 
 	public void login(ActionEvent e) throws IOException {
 		
+		removeErrorNotifications();
+		
 		String username = usernameField.getText();
 		String password = passwordField.getText();
 		
 		if(username.isBlank() || password.isBlank()) {
-			System.out.println("Necessario colocar username e password!");
+			
+			Pane newBox = (Pane)loginBox;
+			String notification = "Please complete both fields!";
+			showNotification(notification,newBox);
+			usernameField.getStyleClass().add("error");
+			passwordField.getStyleClass().add("error");
+			
 			return;
 		}
 		
 		if(!AccountsDatabase.checkLogin(username, password)) {
 			
-			if(notificationLabel == null) {
-				notificationLabel = new Label("Invalid username or password!");
-				notificationLabel.setTextFill(Color.RED);
-				loginBox.getChildren().add(notificationLabel);
-			}
+			Pane newBox = (Pane)loginBox;
+			String notification = "Invalid username or password!";
+			showNotification(notification,newBox);
+			usernameField.getStyleClass().add("error");
+			passwordField.getStyleClass().add("error");
 			
 			return;
 		}
-		
-		loginBox.getChildren().remove(notificationLabel);
 		
 		Account account = AccountsDatabase.getAccount(username, password);
 		String name = account.getName();
@@ -152,8 +155,7 @@ public class ControllerLoginScene {
 		logoutController.displayEmail(email);
 		
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-		scene = new Scene(root);
-		stage.setScene(scene);
+		loadScene();
 		stage.show();
 		
 	}
@@ -162,14 +164,15 @@ public class ControllerLoginScene {
 		
 		root = FXMLLoader.load(getClass().getResource("SignUpScene.fxml"));
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-		scene = new Scene(root);
-		stage.setScene(scene);
+		loadScene();
 		stage.setMinWidth(290.0);
 		stage.show();
 		
 	}
 	
 	public void addList(ActionEvent e) {
+		
+		removeErrorNotifications();
 		
 		String listName = newListName.getText();
 		
@@ -180,10 +183,16 @@ public class ControllerLoginScene {
 		
 		for(List l : lists) {
 			if(l.getName().equals(listName)) {
-				System.out.println("Ja existe uma lista com esse nome!");
+				Pane newBox = (Pane)newListBox;
+				String notification = "This list already exist!";
+				showNotification(notification,newBox);
+				newListName.getStyleClass().add("error");
 				return;
 			}
 		}
+		
+		newListBox.getChildren().remove(notificationLabel);
+		newListName.getStyleClass().removeAll(Collections.singleton("error"));
 		
 		List newList = new List(listName);
 		lists.add(newList);
@@ -198,6 +207,8 @@ public class ControllerLoginScene {
 	}
 	
 	public void addTask(ActionEvent e) {
+		
+		removeErrorNotifications();
 				
 		String taskName = newTaskName.getText();
 		
@@ -207,9 +218,15 @@ public class ControllerLoginScene {
 		newTaskName.clear();
 		
 		if(list.checkName(taskName)) {
-			System.out.println("Ja existe uma task com esse nome nesta lista!");
+			Pane newBox = (Pane)newTaskBox;
+			String notification = "This task already exist!";
+			showNotification(notification,newBox);
+			newTaskName.getStyleClass().add("error");
 			return;
 		}
+		
+		newTaskBox.getChildren().remove(notificationLabel);
+		newTaskName.getStyleClass().removeAll(Collections.singleton("error"));
 		
 		Task newTask = new Task(taskName);
 		list.addTask(newTask);
@@ -231,12 +248,16 @@ public class ControllerLoginScene {
 	
 	public void changeList(ActionEvent e) {
 		
+		removeErrorNotifications();
+		
 		Button listButton = (Button)e.getSource();
 		String listName = listButton.getText();
 		
 		for(List l : lists) {
-			if(l.getName().equals(listName))
+			if(l.getName().equals(listName)) {
 				list = l;
+				break;
+			}
 		}
 		
 		tasksBox.getChildren().clear();
@@ -278,9 +299,11 @@ public class ControllerLoginScene {
 		for (List l : lists) {
 			if (l.getName().equals(listName)) {
 				list = l;
+				break;
 			}
 		}
-		if (list == null) {
+		
+		if (list == null) {											//Maybe useless
 			return;
 		}
 		
@@ -288,9 +311,7 @@ public class ControllerLoginScene {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditListScene.fxml"));
 			root = loader.load();
 			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-			scene = new Scene(root);
-			stage.setScene(scene);
-			stage.setMinHeight(480.0);
+			loadScene();
 			stage.setMinWidth(350.0);
 			
 			ControllerEditListScene controller = loader.getController();
@@ -312,8 +333,10 @@ public class ControllerLoginScene {
 		Task task = null;
 		ArrayList<Task> tasks = list.getTaskList();
 		for(Task t : tasks) {
-			if(t.getName().equals(taskName))
+			if(t.getName().equals(taskName)) {
 				task = t;
+				break;
+			}
 		}
 		
 		try {
@@ -321,9 +344,7 @@ public class ControllerLoginScene {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditTaskScene.fxml"));
 			root = loader.load();
 			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-			scene = new Scene(root);
-			stage.setScene(scene);
-			stage.setMinHeight(480.0);
+			loadScene();
 			stage.setMinWidth(350.0);
 			
 			ControllerEditTaskScene controller = loader.getController();
@@ -339,6 +360,8 @@ public class ControllerLoginScene {
 	
 	public void checkTask(ActionEvent e) {
 		
+		removeErrorNotifications();
+		
 		CheckBox taskCheckBox = (CheckBox)e.getSource();
 		HBox taskBox = (HBox)taskCheckBox.getParent();
 		Button taskButton = (Button)taskBox.getChildren().get(1);
@@ -347,10 +370,42 @@ public class ControllerLoginScene {
 		Task task = null;
 		ArrayList<Task> tasks = list.getTaskList();
 		for(Task t : tasks) {
-			if(t.getName().equals(taskName))
+			if(t.getName().equals(taskName)) {
 				task = t;
+				break;
+			}
 		}
 		
 		task.setCompleted(taskCheckBox.isSelected());
 	}
+	
+	public void loadScene() {
+		
+		scene = new Scene(root);
+		String css = this.getClass().getResource("application.css").toExternalForm();
+		scene.getStylesheets().add(css);
+		stage.setScene(scene);
+		
+	}
+	
+	public void showNotification(String notification, Pane newBox) {
+		
+		newBox.getChildren().add(notificationLabel);
+		notificationLabel.setText(notification);
+		
+	}
+	
+	public void removeErrorNotifications() {
+		
+		loginBox.getChildren().remove(notificationLabel);
+		newTaskBox.getChildren().remove(notificationLabel);
+		newListBox.getChildren().remove(notificationLabel);
+		
+		usernameField.getStyleClass().removeAll(Collections.singleton("error")); 
+		passwordField.getStyleClass().removeAll(Collections.singleton("error")); 
+		newListName.getStyleClass().removeAll(Collections.singleton("error")); 
+		newTaskName.getStyleClass().removeAll(Collections.singleton("error")); 
+
+	}
+	
 }

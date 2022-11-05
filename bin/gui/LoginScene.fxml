@@ -70,15 +70,19 @@
             </Label>
          </top>
          <bottom>
-            <HBox prefHeight="26.0" prefWidth="145.0" spacing="10.0" BorderPane.alignment="CENTER">
-               <children>
-                  <TextField fx:id="newListName" onAction="#addList" prefHeight="26.0" prefWidth="139.0" promptText="New List Name" />
-                  <Button mnemonicParsing="false" onAction="#addList" text="+" />
-               </children>
+            <VBox fx:id="newListBox" BorderPane.alignment="CENTER">
                <BorderPane.margin>
                   <Insets bottom="10.0" left="10.0" top="10.0" />
                </BorderPane.margin>
-            </HBox>
+               <children>
+                  <HBox prefHeight="26.0" prefWidth="145.0" spacing="10.0">
+                     <children>
+                        <TextField fx:id="newListName" onAction="#addList" prefHeight="26.0" prefWidth="139.0" promptText="New List Name" />
+                        <Button mnemonicParsing="false" onAction="#addList" text="+" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
          </bottom>
          <padding>
             <Insets left="5.0" right="5.0" />
@@ -106,15 +110,19 @@
             </HBox>
          </top>
          <bottom>
-            <HBox fx:id="addTaskBox" alignment="CENTER_LEFT" prefHeight="15.0" prefWidth="590.0" spacing="10.0" visible="false" BorderPane.alignment="CENTER">
-               <children>
-                  <TextField fx:id="newTaskName" onAction="#addTask" prefHeight="26.0" prefWidth="495.0" promptText="New Task Name " />
-                  <Button mnemonicParsing="false" onAction="#addTask" text="+" />
-               </children>
+            <VBox fx:id="newTaskBox" BorderPane.alignment="CENTER">
                <BorderPane.margin>
                   <Insets bottom="10.0" left="10.0" top="10.0" />
                </BorderPane.margin>
-            </HBox>
+               <children>
+                  <HBox fx:id="addTaskBox" alignment="CENTER_LEFT" prefHeight="15.0" prefWidth="590.0" spacing="10.0" visible="false">
+                     <children>
+                        <TextField fx:id="newTaskName" onAction="#addTask" prefHeight="26.0" prefWidth="495.0" promptText="New Task Name " />
+                        <Button mnemonicParsing="false" onAction="#addTask" text="+" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
          </bottom>
          <center>
             <ScrollPane hbarPolicy="NEVER" prefHeight="330.0" prefWidth="600.0" style="-fx-background-color: transparent;" BorderPane.alignment="CENTER">

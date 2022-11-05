@@ -33,11 +33,13 @@ public class Main extends Application {
 			primaryStage.setTitle("ShortTrack");
 			primaryStage.getIcons().add(icon);
 			primaryStage.setMinWidth(820.0);
-			primaryStage.setMinHeight(410.0);
+			primaryStage.setMinHeight(500.0);
 			primaryStage.setMaxWidth(820.0);
 			
 			Parent root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 			Scene scene = new Scene(root);
+			String css = this.getClass().getResource("application.css").toExternalForm();
+			scene.getStylesheets().add(css);			
 			primaryStage.setScene(scene);
 			primaryStage.centerOnScreen();
 			
