@@ -3,6 +3,7 @@ package gui;
 import database.*;
 import data.*;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -133,18 +134,36 @@ public class ControllerLoginScene {
 			return;
 		}
 		
-		if(!AccountsDatabase.checkLogin(username, password)) {
-			
+		try {
+			if(!AccountsDatabase.checkLogin(username, password)) {
+				
+				Pane newBox = (Pane)loginBox;
+				String notification = "Invalid username or password!";
+				showNotification(notification,newBox);
+				usernameField.getStyleClass().add("error");
+				passwordField.getStyleClass().add("error");
+				
+				return;
+			}
+		} catch (SQLException e1) {
 			Pane newBox = (Pane)loginBox;
-			String notification = "Invalid username or password!";
+			String notification = "Error! Please, check your connection";
 			showNotification(notification,newBox);
-			usernameField.getStyleClass().add("error");
-			passwordField.getStyleClass().add("error");
 			
 			return;
 		}
 		
-		Account account = AccountsDatabase.getAccount(username, password);
+		Account account = null;
+		try {
+			account = AccountsDatabase.getAccount(username, password);
+		} catch (SQLException e1) {
+			Pane newBox = (Pane)loginBox;
+			String notification = "Error! Please, check your connection";
+			showNotification(notification,newBox);
+			
+			return;
+		}
+		
 		String name = account.getName();
 		String email = account.getEmail();
 		

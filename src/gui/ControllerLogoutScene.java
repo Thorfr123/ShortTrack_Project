@@ -1,6 +1,7 @@
 package gui;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import database.AccountsDatabase;
 import javafx.event.ActionEvent;
@@ -14,6 +15,8 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class ControllerLogoutScene {
@@ -24,6 +27,8 @@ public class ControllerLogoutScene {
 	private Label printEmailLabel;
 	@FXML
 	private AnchorPane scenePane;
+	@FXML 
+	private VBox logoutBox;
 	
 	private Stage stage;
 	private Scene scene;
@@ -46,8 +51,14 @@ public class ControllerLogoutScene {
 
 		if(alert.showAndWait().get() == ButtonType.OK){
 			
-			if (!AccountsDatabase.deleteAccount(printEmailLabel.getText())) {
-				System.out.println("Error deleting account!");  				// Just to debug
+			try {
+				if (!AccountsDatabase.deleteAccount(printEmailLabel.getText())) {
+					System.out.println("Error deleting account!");  				// Just to debug
+					return;
+				}
+			} catch (SQLException e1) {
+				//Temporario
+				System.out.println("Error! Please, check your conection");
 				return;
 			}	
 			

@@ -1,6 +1,7 @@
 package gui;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,8 +60,13 @@ public class ControllerSignUpScene {
 		}
 		String name = firstName + " " +  lastName;
 		
-		if (AccountsDatabase.createAccount(username, password, email, firstName, lastName) < 0) {
-			showNotification("There was an unknown error");
+		try {
+			if (AccountsDatabase.createAccount(username, password, email, firstName, lastName) < 0) {
+				showNotification("There was an unknown error");
+				return;
+			}
+		} catch (SQLException e1) {
+			showNotification("Error! Please, check your conection");
 			return;
 		}
 		
@@ -128,8 +134,13 @@ public class ControllerSignUpScene {
 		}
         	
 		
-		if(!AccountsDatabase.checkEmail(email)) {
-			showNotification("Email already in use!");
+		try {
+			if(!AccountsDatabase.checkEmail(email)) {
+				showNotification("Email already in use!");
+				return false;
+			}
+		} catch (SQLException e) {
+			showNotification("Error! Please, check your conection");
 			return false;
 		}
 
@@ -143,8 +154,13 @@ public class ControllerSignUpScene {
 			return false;
 		}
 		
-		if(!AccountsDatabase.checkUsername(username)) {
-			showNotification("Username already in use!");
+		try {
+			if(!AccountsDatabase.checkUsername(username)) {
+				showNotification("Username already in use!");
+				return false;
+			}
+		} catch (SQLException e) {
+			showNotification("Error! Please, check your conection");
 			return false;
 		}
 		
