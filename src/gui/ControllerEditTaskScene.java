@@ -2,6 +2,7 @@ package gui;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Collections;
 
 import data.List;
 import data.Task;
@@ -63,6 +64,8 @@ public class ControllerEditTaskScene {
 	
 	public void delete(ActionEvent e) throws IOException {
 		
+		removeErrorNotifications();
+		
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("Delete Task");
 		alert.setHeaderText("You're about to delete this task and lose this data!");
@@ -82,14 +85,18 @@ public class ControllerEditTaskScene {
 	
 	public void save(ActionEvent e) throws IOException {
 		
+		removeErrorNotifications();
+		
 		String newTaskName = taskNameField.getText();
 		if(newTaskName.isBlank()) {
 			showNotification("The Task needs a name!");
+			taskNameField.getStyleClass().add("error");
 			return;
 		}
 			
 		if(!newTaskName.equals(task.getName()) && list.checkName(newTaskName)) {
 			showNotification("Already exist a task with that name!");
+			taskNameField.getStyleClass().add("error");
 			return;
 		}
 		
@@ -109,6 +116,8 @@ public class ControllerEditTaskScene {
 	
 	public void cancel(ActionEvent e) throws IOException {
 		
+		removeErrorNotifications();
+		
 		root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
 		loadScene();
@@ -124,6 +133,12 @@ public class ControllerEditTaskScene {
 		
 	}
 	
+	public void removeErrorNotifications() {
+		
+		taskNameField.getStyleClass().removeAll(Collections.singleton("error")); 
+		notificationLabel.setVisible(false);
+		
+	}
 	
 	public void showNotification(String notification) {
 		

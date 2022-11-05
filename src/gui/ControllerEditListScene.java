@@ -2,6 +2,7 @@ package gui;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import data.List;
 import javafx.event.ActionEvent;
@@ -42,6 +43,8 @@ public class ControllerEditListScene {
 	
 	public void delete(ActionEvent e) throws IOException {
 		
+		removeErrorNotifications();
+		
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("Delete List");
 		alert.setHeaderText("You're about to delete this list and lose this data!");
@@ -61,9 +64,12 @@ public class ControllerEditListScene {
 	
 	public void save(ActionEvent e) throws IOException {
 		
+		removeErrorNotifications();
+		
 		String newListName = listNameField.getText();
 		if(newListName.isBlank()) {
 			showNotification("The List needs a name!");
+			listNameField.getStyleClass().add("error");
 			return;
 		}
 		
@@ -86,6 +92,8 @@ public class ControllerEditListScene {
 	
 	public void cancel(ActionEvent e) throws IOException {
 		
+		removeErrorNotifications();
+		
 		root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
 		loadScene();
@@ -98,6 +106,13 @@ public class ControllerEditListScene {
 		notificationLabel.setText(notification);
 		notificationLabel.setTextFill(Color.RED);
 		notificationLabel.setVisible(true);
+		
+	}
+	
+	public void removeErrorNotifications() {
+		
+		listNameField.getStyleClass().removeAll(Collections.singleton("error")); 
+		notificationLabel.setVisible(false);
 		
 	}
 	
