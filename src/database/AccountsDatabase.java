@@ -2,55 +2,13 @@ package database;
 
 import data.*;
 
-import java.beans.PropertyVetoException;
 import java.sql.*;
-import com.mchange.v2.c3p0.*;
 
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-public class AccountsDatabase{
-	
-	private static ComboPooledDataSource dataSource = null;
-	
-	// Initial setup for the database
-	static {
-		
-		// Cria uma forma de manter a conecção persistente
-		dataSource = new ComboPooledDataSource();
-		try {
-			dataSource.setDriverClass("org.postgresql.Driver");
-			dataSource.setJdbcUrl("jdbc:postgresql://db.fe.up.pt:5432/pswa0502");
-			dataSource.setUser("pswa0502");
-			dataSource.setPassword("jKWlEeAs");
-			dataSource.setCheckoutTimeout(1000);
-			System.out.println(dataSource.getCheckoutTimeout());
-		} catch (PropertyVetoException e){
-			System.out.println(e);
-		}
-		
-		// Inicializa a tabela se não existir - não utilizado na prática, mas é uma boa prática
-		String query =    "CREATE SCHEMA IF NOT EXISTS projeto;" 
-						+ "ALTER SCHEMA projeto OWNER TO pswa0502;" 
-						+ "CREATE TABLE IF NOT EXISTS projeto.account (\r\n"
-						+ "    username character varying(32) NOT NULL,\r\n"
-						+ "    email character varying(64) NOT NULL,\r\n"
-						+ "    password character varying(32) NOT NULL,\r\n"
-						+ "    register_date date,\r\n"
-						+ "	   first_name character varying (32),\r\n"
-						+ "	   last_name character varying (32)\r\n"
-						+ ");" 
-						+ "ALTER TABLE projeto.account OWNER TO pswa0502;";
-		
-		try {
-			executeUpdate(query);
-		} catch (SQLException e) {
-			System.out.println(e);
-			System.out.println("There was an conection error in the database setup");
-		}
-	}
-
+public class AccountsDatabase extends Database{
 	/**
 	 * Verifies if the user can login
 	 * 
@@ -272,40 +230,6 @@ public class AccountsDatabase{
 			return true;
 		else
 			return false;
-	}
-	
-	private static String executeQuery_SingleColumn(String query) throws SQLException{
-		
-		try (Connection connection = dataSource.getConnection()){
-			if (connection != null) {
-				Statement stmt = connection.createStatement();
-				ResultSet rs = stmt.executeQuery(query);
-				if (rs.next()) {
-					return rs.getString(1);
-				}
-			} else {
-				System.out.println("Connection failed");
-			}
-			
-		}
-		
-		return null;
-	}
-	
-	private static int executeUpdate(String query) throws SQLException{
-		//Class.forName("org.postgresql.Driver");
-		//connection = DriverManager.getConnection("jdbc:postgresql://db.fe.up.pt:5432/pswa0502","pswa0502","jKWlEeAs");
-		
-		try (Connection connection = dataSource.getConnection()){
-			if (connection != null) {
-				Statement stmt = connection.createStatement();
-				return stmt.executeUpdate(query);
-			} else {
-				System.out.println("Connection failed");
-			}
-		}
-		
-		return -1;
 	}
 }
 

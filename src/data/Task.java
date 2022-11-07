@@ -8,6 +8,7 @@ public class Task implements Serializable {
 	 * Variavel para a escrita/leitura offline dos dados
 	 */
 	private static final long serialVersionUID = -5301804573647411576L;
+	public static int idCount = 1;
 	private String name; 
 	private int ID;
 	private String description;
@@ -15,11 +16,13 @@ public class Task implements Serializable {
 	private LocalDate deadline;
 	private boolean completed;
 	
+
 	public Task(String name) {
 		this.name = name;
 		
 		createdDate = LocalDate.now();
 		completed = false;
+		ID = idCount++;
 	}
 	
 	public String getName() {

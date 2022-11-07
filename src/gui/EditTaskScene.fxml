@@ -18,7 +18,7 @@
             <Label prefHeight="18.0" prefWidth="170.0" style="-fx-font-size: 14;" text="Task Name" />
             <TextField fx:id="taskNameField" prefHeight="26.0" prefWidth="179.0" />
             <Label style="-fx-font-size: 14;" text="Task due date" />
-            <DatePicker fx:id="dueDateField" prefHeight="26.0" prefWidth="240.0" />
+            <DatePicker fx:id="dueDateField" editable="false" prefHeight="26.0" prefWidth="240.0" />
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
                   <CheckBox fx:id="checkButton" mnemonicParsing="false" onAction="#changeState" text="To be done" />
