@@ -2,73 +2,13 @@ package database;
 
 import data.*;
 
-import java.beans.PropertyVetoException;
 import java.sql.*;
-import com.mchange.v2.c3p0.*;
 
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-public class AccountsDatabase{
-	
-	private static ComboPooledDataSource dataSource = null;
-	
-	// Initial setup for the database
-	static {
-		
-		// Cria uma forma de manter a conecção persistente
-		dataSource = new ComboPooledDataSource();
-		try {
-			dataSource.setDriverClass("org.postgresql.Driver");
-			dataSource.setJdbcUrl("jdbc:postgresql://db.fe.up.pt:5432/pswa0502");
-			dataSource.setUser("pswa0502");
-			dataSource.setPassword("jKWlEeAs");
-			dataSource.setCheckoutTimeout(1000);
-			System.out.println(dataSource.getCheckoutTimeout());
-		} catch (PropertyVetoException e){
-			System.out.println(e);
-		}
-		
-		// Inicializa a tabela se não existir - não utilizado, mas é uma boa prática		
-		String query =    "CREATE SCHEMA IF NOT EXISTS projeto;"
-						+ "CREATE TABLE IF NOT EXISTS projeto.account ();"
-						+ "ALTER TABLE projeto.account ADD COLUMN IF NOT EXISTS username character varying(32) NOT NULL;"
-						+ "ALTER TABLE projeto.account ADD COLUMN IF NOT EXISTS email character varying(64) NOT NULL;"
-						+ "ALTER TABLE projeto.account ADD COLUMN IF NOT EXISTS password character varying(32) NOT NULL;"
-						+ "ALTER TABLE projeto.account ADD COLUMN IF NOT EXISTS register_date date;"
-						+ "ALTER TABLE projeto.account ADD COLUMN IF NOT EXISTS first_name character varying(32);"
-						+ "ALTER TABLE projeto.account ADD COLUMN IF NOT EXISTS last_name character varying(32);"
-						+ "ALTER TABLE ONLY projeto.account DROP CONSTRAINT IF EXISTS account_pkey;"
-						+ "ALTER TABLE ONLY projeto.account ADD CONSTRAINT account_pkey PRIMARY KEY (username, email);"
-						+ "CREATE TABLE IF NOT EXISTS projeto.tasks ();"
-						+ "ALTER TABLE projeto.tasks ADD COLUMN IF NOT EXISTS id integer NOT NULL;"
-						+ "ALTER TABLE projeto.tasks ADD COLUMN IF NOT EXISTS email character varying(64) NOT NULL;"
-						+ "ALTER TABLE projeto.tasks ADD COLUMN IF NOT EXISTS name character varying(32) NOT NULL;"
-						+ "ALTER TABLE projeto.tasks ADD COLUMN IF NOT EXISTS description character varying(128);"
-						+ "ALTER TABLE projeto.tasks ADD COLUMN IF NOT EXISTS created_date date;"
-						+ "ALTER TABLE projeto.tasks ADD COLUMN IF NOT EXISTS deadline_date date;"
-						+ "ALTER TABLE projeto.tasks ADD COLUMN IF NOT EXISTS state boolean NOT NULL;"
-						+ "CREATE SEQUENCE IF NOT EXISTS projeto.tasks_id_seq\r\n"
-						+ "    AS integer\r\n"
-						+ "    START WITH 1\r\n"
-						+ "    INCREMENT BY 1\r\n"
-						+ "    NO MINVALUE\r\n"
-						+ "    NO MAXVALUE\r\n"
-						+ "    CACHE 1;"
-						+ "ALTER SEQUENCE projeto.tasks_id_seq OWNED BY projeto.tasks.id;"
-						+ "ALTER TABLE ONLY projeto.tasks ALTER COLUMN id SET DEFAULT nextval('projeto.tasks_id_seq'::regclass);"
-						+ "ALTER TABLE ONLY projeto.tasks DROP CONSTRAINT IF EXISTS tasks_pkey;"
-						+ "ALTER TABLE ONLY projeto.tasks ADD CONSTRAINT tasks_pkey PRIMARY KEY (id);";
-		
-		try {
-			executeUpdate(query);
-		} catch (SQLException e) {
-			System.out.println(e);
-			System.out.println("There was an conection error in the database setup");
-		}
-	}
-
+public class AccountsDatabase extends Database{
 	/**
 	 * Verifies if the user can login
 	 * 
@@ -290,40 +230,6 @@ public class AccountsDatabase{
 			return true;
 		else
 			return false;
-	}
-	
-	private static String executeQuery_SingleColumn(String query) throws SQLException{
-		
-		try (Connection connection = dataSource.getConnection()){
-			if (connection != null) {
-				Statement stmt = connection.createStatement();
-				ResultSet rs = stmt.executeQuery(query);
-				if (rs.next()) {
-					return rs.getString(1);
-				}
-			} else {
-				System.out.println("Connection failed");
-			}
-			
-		}
-		
-		return null;
-	}
-	
-	private static int executeUpdate(String query) throws SQLException{
-		//Class.forName("org.postgresql.Driver");
-		//connection = DriverManager.getConnection("jdbc:postgresql://db.fe.up.pt:5432/pswa0502","pswa0502","jKWlEeAs");
-		
-		try (Connection connection = dataSource.getConnection()){
-			if (connection != null) {
-				Statement stmt = connection.createStatement();
-				return stmt.executeUpdate(query);
-			} else {
-				System.out.println("Connection failed");
-			}
-		}
-		
-		return -1;
 	}
 }
 
