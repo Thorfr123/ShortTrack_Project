@@ -46,4 +46,40 @@ public class List implements Serializable{
 	public ArrayList<Task> getTaskList() {
 		return taskList;
 	}
+	
+	public void orderByName() {
+		
+		if(taskList == null)
+			return;
+		
+		ArrayList<Task> newTaskList = new ArrayList<Task>();
+        while(taskList.size() != 0) {
+        	Task pickTask = taskList.get(0);
+    		for(Task t : taskList) {
+    			if(t.getName().compareTo(pickTask.getName()) < 0)
+    				pickTask = t;
+    		}
+    		taskList.remove(pickTask);
+    		newTaskList.add(pickTask);
+        }
+        
+        taskList = newTaskList;
+	}
+	
+	public void orderByCreatedDate() {
+		
+	}
+	
+	public void orderByDeadline() {
+		
+	}
+	
+	public void orderByCompleted() {
+		
+	}
+	
+	public ArrayList<Task> findTaskByName(String name) { 		// return all tasks that include that string
+		
+		return null;
+	}
 }

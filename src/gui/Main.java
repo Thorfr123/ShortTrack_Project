@@ -39,7 +39,8 @@ public class Main extends Application {
 			Parent root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 			Scene scene = new Scene(root);
 			String css = this.getClass().getResource("application.css").toExternalForm();
-			scene.getStylesheets().add(css);			
+			scene.getStylesheets().add(css);
+
 			primaryStage.setScene(scene);
 			primaryStage.centerOnScreen();
 			
