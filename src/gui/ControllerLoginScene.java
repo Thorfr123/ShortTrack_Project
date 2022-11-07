@@ -16,6 +16,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
@@ -50,6 +52,8 @@ public class ControllerLoginScene {
 	private Button signUpButton;
 	@FXML
 	private Button editListButton;
+	@FXML
+	private MenuButton sortByMenu;
 	
 	@FXML 
 	private VBox loginBox;
@@ -280,11 +284,13 @@ public class ControllerLoginScene {
 		}
 		
 		tasksBox.getChildren().clear();
-		
 		loadTasks();
 	}
 	
 	public void loadTasks() {
+		editListButton.setVisible(true);
+		sortByMenu.setVisible(true);
+		
 		listNameLabel.setText(list.getName());
 		
 		ArrayList<Task> tasks = list.getTaskList();
@@ -306,7 +312,6 @@ public class ControllerLoginScene {
 			tasksBox.getChildren().add(task.getHBox());
 		}
 		
-		editListButton.setVisible(true);
 		addTaskBox.setVisible(true);
 	}
 	
@@ -427,4 +432,20 @@ public class ControllerLoginScene {
 
 	}
 	
+	public void sortTasks(ActionEvent e) {
+		
+		String option = ((MenuItem)e.getSource()).getText();
+		
+		if(option.equals("Name"))
+			list.sortByName();
+		else if(option.equals("Created Date"))
+			list.sortByCreatedDate();
+		else if(option.equals("Deadline"))
+			list.sortByDeadline();
+		else if(option.equals("Completed"))
+			list.sortByCompleted();
+		
+		tasksBox.getChildren().clear();
+		loadTasks();
+	}
 }

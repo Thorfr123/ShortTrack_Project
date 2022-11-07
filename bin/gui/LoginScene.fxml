@@ -4,6 +4,8 @@
 <?import javafx.scene.Group?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
@@ -97,12 +99,26 @@
                   <Insets top="2.0" />
                </BorderPane.margin>
                <children>
-                  <Label fx:id="listNameLabel" prefHeight="27.0" prefWidth="488.0" text="COLOCAR AQUI O NOME DA LISTA">
+                  <Label fx:id="listNameLabel" prefHeight="27.0" prefWidth="406.0" text="COLOCAR AQUI O NOME DA LISTA">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
-                  <Button fx:id="editListButton" mnemonicParsing="false" onAction="#editList" prefWidth="59.0" text="Edit List" visible="false" />
+                  <MenuButton fx:id="sortByMenu" mnemonicParsing="false" prefHeight="26.0" prefWidth="79.0" text="Sort by" visible="false">
+                    <items>
+                      <MenuItem mnemonicParsing="false" onAction="#sortTasks" text="Name" />
+                      <MenuItem mnemonicParsing="false" onAction="#sortTasks" text="Created Date" />
+                        <MenuItem mnemonicParsing="false" onAction="#sortTasks" text="Deadline" />
+                        <MenuItem mnemonicParsing="false" onAction="#sortTasks" text="Completed" />
+                    </items>
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin>
+                  </MenuButton>
+                  <Button fx:id="editListButton" mnemonicParsing="false" onAction="#editList" prefHeight="26.0" prefWidth="72.0" text="Edit List" visible="false">
+                     <HBox.margin>
+                        <Insets left="5.0" />
+                     </HBox.margin></Button>
                </children>
                <padding>
                   <Insets left="10.0" />
