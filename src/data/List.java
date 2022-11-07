@@ -8,11 +8,14 @@ public class List implements Serializable{
 	 * Variavel para a escrita/leitura offline dos dados
 	 */
 	private static final long serialVersionUID = -6310572270119855024L;
+	public static int idCount = 1;
+	private int id;
 	private String name;
 	private ArrayList<Task> taskList; 
 	
 	public List(String name) {
 		this.name = name;
+		this.id = idCount++;
 		
 		taskList = new ArrayList<Task>();
 	}
@@ -27,8 +30,16 @@ public class List implements Serializable{
 		return false;
 	}
 	
+	public int getId() {
+		return id;
+	}
+	
 	public String getName() {
 		return name;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 	public void setName(String newName) {

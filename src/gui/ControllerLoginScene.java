@@ -216,6 +216,8 @@ public class ControllerLoginScene {
 		List newList = new List(listName);
 		lists.add(newList);
 		
+		System.out.println(newList.getId());
+		
 		ListButton list = new ListButton(listName);
 		Button listButton = list.getButton();
 		listButton.setOnAction(event -> {
@@ -248,6 +250,7 @@ public class ControllerLoginScene {
 		newTaskName.getStyleClass().removeAll(Collections.singleton("error"));
 		
 		Task newTask = new Task(taskName);
+		System.out.println(newTask.getID());
 		list.addTask(newTask);
 		
 		TaskBar task = new TaskBar(taskName);

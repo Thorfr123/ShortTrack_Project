@@ -13,6 +13,7 @@ import data.List;
 
 public class FileIO {
 	private static String personalListFileName = "personalLists.dat";
+	private static String idCountersFileName = "idCounters.dat";
 	
 	/**
 	 * Writes all Personal Lists within the arrayList to a read-only local file
@@ -61,4 +62,47 @@ public class FileIO {
 		}
 	}
 	
+	/**
+	 * Writes program data to local file
+	 * 
+	 * @param task_idCounter Task id counter
+	 * @throws IOException If some error occurs while writing to the file
+	 */
+	public static void writeIdCountersToFile(int task_idCounter, int list_idCounter) throws IOException{
+		File file = new File(idCountersFileName);
+		file.createNewFile();
+		file.setWritable(true);
+		
+		try (FileOutputStream fos = new FileOutputStream(idCountersFileName)){
+
+			fos.write(task_idCounter);
+			fos.write(list_idCounter);
+			
+			System.out.println("idCounters successfully written in local file");
+			
+		}
+		
+		file.setReadOnly();
+	}
+	
+	/**
+	 * Reads all idCounters from the local file
+	 * 
+	 * @return Task Id Counter read from the file
+	 * @throws IOException If some error occurs while reading the file
+	 */
+	public static int[] readIdCountersFromFile() throws IOException, ClassNotFoundException{		
+		int[] idCounters = {1,1};
+		// Task_idCounter, List_idCounter
+		
+		try (FileInputStream fis = new FileInputStream(idCountersFileName)){
+			
+			idCounters[0] = fis.read();
+			idCounters[1] = fis.read();
+			
+		}
+		System.out.println("IDCounters successfully read from local file");
+
+		return idCounters;
+	}
 }
