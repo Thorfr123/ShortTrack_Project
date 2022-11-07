@@ -30,7 +30,7 @@ public class AccountsDatabase{
 			System.out.println(e);
 		}
 		
-		// Inicializa a tabela se não existir - não utilizado na prática, mas é uma boa prática
+		// Inicializa a tabela se não existir - não utilizado, mas é uma boa prática
 		String query =    "CREATE SCHEMA IF NOT EXISTS projeto;" 
 						+ "ALTER SCHEMA projeto OWNER TO pswa0502;" 
 						+ "CREATE TABLE IF NOT EXISTS projeto.account (\r\n"
