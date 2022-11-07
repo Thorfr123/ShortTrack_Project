@@ -30,18 +30,36 @@ public class AccountsDatabase{
 			System.out.println(e);
 		}
 		
-		// Inicializa a tabela se não existir - não utilizado, mas é uma boa prática
-		String query =    "CREATE SCHEMA IF NOT EXISTS projeto;" 
-						+ "ALTER SCHEMA projeto OWNER TO pswa0502;" 
-						+ "CREATE TABLE IF NOT EXISTS projeto.account (\r\n"
-						+ "    username character varying(32) NOT NULL,\r\n"
-						+ "    email character varying(64) NOT NULL,\r\n"
-						+ "    password character varying(32) NOT NULL,\r\n"
-						+ "    register_date date,\r\n"
-						+ "	   first_name character varying (32),\r\n"
-						+ "	   last_name character varying (32)\r\n"
-						+ ");" 
-						+ "ALTER TABLE projeto.account OWNER TO pswa0502;";
+		// Inicializa a tabela se não existir - não utilizado, mas é uma boa prática		
+		String query =    "CREATE SCHEMA IF NOT EXISTS projeto;"
+						+ "CREATE TABLE IF NOT EXISTS projeto.account ();"
+						+ "ALTER TABLE projeto.account ADD COLUMN IF NOT EXISTS username character varying(32) NOT NULL;"
+						+ "ALTER TABLE projeto.account ADD COLUMN IF NOT EXISTS email character varying(64) NOT NULL;"
+						+ "ALTER TABLE projeto.account ADD COLUMN IF NOT EXISTS password character varying(32) NOT NULL;"
+						+ "ALTER TABLE projeto.account ADD COLUMN IF NOT EXISTS register_date date;"
+						+ "ALTER TABLE projeto.account ADD COLUMN IF NOT EXISTS first_name character varying(32);"
+						+ "ALTER TABLE projeto.account ADD COLUMN IF NOT EXISTS last_name character varying(32);"
+						+ "ALTER TABLE ONLY projeto.account DROP CONSTRAINT IF EXISTS account_pkey;"
+						+ "ALTER TABLE ONLY projeto.account ADD CONSTRAINT account_pkey PRIMARY KEY (username, email);"
+						+ "CREATE TABLE IF NOT EXISTS projeto.tasks ();"
+						+ "ALTER TABLE projeto.tasks ADD COLUMN IF NOT EXISTS id integer NOT NULL;"
+						+ "ALTER TABLE projeto.tasks ADD COLUMN IF NOT EXISTS email character varying(64) NOT NULL;"
+						+ "ALTER TABLE projeto.tasks ADD COLUMN IF NOT EXISTS name character varying(32) NOT NULL;"
+						+ "ALTER TABLE projeto.tasks ADD COLUMN IF NOT EXISTS description character varying(128);"
+						+ "ALTER TABLE projeto.tasks ADD COLUMN IF NOT EXISTS created_date date;"
+						+ "ALTER TABLE projeto.tasks ADD COLUMN IF NOT EXISTS deadline_date date;"
+						+ "ALTER TABLE projeto.tasks ADD COLUMN IF NOT EXISTS state boolean NOT NULL;"
+						+ "CREATE SEQUENCE IF NOT EXISTS projeto.tasks_id_seq\r\n"
+						+ "    AS integer\r\n"
+						+ "    START WITH 1\r\n"
+						+ "    INCREMENT BY 1\r\n"
+						+ "    NO MINVALUE\r\n"
+						+ "    NO MAXVALUE\r\n"
+						+ "    CACHE 1;"
+						+ "ALTER SEQUENCE projeto.tasks_id_seq OWNED BY projeto.tasks.id;"
+						+ "ALTER TABLE ONLY projeto.tasks ALTER COLUMN id SET DEFAULT nextval('projeto.tasks_id_seq'::regclass);"
+						+ "ALTER TABLE ONLY projeto.tasks DROP CONSTRAINT IF EXISTS tasks_pkey;"
+						+ "ALTER TABLE ONLY projeto.tasks ADD CONSTRAINT tasks_pkey PRIMARY KEY (id);";
 		
 		try {
 			executeUpdate(query);
