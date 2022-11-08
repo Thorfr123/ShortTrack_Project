@@ -111,7 +111,7 @@ public class List implements Serializable{
         		continue;
         	
     		for(Task t : taskList) {
-    			if(pickTask.getDeadlineDate() == null)
+    			if(t.getDeadlineDate() == null)
             		continue;
     			
     			if(t.getDeadlineDate().compareTo(pickTask.getDeadlineDate()) < 0)
