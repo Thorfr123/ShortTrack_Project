@@ -76,10 +76,23 @@
                <content>
                   <VBox prefHeight="418.0" prefWidth="562.0" spacing="10.0">
                      <children>
-                        <HBox alignment="CENTER_LEFT" prefHeight="26.0" prefWidth="163.0" spacing="10.0">
+                        <HBox alignment="CENTER_LEFT" prefHeight="38.0" prefWidth="600.0" spacing="10.0">
                            <children>
                               <CheckBox mnemonicParsing="false" />
-                              <Button alignment="TOP_LEFT" mnemonicParsing="false" prefHeight="26.0" prefWidth="490.0" text="Task 1" />
+                              <Button alignment="TOP_LEFT" mnemonicParsing="false" prefHeight="60.0" prefWidth="490.0">
+                                 <graphic>
+                                    <VBox prefHeight="200.0" prefWidth="100.0">
+                                       <children>
+                                          <Label text="Task 1" />
+                                          <Label text="24/10/2020">
+                                             <font>
+                                                <Font name="System Bold" size="8.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </VBox>
+                                 </graphic>
+                              </Button>
                            </children>
                            <VBox.margin>
                               <Insets />

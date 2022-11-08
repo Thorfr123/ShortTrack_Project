@@ -4,3 +4,8 @@
   -fx-text-box-border: red ;
   -fx-focus-color: red ;
 }
+
+.label.deadlineDate {
+    -fx-font-size: 8;
+    -fx-font-weight: bold;
+}

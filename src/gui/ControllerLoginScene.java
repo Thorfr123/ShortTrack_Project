@@ -214,9 +214,6 @@ public class ControllerLoginScene {
 			}
 		}
 		
-		newListBox.getChildren().remove(notificationLabel);
-		newListName.getStyleClass().removeAll(Collections.singleton("error"));
-		
 		List newList = new List(listName);
 		lists.add(newList);
 		
@@ -248,13 +245,10 @@ public class ControllerLoginScene {
 			return;
 		}
 		
-		newTaskBox.getChildren().remove(notificationLabel);
-		newTaskName.getStyleClass().removeAll(Collections.singleton("error"));
-		
 		Task newTask = new Task(taskName);
 		list.addTask(newTask);
 		
-		TaskBar task = new TaskBar(taskName);
+		TaskBar task = new TaskBar(newTask);
 		CheckBox taskCheckBox = task.getCheckBox();
 		Button taskButton = task.getButton();
 		
@@ -295,7 +289,7 @@ public class ControllerLoginScene {
 		
 		ArrayList<Task> tasks = list.getTaskList();
 		for(Task t : tasks) {
-			TaskBar task = new TaskBar(t.getName());
+			TaskBar task = new TaskBar(t);
 			CheckBox taskCheckBox = task.getCheckBox();
 			Button taskButton = task.getButton();
 			
@@ -352,7 +346,9 @@ public class ControllerLoginScene {
 	public void editTask(ActionEvent e) {
 		
 		Button taskButton = (Button)e.getSource();
-		String taskName = taskButton.getText();
+		VBox taskLabels = (VBox)taskButton.getGraphic();
+		Label taskNameLabel = (Label)taskLabels.getChildren().get(0);
+		String taskName = taskNameLabel.getText();
 		
 		Task task = null;
 		ArrayList<Task> tasks = list.getTaskList();
@@ -388,8 +384,10 @@ public class ControllerLoginScene {
 		
 		CheckBox taskCheckBox = (CheckBox)e.getSource();
 		HBox taskBox = (HBox)taskCheckBox.getParent();
-		Button taskButton = (Button)taskBox.getChildren().get(1);
-		String taskName = taskButton.getText();
+		Button taskButton = (Button)taskBox.getChildren().get(1);		
+		VBox taskLabels = (VBox)taskButton.getGraphic();
+		Label taskNameLabel = (Label)taskLabels.getChildren().get(0);
+		String taskName = taskNameLabel.getText();
 
 		Task task = null;
 		ArrayList<Task> tasks = list.getTaskList();
