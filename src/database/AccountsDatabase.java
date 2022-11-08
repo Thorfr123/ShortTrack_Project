@@ -1,12 +1,9 @@
 package database;
 
-import data.*;
-
 import java.sql.*;
 
-import java.util.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import data.Account;
 
 public class AccountsDatabase extends Database{
 	/**
@@ -39,7 +36,7 @@ public class AccountsDatabase extends Database{
 	 */
 	public static boolean checkEmail(String email) throws SQLException{
 		String checkEmail =   "SELECT EXISTS(SELECT 1 FROM projeto.account "
-					+ "WHERE email = '" + email + "');";
+							+ "		WHERE email = '" + email + "');";
 		
 		String rs = executeQuery_SingleColumn(checkEmail);
 		
@@ -54,7 +51,7 @@ public class AccountsDatabase extends Database{
 	 */
 	public static boolean checkUsername(String username) throws SQLException{
 		String checkEmail =   "SELECT EXISTS(SELECT 1 FROM projeto.account "
-					+ "WHERE username = '" + username + "');";
+							+ "		WHERE username = '" + username + "');";
 		
 		String rs = executeQuery_SingleColumn(checkEmail);
 		
@@ -73,13 +70,11 @@ public class AccountsDatabase extends Database{
 	 * @return Either (1) non negative integer if the account is created; (2) -1 if there was a connection error
 	 */
 	public static int createAccount(String username, String password, String email, String first_name, String last_name) throws SQLException{
-		Date registerDate = new Date();
-		SimpleDateFormat DateFor = new SimpleDateFormat("yyyy-MM-dd");
-		String stringDate= DateFor.format(registerDate);
+		LocalDate createdDate = LocalDate.now();
 		
 		String query = "INSERT INTO projeto.account (username, password, email, register_date, first_name, last_name)" +
-						"VALUES ('" + username + "', '" + password + "', '" + email +
-						"', '" + stringDate + "', '" + first_name + "', '" + last_name + "');";
+					   "	VALUES ('" + username + "', '" + password + "', '" + email +
+					   "	', '" + createdDate + "', '" + first_name + "', '" + last_name + "');";
 		
 		return executeUpdate(query);
 	}
@@ -124,7 +119,6 @@ public class AccountsDatabase extends Database{
 			} else {
 				System.out.println("Connection failed");
 			}
-			
 		}
 		
 		return null;
@@ -139,7 +133,7 @@ public class AccountsDatabase extends Database{
 	 */
 	public static String getFirstName(String username, String password) throws SQLException{
 		String query = 	  "SELECT first_name FROM projeto.account "
-						+ "WHERE username='" + username + "' AND password='" + password + "';";
+						+ "		WHERE username='" + username + "' AND password='" + password + "';";
 		
 		return executeQuery_SingleColumn(query);
 	}
@@ -153,7 +147,7 @@ public class AccountsDatabase extends Database{
 	 */
 	public static String getLastName(String username, String password) throws SQLException{
 		String query = 	  "SELECT last_name FROM projeto.account "
-						+ "WHERE username='" + username + "' AND password='" + password + "';";
+						+ "		WHERE username='" + username + "' AND password='" + password + "';";
 		
 		return executeQuery_SingleColumn(query);
 	}
@@ -167,7 +161,7 @@ public class AccountsDatabase extends Database{
 	 */
 	public static String getUsername(String email, String password) throws SQLException{
 		String query = 	  "SELECT username FROM projeto.account "
-						+ "WHERE email='" + email + "' AND password='" + password + "';";
+						+ "		WHERE email='" + email + "' AND password='" + password + "';";
 			
 		return executeQuery_SingleColumn(query);
 	}
@@ -179,19 +173,15 @@ public class AccountsDatabase extends Database{
 	 * @param password String with user's password
 	 * @return Date with user's register date
 	 */
-	public static Date getRegisterDate(String username, String password) throws SQLException{
+	public static LocalDate getRegisterDate(String username, String password) throws SQLException{
 		String query = 	  "SELECT username FROM projeto.account "
-						+ "WHERE username='" + username + "' AND password='" + password + "';";
+						+ "		WHERE username='" + username + "' AND password='" + password + "';";
 		
 		String dateString = executeQuery_SingleColumn(query);
-		Date register_date = null;
+		LocalDate register_date = null;
 		
 		if (dateString != null) {
-			try {
-				register_date = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
+			register_date = LocalDate.parse(dateString);
 		}
 		return register_date;
 	}
@@ -204,9 +194,8 @@ public class AccountsDatabase extends Database{
 	 * @return Either True if it succeeds or False if it fails
 	 */
 	public static boolean changeUserName(String old_username, String new_username) throws SQLException{
-		String query = "UPDATE projeto.account " +
-						"SET username='" + new_username +
-						"'WHERE username='"+ old_username + "'";
+		String query = "UPDATE projeto.account SET username='" + new_username + "'" +
+					   "	WHERE username='"+ old_username + "'";
 		
 		if (executeUpdate(query) > 0)
 			return true;
@@ -222,9 +211,8 @@ public class AccountsDatabase extends Database{
 	 * @return Either True if it succeeds or False if it fails
 	 */
 	public static boolean changePassword(String username, String new_password) throws SQLException{
-		String query = "UPDATE projeto.account " +
-						"SET password='" + new_password +
-						"'WHERE username='"+ username + "'";
+		String query = "UPDATE projeto.account SET password='" + new_password +"'" +
+					   "	WHERE username='"+ username + "'";
 		
 		if (executeUpdate(query) > 0)
 			return true;
