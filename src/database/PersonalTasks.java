@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 
-import data.Account;
 import data.Task;
 import data.User;
 
@@ -39,7 +38,7 @@ public class PersonalTasks extends Database {
 		if (deadlineDate != null)
 			deadlineDateString = "'" + deadlineDate + "'";
 		
-		String query = "INSERT INTO projeto.tasks (email, name, description, created_date, deadline_date, state)\r\n"
+		String query = "INSERT INTO projeto.personal_tasks (email, name, description, created_date, deadline_date, state)\r\n"
 				+ "VALUES (" + email + "," + name + "," + description + "," 
 				+ createdDateString + "," + deadlineDateString + ",'" + state + "')"
 				+ " RETURNING id;";
@@ -53,11 +52,11 @@ public class PersonalTasks extends Database {
 	 * @throws SQLException
 	 */
 	public static void deleteTask(int id) throws SQLException {		
-		executeUpdate("DELETE FROM projeto.tasks WHERE id='" + id + "';");
+		executeUpdate("DELETE FROM projeto.personal_tasks WHERE id='" + id + "';");
 	}
 	
 	public static Task getTask(int id) throws SQLException{
-		String query = "SELECT * FROM projeto.tasks WHERE id='"+id+"';";
+		String query = "SELECT * FROM projeto.personal_tasks WHERE id='" + id + "';";
 		
 		try (Connection connection = dataSource.getConnection()){
 			if (connection != null) {

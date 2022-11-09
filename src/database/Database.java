@@ -38,14 +38,14 @@ public class Database {
 						+ "ALTER TABLE projeto.account ADD COLUMN IF NOT EXISTS last_name character varying(32);"
 						+ "ALTER TABLE ONLY projeto.account DROP CONSTRAINT IF EXISTS account_pkey;"
 						+ "ALTER TABLE ONLY projeto.account ADD CONSTRAINT account_pkey PRIMARY KEY (username, email);"
-						+ "CREATE TABLE IF NOT EXISTS projeto.tasks ();"
-						+ "ALTER TABLE projeto.tasks ADD COLUMN IF NOT EXISTS id integer NOT NULL;"
-						+ "ALTER TABLE projeto.tasks ADD COLUMN IF NOT EXISTS email character varying(64) NOT NULL;"
-						+ "ALTER TABLE projeto.tasks ADD COLUMN IF NOT EXISTS name character varying(32) NOT NULL;"
-						+ "ALTER TABLE projeto.tasks ADD COLUMN IF NOT EXISTS description character varying(128);"
-						+ "ALTER TABLE projeto.tasks ADD COLUMN IF NOT EXISTS created_date date;"
-						+ "ALTER TABLE projeto.tasks ADD COLUMN IF NOT EXISTS deadline_date date;"
-						+ "ALTER TABLE projeto.tasks ADD COLUMN IF NOT EXISTS state boolean NOT NULL;"
+						+ "CREATE TABLE IF NOT EXISTS projeto.personal_tasks ();"
+						+ "ALTER TABLE projeto.personal_tasks ADD COLUMN IF NOT EXISTS id integer NOT NULL;"
+						+ "ALTER TABLE projeto.personal_tasks ADD COLUMN IF NOT EXISTS email character varying(64) NOT NULL;"
+						+ "ALTER TABLE projeto.personal_tasks ADD COLUMN IF NOT EXISTS name character varying(32) NOT NULL;"
+						+ "ALTER TABLE projeto.personal_tasks ADD COLUMN IF NOT EXISTS description character varying(128);"
+						+ "ALTER TABLE projeto.personal_tasks ADD COLUMN IF NOT EXISTS created_date date;"
+						+ "ALTER TABLE projeto.personal_tasks ADD COLUMN IF NOT EXISTS deadline_date date;"
+						+ "ALTER TABLE projeto.personal_tasks ADD COLUMN IF NOT EXISTS state boolean NOT NULL;"
 						+ "CREATE SEQUENCE IF NOT EXISTS projeto.tasks_id_seq\r\n"
 						+ "    AS integer\r\n"
 						+ "    START WITH 1\r\n"
@@ -53,10 +53,10 @@ public class Database {
 						+ "    NO MINVALUE\r\n"
 						+ "    NO MAXVALUE\r\n"
 						+ "    CACHE 1;"
-						+ "ALTER SEQUENCE projeto.tasks_id_seq OWNED BY projeto.tasks.id;"
-						+ "ALTER TABLE ONLY projeto.tasks ALTER COLUMN id SET DEFAULT nextval('projeto.tasks_id_seq'::regclass);"
-						+ "ALTER TABLE ONLY projeto.tasks DROP CONSTRAINT IF EXISTS tasks_pkey;"
-						+ "ALTER TABLE ONLY projeto.tasks ADD CONSTRAINT tasks_pkey PRIMARY KEY (id);";
+						+ "ALTER SEQUENCE projeto.tasks_id_seq OWNED BY projeto.personal_tasks.id;"
+						+ "ALTER TABLE ONLY projeto.personal_tasks ALTER COLUMN id SET DEFAULT nextval('projeto.tasks_id_seq'::regclass);"
+						+ "ALTER TABLE ONLY projeto.personal_tasks DROP CONSTRAINT IF EXISTS tasks_pkey;"
+						+ "ALTER TABLE ONLY projeto.personal_tasks ADD CONSTRAINT tasks_pkey PRIMARY KEY (id);";
 		
 		try {
 			executeUpdate(query);
