@@ -72,7 +72,7 @@ public class Database {
 						+ "ALTER TABLE ONLY projeto.personal_lists ALTER COLUMN id SET DEFAULT nextval('projeto.lists_id_seq'::regclass);"
 						+ "ALTER TABLE ONLY projeto.personal_lists DROP CONSTRAINT IF EXISTS lists_pkey;"
 						+ "ALTER TABLE ONLY projeto.personal_lists ADD CONSTRAINT lists_pkey PRIMARY KEY (id);";
-		System.out.println(query);
+		
 		try {
 			executeUpdate(query);
 		} catch (SQLException e) {
