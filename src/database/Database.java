@@ -60,6 +60,7 @@ public class Database {
 						+ "ALTER TABLE ONLY projeto.personal_tasks ADD CONSTRAINT tasks_pkey PRIMARY KEY (id);"
 						+ "CREATE TABLE IF NOT EXISTS projeto.personal_lists ();"
 						+ "ALTER TABLE projeto.personal_lists ADD COLUMN IF NOT EXISTS id integer NOT NULL;"
+						+ "ALTER TABLE projeto.personal_lists ADD COLUMN IF NOT EXISTS email character varying (64) NOT NULL;"
 						+ "ALTER TABLE projeto.personal_lists ADD COLUMN IF NOT EXISTS name character varying (32) NOT NULL;"
 						+ "CREATE SEQUENCE IF NOT EXISTS projeto.lists_id_seq\r\n"
 						+ "		AS integer\r\n"
