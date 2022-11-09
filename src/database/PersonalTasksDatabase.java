@@ -6,10 +6,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 
+import data.List;
 import data.Task;
 import data.User;
 
-public class PersonalTasks extends Database {
+public class PersonalTasksDatabase extends Database {
 	
 	/**
 	 * Creates a new task in the database and returns the database id
@@ -17,7 +18,7 @@ public class PersonalTasks extends Database {
 	 * @return New id for the task
 	 * @throws SQLException
 	 */
-	public static int createTask(Task task) throws SQLException{
+	public static int createTask(Task task, List lst) throws SQLException{
 		String 		email			= User.getAccount().getEmail(),
 					name			= task.getName(),
 					description 	= task.getDescription(),
@@ -38,8 +39,8 @@ public class PersonalTasks extends Database {
 		if (deadlineDate != null)
 			deadlineDateString = "'" + deadlineDate + "'";
 		
-		String query = "INSERT INTO projeto.personal_tasks (email, name, description, created_date, deadline_date, state)\r\n"
-				+ "VALUES (" + email + "," + name + "," + description + "," 
+		String query = "INSERT INTO projeto.personal_tasks (list_id, email, name, description, created_date, deadline_date, state)\r\n"
+				+ "VALUES ('" + lst.getId() + "'," + email + "," + name + "," + description + "," 
 				+ createdDateString + "," + deadlineDateString + ",'" + state + "')"
 				+ " RETURNING id;";
 		

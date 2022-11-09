@@ -106,11 +106,12 @@
             </Label>
             <HBox alignment="CENTER_LEFT" spacing="80.0">
                <children>
-                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#create" style="-fx-background-color: #4385F4; -fx-text-fill: white;" text="Create" HBox.hgrow="ALWAYS">
+                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cancel" style="-fx-background-color: #4385F4; -fx-text-fill: white;" text="Cancel" HBox.hgrow="ALWAYS">
                      <font>
                         <Font size="14.0" />
-                     </font></Button>
-                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cancel" style="-fx-background-color: #4385F4; -fx-text-fill: white;" text="Cancel" HBox.hgrow="ALWAYS">
+                     </font>
+                  </Button>
+                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#create" style="-fx-background-color: #4385F4; -fx-text-fill: white;" text="Create" HBox.hgrow="ALWAYS">
                      <font>
                         <Font size="14.0" />
                      </font></Button>

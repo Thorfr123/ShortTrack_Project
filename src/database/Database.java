@@ -21,7 +21,7 @@ public class Database {
 			dataSource.setJdbcUrl("jdbc:postgresql://db.fe.up.pt:5432/pswa0502");
 			dataSource.setUser("pswa0502");
 			dataSource.setPassword("jKWlEeAs");
-			dataSource.setCheckoutTimeout(1000);
+			dataSource.setCheckoutTimeout(5000);
 			System.out.println(dataSource.getCheckoutTimeout());
 		} catch (PropertyVetoException e){
 			System.out.println(e);
@@ -40,6 +40,7 @@ public class Database {
 						+ "ALTER TABLE ONLY projeto.account ADD CONSTRAINT account_pkey PRIMARY KEY (username, email);"
 						+ "CREATE TABLE IF NOT EXISTS projeto.personal_tasks ();"
 						+ "ALTER TABLE projeto.personal_tasks ADD COLUMN IF NOT EXISTS id integer NOT NULL;"
+						+ "ALTER TABLE projeto.personal_tasks ADD COLUMN IF NOT EXISTS list_id integer NOT NULL;"
 						+ "ALTER TABLE projeto.personal_tasks ADD COLUMN IF NOT EXISTS email character varying(64) NOT NULL;"
 						+ "ALTER TABLE projeto.personal_tasks ADD COLUMN IF NOT EXISTS name character varying(32) NOT NULL;"
 						+ "ALTER TABLE projeto.personal_tasks ADD COLUMN IF NOT EXISTS description character varying(128);"
@@ -56,8 +57,22 @@ public class Database {
 						+ "ALTER SEQUENCE projeto.tasks_id_seq OWNED BY projeto.personal_tasks.id;"
 						+ "ALTER TABLE ONLY projeto.personal_tasks ALTER COLUMN id SET DEFAULT nextval('projeto.tasks_id_seq'::regclass);"
 						+ "ALTER TABLE ONLY projeto.personal_tasks DROP CONSTRAINT IF EXISTS tasks_pkey;"
-						+ "ALTER TABLE ONLY projeto.personal_tasks ADD CONSTRAINT tasks_pkey PRIMARY KEY (id);";
-		
+						+ "ALTER TABLE ONLY projeto.personal_tasks ADD CONSTRAINT tasks_pkey PRIMARY KEY (id);"
+						+ "CREATE TABLE IF NOT EXISTS projeto.personal_lists ();"
+						+ "ALTER TABLE projeto.personal_lists ADD COLUMN IF NOT EXISTS id integer NOT NULL;"
+						+ "ALTER TABLE projeto.personal_lists ADD COLUMN IF NOT EXISTS name character varying (32) NOT NULL;"
+						+ "CREATE SEQUENCE IF NOT EXISTS projeto.lists_id_seq\r\n"
+						+ "		AS integer\r\n"
+						+ "		START WITH 1\r\n"
+						+ "		INCREMENT BY 1\r\n"
+						+ "		NO MINVALUE\r\n"
+						+ "		NO MAXVALUE\r\n"
+						+ "		CACHE 1;"
+						+ "ALTER SEQUENCE projeto.lists_id_seq OWNED BY projeto.personal_lists.id;"
+						+ "ALTER TABLE ONLY projeto.personal_lists ALTER COLUMN id SET DEFAULT nextval('projeto.lists_id_seq'::regclass);"
+						+ "ALTER TABLE ONLY projeto.personal_lists DROP CONSTRAINT IF EXISTS lists_pkey;"
+						+ "ALTER TABLE ONLY projeto.personal_lists ADD CONSTRAINT lists_pkey PRIMARY KEY (id);";
+		System.out.println(query);
 		try {
 			executeUpdate(query);
 		} catch (SQLException e) {
