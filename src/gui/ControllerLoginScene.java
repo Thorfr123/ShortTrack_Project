@@ -188,7 +188,7 @@ public class ControllerLoginScene {
 		root = FXMLLoader.load(getClass().getResource("SignUpScene.fxml"));
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
 		loadScene();
-		stage.setMinWidth(290.0);
+		//stage.setMinWidth(290.0);
 		stage.show();
 		
 	}
@@ -330,7 +330,7 @@ public class ControllerLoginScene {
 			root = loader.load();
 			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
 			loadScene();
-			stage.setMinWidth(350.0);
+			//stage.setMinWidth(350.0);
 			
 			ControllerEditListScene controller = loader.getController();
 			controller.initData(list, lists);	
@@ -365,7 +365,7 @@ public class ControllerLoginScene {
 			root = loader.load();
 			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
 			loadScene();
-			stage.setMinWidth(350.0);
+			//stage.setMinWidth(350.0);
 			
 			ControllerEditTaskScene controller = loader.getController();
 			controller.initData(task, list);	
@@ -403,10 +403,11 @@ public class ControllerLoginScene {
 	
 	public void loadScene() {
 		
-		scene = new Scene(root);
+		scene = new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight());
 		String css = this.getClass().getResource("application.css").toExternalForm();
 		scene.getStylesheets().add(css);
 		stage.setScene(scene);
+		//System.out.println(stage.getHeight());
 		
 	}
 	

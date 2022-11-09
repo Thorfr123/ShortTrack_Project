@@ -118,11 +118,15 @@ public class ControllerEditListScene {
 	
 	public void loadScene() {
 		
-		scene = new Scene(root);
+		scene = new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight());
 		String css = this.getClass().getResource("application.css").toExternalForm();
 		scene.getStylesheets().add(css);
+		//Double teste1 = stage.getWidth();
+		//Double teste2 = stage.getHeight();
 		stage.setScene(scene);
-		stage.setMinWidth(820.0);
+		//stage.setWidth(teste1);
+		//stage.setHeight(teste2);
+		//stage.setMinWidth(820.0);
 		stage.show();
 		
 	}

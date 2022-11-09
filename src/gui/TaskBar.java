@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 public class TaskBar {
@@ -26,19 +27,12 @@ public class TaskBar {
 			taskDeadlineDate = task.getDeadlineDate().toString();
 		                    
         taskBox = new HBox();
-		taskBox.setPrefHeight(38.0);
-		taskBox.setPrefWidth(600.0);
 		taskBox.setSpacing(10.0);
 		
 		taskCheckBox = new CheckBox();
 		taskCheckBox.setMnemonicParsing(false);
-		taskCheckBox.setPrefHeight(26.0);
-		taskBox.getChildren().add(taskCheckBox);
 		
 		VBox taskBox2 = new VBox();
-		taskBox2.setPrefHeight(200.0);
-		taskBox2.setPrefWidth(100.0);
-		
 		Label Label1 = new Label(taskName);
 		Label Label2 = new Label(taskDeadlineDate);
 		Label2.getStyleClass().add("deadlineDate");
@@ -48,10 +42,12 @@ public class TaskBar {
 		taskButton = new Button();
 		taskButton.setMnemonicParsing(false);
 		taskButton.setAlignment(Pos.TOP_LEFT);
-		taskButton.setPrefHeight(26.0);
-		taskButton.setPrefWidth(495.0);
+		taskButton.setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
 		taskButton.setGraphic(taskBox2);
 		
+		HBox.setHgrow(taskButton,Priority.ALWAYS);
+		
+		taskBox.getChildren().add(taskCheckBox);
 		taskBox.getChildren().add(taskButton);
 		
 	}

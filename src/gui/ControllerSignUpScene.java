@@ -74,11 +74,8 @@ public class ControllerSignUpScene {
 		logoutController.displayEmail(email);
 		
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-		scene = new Scene(root);
-		String css = this.getClass().getResource("application.css").toExternalForm();
-		scene.getStylesheets().add(css);
-		stage.setScene(scene);
-		stage.setMinWidth(820.0);
+		loadScene();
+		//stage.setMinWidth(820.0);
 		stage.show();
 		
 	}
@@ -89,11 +86,8 @@ public class ControllerSignUpScene {
 		
 		root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-		scene = new Scene(root);
-		String css = this.getClass().getResource("application.css").toExternalForm();
-		scene.getStylesheets().add(css);
-		stage.setScene(scene);
-		stage.setMinWidth(820.0);
+		loadScene();
+		//stage.setMinWidth(820.0);
 		stage.show();
 		
 	}
@@ -235,6 +229,20 @@ public class ControllerSignUpScene {
 		}
 		
 		return true;
+	}
+	
+	public void loadScene() {
+		
+		scene = new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight());
+		String css = this.getClass().getResource("application.css").toExternalForm();
+		scene.getStylesheets().add(css);
+		//Double teste1 = stage.getWidth();
+		//Double teste2 = stage.getHeight();
+		stage.setScene(scene);
+		//stage.setWidth(teste1);
+		//stage.setHeight(teste2);
+		stage.show();
+		
 	}
 	
 }

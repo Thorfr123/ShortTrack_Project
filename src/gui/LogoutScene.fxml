@@ -79,7 +79,7 @@
                         <HBox alignment="CENTER_LEFT" prefHeight="38.0" prefWidth="600.0" spacing="10.0">
                            <children>
                               <CheckBox mnemonicParsing="false" />
-                              <Button alignment="TOP_LEFT" mnemonicParsing="false" prefHeight="60.0" prefWidth="490.0">
+                              <Button alignment="TOP_LEFT" mnemonicParsing="false" prefHeight="60.0" prefWidth="490.0" HBox.hgrow="ALWAYS">
                                  <graphic>
                                     <VBox prefHeight="200.0" prefWidth="100.0">
                                        <children>
