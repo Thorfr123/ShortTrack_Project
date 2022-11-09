@@ -10,31 +10,68 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <BorderPane minHeight="500.0" minWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControllerEditTaskScene">
    <center>
-      <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="382.0" prefWidth="240.0" spacing="10.0" BorderPane.alignment="CENTER">
+      <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="5.0" BorderPane.alignment="CENTER">
          <children>
-            <Label prefHeight="18.0" prefWidth="170.0" style="-fx-font-size: 14;" text="Task Name" />
-            <TextField fx:id="taskNameField" prefHeight="26.0" prefWidth="179.0" />
-            <Label style="-fx-font-size: 14;" text="Task due date" />
-            <DatePicker fx:id="dueDateField" editable="false" prefHeight="26.0" prefWidth="240.0" />
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+            <Label text="Task Name">
+               <font>
+                  <Font size="18.0" />
+               </font></Label>
+            <TextField fx:id="taskNameField" prefHeight="26.0" prefWidth="179.0">
+               <VBox.margin>
+                  <Insets bottom="5.0" />
+               </VBox.margin>
+               <font>
+                  <Font size="14.0" />
+               </font></TextField>
+            <Label text="Task due date">
+               <font>
+                  <Font size="18.0" />
+               </font></Label>
+            <HBox alignment="CENTER_LEFT" spacing="100.0">
                <children>
-                  <CheckBox fx:id="checkButton" mnemonicParsing="false" onAction="#changeState" text="To be done" />
-               </children>
-            </HBox>
-            <Label style="-fx-font-size: 14;" text="Description" />
-            <TextArea fx:id="descriptionField" prefHeight="200.0" prefWidth="240.0" />
-            <Label fx:id="notificationLabel" prefHeight="18.0" prefWidth="242.0" text="COLOCAR NOTIFICAÇÃO AQUI" visible="false" />
-            <HBox alignment="CENTER" prefHeight="2.0" prefWidth="230.0" spacing="20.0">
-               <children>
-                  <Button mnemonicParsing="false" onAction="#delete" prefHeight="26.0" prefWidth="80.0" style="-fx-background-color: #ff5400; -fx-text-fill: white;" text="Delete" />
-                  <Button mnemonicParsing="false" onAction="#cancel" prefHeight="26.0" prefWidth="80.0" style="-fx-background-color: #395cab; -fx-text-fill: white;" text="Cancel" />
-                  <Button mnemonicParsing="false" onAction="#save" prefHeight="26.0" prefWidth="80.0" style="-fx-background-color: #80c800; -fx-text-fill: white;" text="Save" />
+                  <DatePicker fx:id="dueDateField" editable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                  <CheckBox fx:id="checkButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#changeState" text="To be done" HBox.hgrow="ALWAYS">
+                     <font>
+                        <Font size="14.0" />
+                     </font></CheckBox>
                </children>
                <VBox.margin>
-                  <Insets top="10.0" />
+                  <Insets bottom="5.0" />
+               </VBox.margin>
+            </HBox>
+            <Label text="Description">
+               <font>
+                  <Font size="18.0" />
+               </font></Label>
+            <TextArea fx:id="descriptionField">
+               <font>
+                  <Font size="14.0" />
+               </font></TextArea>
+            <Label fx:id="notificationLabel" visible="false">
+               <font>
+                  <Font size="14.0" />
+               </font></Label>
+            <HBox alignment="CENTER" prefHeight="2.0" prefWidth="230.0" spacing="40.0">
+               <children>
+                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#delete" style="-fx-background-color: #ff5400; -fx-text-fill: white;" text="Delete" HBox.hgrow="ALWAYS">
+                     <font>
+                        <Font size="14.0" />
+                     </font></Button>
+                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cancel" style="-fx-background-color: #395cab; -fx-text-fill: white;" text="Cancel" HBox.hgrow="ALWAYS">
+                     <font>
+                        <Font size="14.0" />
+                     </font></Button>
+                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#save" style="-fx-background-color: #80c800; -fx-text-fill: white;" text="Save" HBox.hgrow="ALWAYS">
+                     <font>
+                        <Font size="14.0" />
+                     </font></Button>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
                </VBox.margin>
             </HBox>
          </children>

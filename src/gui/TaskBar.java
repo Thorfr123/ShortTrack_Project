@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 
 public class TaskBar {
 	
@@ -31,19 +32,22 @@ public class TaskBar {
 		
 		taskCheckBox = new CheckBox();
 		taskCheckBox.setMnemonicParsing(false);
+		taskCheckBox.setFont(Font.font(14.0));
 		
 		VBox taskBox2 = new VBox();
-		Label Label1 = new Label(taskName);
-		Label Label2 = new Label(taskDeadlineDate);
-		Label2.getStyleClass().add("deadlineDate");
-		taskBox2.getChildren().add(Label1);
-		taskBox2.getChildren().add(Label2);	
+		Label label1 = new Label(taskName);
+		Label label2 = new Label(taskDeadlineDate);
+		label1.setFont(Font.font(14.0));
+		label2.getStyleClass().add("deadlineDate");
+		taskBox2.getChildren().add(label1);
+		taskBox2.getChildren().add(label2);	
 		
 		taskButton = new Button();
 		taskButton.setMnemonicParsing(false);
 		taskButton.setAlignment(Pos.TOP_LEFT);
 		taskButton.setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
 		taskButton.setGraphic(taskBox2);
+		taskButton.setFont(Font.font(14.0));
 		
 		HBox.setHgrow(taskButton,Priority.ALWAYS);
 		
