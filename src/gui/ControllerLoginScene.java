@@ -94,20 +94,8 @@ public class ControllerLoginScene {
 			listsBox.getChildren().add(listButton);
 		}
 		
-		/*
-		 * Verifica se existe a lista selecionada, porque quando se apagava a lista no scene de editList
-		 * a lista não era apagada neste scene.
-		 * Então o nome da lista e o botao continuavam a aparecer
-		 */
 		if (list != null) {
-			List temp = null;
-			for (List lst : lists) {
-				if (lst.getName().equals(list.getName())) {
-					temp = lst;
-					break;
-				}
-			}
-			if (temp == null) {
+			if (!lists.contains(list)) {
 				list = null;
 			}
 		}
@@ -188,7 +176,6 @@ public class ControllerLoginScene {
 		root = FXMLLoader.load(getClass().getResource("SignUpScene.fxml"));
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
 		loadScene();
-		//stage.setMinWidth(290.0);
 		stage.show();
 		
 	}
@@ -407,7 +394,6 @@ public class ControllerLoginScene {
 		String css = this.getClass().getResource("application.css").toExternalForm();
 		scene.getStylesheets().add(css);
 		stage.setScene(scene);
-		//System.out.println(stage.getHeight());
 		
 	}
 	
