@@ -10,11 +10,11 @@ public class Task implements Serializable {
 	private static final long serialVersionUID = -5301804573647411576L;
 	public static int idCount = 1;
 	private String name; 
-	private int ID;
+	private int id;
 	private String description;
 	private LocalDate createdDate;
 	private LocalDate deadline;
-	private boolean completed;
+	private Boolean completed;
 	
 
 	public Task(String name) {
@@ -22,7 +22,16 @@ public class Task implements Serializable {
 		
 		createdDate = LocalDate.now();
 		completed = false;
-		ID = idCount++;
+		id = idCount++;
+	}
+	
+	public Task (String name, int id, String description, LocalDate createdDate, LocalDate deadline, Boolean completed) {
+		this.name = name;
+		this.id = id;
+		this.description = description;
+		this.createdDate = createdDate;
+		this.deadline = deadline;
+		this.completed = completed;
 	}
 	
 	public String getName() {
@@ -30,7 +39,7 @@ public class Task implements Serializable {
 	}
 	
 	public int getID() {
-		return ID;
+		return id;
 	}
 	
 	public String getDescription() {
@@ -54,7 +63,7 @@ public class Task implements Serializable {
 	}
 	
 	public void setID(int newID) {
-		ID = newID;
+		id = newID;
 	}
 	
 	public void setDescription(String newDescription) {
