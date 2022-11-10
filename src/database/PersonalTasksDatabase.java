@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import data.List;
 import data.Task;
@@ -76,6 +77,34 @@ public class PersonalTasksDatabase extends Database {
 					
 					return tsk;
 				}
+			} else {
+				System.out.println("Connection failed");
+			}
+		}
+		return null;
+	}
+	
+	public static ArrayList<Task> getAllTasks (int id_list) throws SQLException {
+		String query = "SELECT * FROM projeto.personal_tasks WHERE list_id = '" + id_list + "';";
+		
+		try (Connection connection = dataSource.getConnection()){
+			if (connection != null) {
+				Statement stmt = connection.createStatement();
+				ResultSet rs = stmt.executeQuery(query);
+				ArrayList<Task> arrayTask = new ArrayList<Task>();
+				while (rs.next()) {
+					Task tsk = new Task(rs.getString("name"));
+					tsk.setID(rs.getInt("id"));
+					tsk.setDescription(rs.getString("description"));
+					//Falta setCreatedDate
+					String str = rs.getString("deadline_date");
+					if (str != null) {
+						tsk.setDeadline(LocalDate.parse(str));
+					}
+					tsk.setCompleted(rs.getBoolean("state"));
+					arrayTask.add(tsk);
+				}
+				return arrayTask;
 			} else {
 				System.out.println("Connection failed");
 			}
