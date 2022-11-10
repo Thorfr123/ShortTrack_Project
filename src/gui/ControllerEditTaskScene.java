@@ -118,6 +118,9 @@ public class ControllerEditTaskScene {
 		
 		removeErrorNotifications();
 		
+		if(task.getName().isBlank())
+			list.removeTask(task);
+		
 		root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
 		loadScene();

@@ -29,6 +29,7 @@ public class TaskBar {
 		                    
         taskBox = new HBox();
 		taskBox.setSpacing(10.0);
+		taskBox.setAlignment(Pos.CENTER_LEFT);
 		
 		taskCheckBox = new CheckBox();
 		taskCheckBox.setMnemonicParsing(false);

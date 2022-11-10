@@ -14,7 +14,7 @@
 
 <BorderPane minHeight="500.0" minWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControllerEditTaskScene">
    <center>
-      <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="5.0" BorderPane.alignment="CENTER">
+      <VBox maxHeight="455.0" maxWidth="556.0" spacing="5.0" BorderPane.alignment="CENTER">
          <children>
             <Label text="Task Name">
                <font>
