@@ -7,7 +7,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import data.List;
-import data.Task;
 import data.User;
 
 public class PersonalListsDatabase extends Database{
@@ -62,27 +61,22 @@ public class PersonalListsDatabase extends Database{
 	 * @throws SQLException
 	 */
 	public static List getList(int id) throws SQLException{
-		String query = "SELECT * FROM projeto.personal_lists WHERE id='" + id + "';";
+		String query = "SELECT name FROM projeto.personal_lists WHERE id='" + id + "';";
 		
 		try (Connection connection = dataSource.getConnection()){
 			if (connection != null) {
 				Statement stmt = connection.createStatement();
 				ResultSet rs = stmt.executeQuery(query);
 				if (rs.next()) {
-					List lst = new List(rs.getString("name"));
-					lst.setId(rs.getInt("id"));
+					String name = rs.getString("name");
 					
-					for (Task tsk : PersonalTasksDatabase.getAllTasks(lst.getId())) {
-						lst.addTask(tsk);
-					}
-					
+					List lst = new List(name, id, PersonalTasksDatabase.getAllTasks(id));
 					return lst;
 				}
 			} else {
 				System.out.println("Connection failed");
 			}
 		}
-		
 		return null;
 	}
 	
@@ -93,19 +87,16 @@ public class PersonalListsDatabase extends Database{
 	 * @throws SQLException
 	 */
 	public static ArrayList<List> getAllLists (String email) throws SQLException {
-		String query_list = "SELECT * FROM projeto.personal_lists WHERE email='" + email + "';";
+		String query = "SELECT * FROM projeto.personal_lists WHERE email='" + email + "';";
 		
 		try (Connection connection = dataSource.getConnection()){
 			if (connection != null) {
 				Statement stmt = connection.createStatement();
-				ResultSet rs = stmt.executeQuery(query_list);
+				ResultSet rs = stmt.executeQuery(query);
 				ArrayList<List> arrayList = new ArrayList<List>();
 				while (rs.next()) {
-					List lst = new List(rs.getString("name"));
-					lst.setId(rs.getInt("id"));
-					for (Task tsk : PersonalTasksDatabase.getAllTasks(lst.getId())) {
-						lst.addTask(tsk);
-					}
+					int lst_id = rs.getInt("id");
+					List lst = new List(rs.getString("name"), lst_id, PersonalTasksDatabase.getAllTasks(lst_id));
 					
 					arrayList.add(lst);
 				}
@@ -124,9 +115,7 @@ public class PersonalListsDatabase extends Database{
 	 * @param new_name
 	 * @throws SQLException
 	 */
-	public static void changeName(int id, String new_name) throws SQLException {
-		String query = "UPDATE projeto.personal_lists SET name='" + new_name + "' WHERE id='" + id + "';";
-		
-		executeUpdate(query);
+	public static void changeName(int id, String new_name) throws SQLException {		
+		executeUpdate("UPDATE projeto.personal_lists SET name='" + new_name + "' WHERE id='" + id + "';");
 	}
 }

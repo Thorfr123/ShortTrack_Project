@@ -14,18 +14,17 @@ public class AccountsDatabase extends Database{
 	 * @return True - Successfully login; False - Otherwise
 	 */
 	public static boolean checkLogin(String user, String password) throws SQLException{
-		String query;
+		String query=null;
 		
 		/* Como não sabemos à partida se o utilizador está a logar com o username ou com o email,
 		   verificamos qual é através da existencia de @ */
 		if (user.contains("@")) {
-			query = "SELECT EXISTS (SELECT 1 FROM projeto.account WHERE email='" + user+"' AND password='"+password+"');";
+			query = "SELECT EXISTS (SELECT 1 FROM projeto.account WHERE email='" + user + "' AND password='" + password + "');";
 		} else {
-			query = "SELECT EXISTS (SELECT 1 FROM projeto.account WHERE username='"+user+"' AND password='"+password+"');";
+			query = "SELECT EXISTS (SELECT 1 FROM projeto.account WHERE username='" + user + "' AND password='" + password + "');";
 		}
 		
-		String rs = executeQuery_SingleColumn(query);
-		return (rs.equals("t"));
+		return (executeQuery_SingleColumn(query).equals("t"));
 	}
 	
 	/**
@@ -35,12 +34,10 @@ public class AccountsDatabase extends Database{
 	 * @return True - There is no email; False - There is already
 	 */
 	public static boolean checkEmail(String email) throws SQLException{
-		String checkEmail =   "SELECT EXISTS(SELECT 1 FROM projeto.account "
+		String query =   "SELECT EXISTS(SELECT 1 FROM projeto.account "
 							+ "		WHERE email = '" + email + "');";
 		
-		String rs = executeQuery_SingleColumn(checkEmail);
-		
-		return rs.equals("f");
+		return executeQuery_SingleColumn(query).equals("f");
 	}
 	
 	/**
@@ -50,12 +47,10 @@ public class AccountsDatabase extends Database{
 	 * @return True - There is no username; False - There is already
 	 */
 	public static boolean checkUsername(String username) throws SQLException{
-		String checkEmail =   "SELECT EXISTS(SELECT 1 FROM projeto.account "
+		String query =   "SELECT EXISTS(SELECT 1 FROM projeto.account "
 							+ "		WHERE username = '" + username + "');";
 		
-		String rs = executeQuery_SingleColumn(checkEmail);
-		
-		return rs.equals("f");
+		return executeQuery_SingleColumn(query).equals("f");
 	}
 	
 	
@@ -104,16 +99,15 @@ public class AccountsDatabase extends Database{
 	public static Account getAccount (String username, String password) throws SQLException{
 		String query = 	  "SELECT email, first_name, last_name FROM projeto.account "
 				+ "WHERE username='" + username + "' AND password='" + password+ "';";
-		String email, firstName, lastName;
 		
 		try (Connection connection = dataSource.getConnection()){
 			if (connection != null) {
 				Statement stmt = connection.createStatement();
 				ResultSet rs = stmt.executeQuery(query);
 				if (rs.next()) {
-					email = rs.getString("email");
-					firstName = rs.getString("first_name");
-					lastName = rs.getString("last_name");
+					String email = rs.getString("email");
+					String firstName = rs.getString("first_name");
+					String lastName = rs.getString("last_name");
 					return new Account(username, password, firstName + " " + lastName, email);
 				}
 			} else {
@@ -133,7 +127,7 @@ public class AccountsDatabase extends Database{
 	 */
 	public static String getFirstName(String username, String password) throws SQLException{
 		String query = 	  "SELECT first_name FROM projeto.account "
-						+ "		WHERE username='" + username + "' AND password='" + password + "';";
+						+ "WHERE username='" + username + "' AND password='" + password + "';";
 		
 		return executeQuery_SingleColumn(query);
 	}
@@ -147,7 +141,7 @@ public class AccountsDatabase extends Database{
 	 */
 	public static String getLastName(String username, String password) throws SQLException{
 		String query = 	  "SELECT last_name FROM projeto.account "
-						+ "		WHERE username='" + username + "' AND password='" + password + "';";
+						+ "WHERE username='" + username + "' AND password='" + password + "';";
 		
 		return executeQuery_SingleColumn(query);
 	}
@@ -161,7 +155,7 @@ public class AccountsDatabase extends Database{
 	 */
 	public static String getUsername(String email, String password) throws SQLException{
 		String query = 	  "SELECT username FROM projeto.account "
-						+ "		WHERE email='" + email + "' AND password='" + password + "';";
+						+ "WHERE email='" + email + "' AND password='" + password + "';";
 			
 		return executeQuery_SingleColumn(query);
 	}
@@ -175,7 +169,7 @@ public class AccountsDatabase extends Database{
 	 */
 	public static LocalDate getRegisterDate(String username, String password) throws SQLException{
 		String query = 	  "SELECT username FROM projeto.account "
-						+ "		WHERE username='" + username + "' AND password='" + password + "';";
+						+ "WHERE username='" + username + "' AND password='" + password + "';";
 		
 		String dateString = executeQuery_SingleColumn(query);
 		LocalDate register_date = null;
@@ -195,7 +189,7 @@ public class AccountsDatabase extends Database{
 	 */
 	public static boolean changeUserName(String old_username, String new_username) throws SQLException{
 		String query = "UPDATE projeto.account SET username='" + new_username + "'" +
-					   "	WHERE username='"+ old_username + "'";
+					   " WHERE username='"+ old_username + "'";
 		
 		if (executeUpdate(query) > 0)
 			return true;
@@ -212,7 +206,7 @@ public class AccountsDatabase extends Database{
 	 */
 	public static boolean changePassword(String username, String new_password) throws SQLException{
 		String query = "UPDATE projeto.account SET password='" + new_password +"'" +
-					   "	WHERE username='"+ username + "'";
+					   " WHERE username='"+ username + "'";
 		
 		if (executeUpdate(query) > 0)
 			return true;
