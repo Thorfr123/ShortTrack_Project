@@ -68,9 +68,10 @@ public class PersonalListsDatabase extends Database{
 		return null;
 	}
 	
-	// TODO
 	public static void changeName(int id, String new_name) throws SQLException {
+		String query = "UPDATE projeto.personal_lists SET name='" + new_name + "' WHERE id='" + id + "';";
 		
+		executeUpdate(query);
 	}
 
 }
