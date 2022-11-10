@@ -250,6 +250,56 @@ public class ControllerLoginScene {
 		
 	}
 	
+	public void addTaskComplete(ActionEvent e) {
+		
+		removeErrorNotifications();
+		
+		String taskName = newTaskName.getText();
+		
+		newTaskName.clear();
+		
+		if(list.checkName(taskName)) {
+			Pane newBox = (Pane)newTaskBox;
+			String notification = "This task already exist!";
+			showNotification(notification,newBox);
+			newTaskName.getStyleClass().add("error");
+			return;
+		}
+		
+		Task newTask = new Task(taskName);
+		list.addTask(newTask);
+		
+		TaskBar task = new TaskBar(newTask);
+		CheckBox taskCheckBox = task.getCheckBox();
+		Button taskButton = task.getButton();
+		
+		taskCheckBox.setOnAction(event -> {
+            checkTask(event);
+        });
+		taskButton.setOnAction(event -> {
+            editTask(event);
+        });
+		
+		tasksBox.getChildren().add(task.getHBox());
+		
+		try {
+			
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditTaskScene.fxml"));
+			root = loader.load();
+			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+			loadScene();
+			
+			ControllerEditTaskScene controller = loader.getController();
+			controller.initData(newTask, list);	
+
+			stage.show();
+			
+		} catch (IOException exeption) {
+			exeption.printStackTrace();
+		}
+		
+	}
+	
 	public void changeList(ActionEvent e) {
 		
 		removeErrorNotifications();
@@ -294,6 +344,7 @@ public class ControllerLoginScene {
 		}
 		
 		addTaskBox.setVisible(true);
+		
 	}
 	
 	public void editList(ActionEvent e) {
@@ -317,7 +368,6 @@ public class ControllerLoginScene {
 			root = loader.load();
 			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
 			loadScene();
-			//stage.setMinWidth(350.0);
 			
 			ControllerEditListScene controller = loader.getController();
 			controller.initData(list, lists);	
@@ -352,7 +402,6 @@ public class ControllerLoginScene {
 			root = loader.load();
 			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
 			loadScene();
-			//stage.setMinWidth(350.0);
 			
 			ControllerEditTaskScene controller = loader.getController();
 			controller.initData(task, list);	
