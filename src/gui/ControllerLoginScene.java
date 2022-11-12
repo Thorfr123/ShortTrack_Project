@@ -86,8 +86,7 @@ public class ControllerLoginScene {
 		}
 		
 		for(List l : lists) {
-			ListButton lst = new ListButton(l.getName());
-			Button listButton = lst.getButton();
+			ListButton listButton = new ListButton(l);
 			listButton.setOnAction(event -> {
 		        changeList(event);
 		    });
@@ -204,8 +203,7 @@ public class ControllerLoginScene {
 		List newList = new List(listName);
 		lists.add(newList);
 		
-		ListButton list = new ListButton(listName);
-		Button listButton = list.getButton();
+		ListButton listButton = new ListButton(newList);
 		listButton.setOnAction(event -> {
 	        changeList(event);
 	    });

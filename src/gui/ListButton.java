@@ -1,24 +1,30 @@
 package gui;
 
+import data.List;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.text.Font;
 
-public class ListButton {
+public class ListButton extends Button{
 	
-	private Button listButton;
+	private List list;
 	
-	public ListButton(String listName) {
+	public ListButton(List list) {
 		
-		listButton = new Button(listName);
-		listButton.setFont(Font.font(14.0));
-		listButton.setMnemonicParsing(false);
-		listButton.setAlignment(Pos.TOP_LEFT);
-		listButton.setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
+		super();
+		
+		setText(list.getName());
+		setFont(Font.font(14.0));
+		setMnemonicParsing(false);
+		setAlignment(Pos.TOP_LEFT);
+		setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
+		
+		this.list = list;
 		
 	}
 	
-	public Button getButton() {
-		return listButton;
+	public List getList() {
+		return list;
 	}
 }
+
