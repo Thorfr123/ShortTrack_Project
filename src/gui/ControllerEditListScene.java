@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import data.List;
+import data.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -33,8 +34,9 @@ public class ControllerEditListScene {
 	private Scene scene;
 	private Parent root;
 	
-	public void initData(List list, ArrayList<List> arrayList) {
-		this.arrayList = arrayList;
+	public void initData(List list) {
+
+		this.arrayList = User.getLists();
 		this.list = list;
 		
 		listNameField.setText(list.getName());
@@ -102,7 +104,7 @@ public class ControllerEditListScene {
 	}
 	
 	
-	public void showNotification(String notification) {
+	private void showNotification(String notification) {
 		
 		notificationLabel.setText(notification);
 		notificationLabel.setTextFill(Color.RED);
@@ -110,14 +112,14 @@ public class ControllerEditListScene {
 		
 	}
 	
-	public void removeErrorNotifications() {
+	private void removeErrorNotifications() {
 		
 		listNameField.getStyleClass().removeAll(Collections.singleton("error")); 
 		notificationLabel.setVisible(false);
 		
 	}
 	
-	public void loadScene() {
+	private void loadScene() {
 		
 		scene = new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight());
 		String css = this.getClass().getResource("application.css").toExternalForm();

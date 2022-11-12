@@ -76,7 +76,7 @@
             </Group>
             <VBox fx:id="searchVerticalBox" alignment="BOTTOM_LEFT" HBox.hgrow="ALWAYS">
                <HBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
                </HBox.margin>
                <children>
                   <Label text="Search your Task">
@@ -86,7 +86,7 @@
                   </Label>
                   <HBox alignment="BOTTOM_CENTER" spacing="20.0">
                      <children>
-                        <TextField fx:id="searchBarField" maxWidth="1.7976931348623157E308" onAction="#searchTask" HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="searchBarField" maxWidth="1.7976931348623157E308" onAction="#searchTask" promptText="Choose one search option" HBox.hgrow="ALWAYS" />
                         <ChoiceBox fx:id="choiceBox" />
                      </children>
                   </HBox>

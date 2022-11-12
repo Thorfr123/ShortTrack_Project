@@ -74,10 +74,8 @@ public class ControllerEditTaskScene {
 
 		if(alert.showAndWait().get() == ButtonType.OK){
 			
-			list.removeTask(task);
-			
-			List list1 = User.getList(task.getParentID());
-			list1.removeTask(task);
+			list.removeTask(task);		
+			User.getList(task.getParentID()).removeTask(task);
 			
 			task = null;
 			
@@ -124,6 +122,7 @@ public class ControllerEditTaskScene {
 		
 		removeErrorNotifications();
 		
+		// Cancel the complete task creation
 		if(task.getName().isBlank())
 			list.removeTask(task);
 		
@@ -142,14 +141,14 @@ public class ControllerEditTaskScene {
 		
 	}
 	
-	public void removeErrorNotifications() {
+	private void removeErrorNotifications() {
 		
 		taskNameField.getStyleClass().removeAll(Collections.singleton("error")); 
 		notificationLabel.setVisible(false);
 		
 	}
 	
-	public void showNotification(String notification) {
+	private void showNotification(String notification) {
 		
 		notificationLabel.setText(notification);
 		notificationLabel.setTextFill(Color.RED);
@@ -157,7 +156,7 @@ public class ControllerEditTaskScene {
 		
 	}
 	
-	public void loadScene() {
+	private void loadScene() {
 		
 		scene = new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight());
 		String css = this.getClass().getResource("application.css").toExternalForm();

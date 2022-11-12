@@ -229,7 +229,7 @@ public class ControllerSignUpScene {
 		return true;
 	}
 	
-	public void loadScene() {
+	private void loadScene() {
 		
 		scene = new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight());
 		String css = this.getClass().getResource("application.css").toExternalForm();

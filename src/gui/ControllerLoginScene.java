@@ -9,9 +9,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -87,6 +84,8 @@ public class ControllerLoginScene {
 	private static ArrayList<List> lists;
 	private static List list;
 	
+	private String[] searchOptions = {"Name", "Created Date", "Deadline"};
+	
 	@FXML
     public void initialize() {
 		
@@ -94,7 +93,7 @@ public class ControllerLoginScene {
 		notificationLabel.setTextFill(Color.RED);
 		
 		choiceBox.setValue("Search by");
-		choiceBox.getItems().addAll("Name","Created Date","Deadline");
+		choiceBox.getItems().addAll(searchOptions);
 		choiceBox.setOnAction(this::searchOption);
 		
 		if(lists == null) {
@@ -326,43 +325,6 @@ public class ControllerLoginScene {
 		
 	}
 	
-	public void loadTasks() {
-		
-		listNameLabel.setText(list.getName());
-		boolean searchMode = list.getName().contains("Searched by: ");
-		
-		HBox searchBox = (HBox)sortByMenu.getParent();
-		if(searchMode)
-			searchBox.getChildren().remove(editListButton);
-		else if(!searchBox.getChildren().contains(editListButton))
-			searchBox.getChildren().add(editListButton);
-		
-		editListButton.setVisible(true);
-		sortByMenu.setVisible(true);
-		
-		ArrayList<Task> tasks = list.getTaskList();
-		for(Task t : tasks) {
-			TaskBar taskBar = new TaskBar(t, searchMode);
-			CheckBox taskCheckBox = taskBar.getCheckBox();
-			Button taskButton = taskBar.getButton();
-			
-			if(t.chekCompleted())
-				taskCheckBox.setSelected(true);
-			
-			taskCheckBox.setOnAction(event -> {
-	            checkTask(event);
-	        });
-			taskButton.setOnAction(event -> {
-	            editTask(event);
-	        });
-			
-			tasksBox.getChildren().add(taskBar);
-		}
-		
-		addTaskBox.setVisible(true);
-		
-	}
-	
 	public void editList(ActionEvent e) {
 		
 		try {
@@ -372,7 +334,7 @@ public class ControllerLoginScene {
 			loadScene();
 			
 			ControllerEditListScene controller = loader.getController();
-			controller.initData(list, lists);	
+			controller.initData(list);	
 
 			stage.show();
 		} catch (IOException exeption) {
@@ -417,37 +379,6 @@ public class ControllerLoginScene {
 		
 	}
 	
-	public void loadScene() {
-		
-		scene = new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight());
-		String css = this.getClass().getResource("application.css").toExternalForm();
-		scene.getStylesheets().add(css);
-		stage.setScene(scene);
-		
-	}
-	
-	public void showNotification(String notification, Pane newBox) {
-		
-		newBox.getChildren().add(notificationLabel);
-		notificationLabel.setText(notification);
-		
-	}
-	
-	public void removeErrorNotifications() {
-		
-		loginBox.getChildren().remove(notificationLabel);
-		newTaskBox.getChildren().remove(notificationLabel);
-		newListBox.getChildren().remove(notificationLabel);
-		searchVerticalBox.getChildren().remove(notificationLabel);
-		
-		usernameField.getStyleClass().removeAll(Collections.singleton("error")); 
-		passwordField.getStyleClass().removeAll(Collections.singleton("error")); 
-		newListName.getStyleClass().removeAll(Collections.singleton("error")); 
-		newTaskName.getStyleClass().removeAll(Collections.singleton("error")); 
-		searchBarField.getStyleClass().removeAll(Collections.singleton("error"));
-		
-	}
-	
 	public void sortTasks(ActionEvent e) {
 		
 		String option = ((MenuItem)e.getSource()).getText();
@@ -468,6 +399,8 @@ public class ControllerLoginScene {
 	
 	public void searchOption(ActionEvent e) {
 		
+		removeErrorNotifications();
+		
 		String text;
 		
 		switch(choiceBox.getValue()) {
@@ -483,7 +416,6 @@ public class ControllerLoginScene {
 		}
 
 		searchBarField.setPromptText(text);
-		searchBarField.clear();
 		
 	}
 	
@@ -522,6 +454,7 @@ public class ControllerLoginScene {
 				Pane newBox = (Pane)searchVerticalBox;
 				String notification = "Please select one option!";
 				showNotification(notification,newBox);
+				searchBarField.getStyleClass().add("error");
 				return;
 		}
 		
@@ -529,6 +462,74 @@ public class ControllerLoginScene {
 		tasksBox.getChildren().clear();
 		loadTasks();
 
+	}
+	
+	private void loadTasks() {
+		
+		listNameLabel.setText(list.getName());
+		boolean searchMode = list.getName().contains("Searched by: ");
+		
+		HBox searchBox = (HBox)sortByMenu.getParent();
+		if(searchMode)
+			searchBox.getChildren().remove(editListButton);
+		else if(!searchBox.getChildren().contains(editListButton))
+			searchBox.getChildren().add(editListButton);
+		
+		editListButton.setVisible(true);
+		sortByMenu.setVisible(true);
+		
+		ArrayList<Task> tasks = list.getTaskList();
+		for(Task t : tasks) {
+			TaskBar taskBar = new TaskBar(t, searchMode);
+			CheckBox taskCheckBox = taskBar.getCheckBox();
+			Button taskButton = taskBar.getButton();
+			
+			if(t.chekCompleted())
+				taskCheckBox.setSelected(true);
+			
+			taskCheckBox.setOnAction(event -> {
+	            checkTask(event);
+	        });
+			taskButton.setOnAction(event -> {
+	            editTask(event);
+	        });
+			
+			tasksBox.getChildren().add(taskBar);
+		}
+		
+		addTaskBox.setVisible(true);
+		
+	}
+	
+	private void loadScene() {
+		
+		scene = new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight());
+		String css = this.getClass().getResource("application.css").toExternalForm();
+		scene.getStylesheets().add(css);
+		stage.setScene(scene);
+		
+	}
+	
+	private void showNotification(String notification, Pane newBox) {
+		
+		newBox.getChildren().add(notificationLabel);
+		notificationLabel.setText(notification);
+		
+	}
+	
+	private void removeErrorNotifications() {
+		
+		loginBox.getChildren().remove(notificationLabel);
+		newTaskBox.getChildren().remove(notificationLabel);
+		newListBox.getChildren().remove(notificationLabel);
+		searchVerticalBox.getChildren().remove(notificationLabel);
+		
+		usernameField.getStyleClass().removeAll(Collections.singleton("error")); 
+		passwordField.getStyleClass().removeAll(Collections.singleton("error")); 
+		newListName.getStyleClass().removeAll(Collections.singleton("error")); 
+		newTaskName.getStyleClass().removeAll(Collections.singleton("error")); 
+		searchBarField.getStyleClass().removeAll(Collections.singleton("error"));
+		
 	}
 	
 	private boolean checkValidDate(String date) {
@@ -544,6 +545,7 @@ public class ControllerLoginScene {
 	    	Pane newBox = (Pane)searchVerticalBox;
 			String notification = "Invalid date format!";
 			showNotification(notification,newBox);
+			searchBarField.getStyleClass().add("error");
 	        return false;
 	    }
 
