@@ -2,6 +2,7 @@ package gui;
 
 import data.List;
 import data.Task;
+import data.User;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -16,14 +17,12 @@ public class TaskBar extends HBox{
 	private Button taskButton;
 	private CheckBox taskCheckBox;
 	private Task task;
-	private List list;
 	
-	public TaskBar(Task task,List list) {
+	public TaskBar(Task task, Boolean searchMode) {
 		
 		super();
 		
 		this.task = task;
-		this.list = list;
 		
 		String taskName = task.getName();
 		String taskDeadlineDate;
@@ -41,12 +40,25 @@ public class TaskBar extends HBox{
 		taskCheckBox.setFont(Font.font(14.0));
 		
 		VBox taskBox2 = new VBox();
+		HBox taskBox3 = new HBox();
 		Label label1 = new Label(taskName);
 		Label label2 = new Label(taskDeadlineDate);
 		label1.setFont(Font.font(14.0));
 		label2.getStyleClass().add("deadlineDate");
+		taskBox3.getChildren().add(label2);
+		HBox.setHgrow(label2,Priority.ALWAYS);
+		label2.setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
+		
+		if(searchMode) {
+			List list = User.getList(task.getParentID());		
+			Label label3 = new Label(list.getName());
+			label3.getStyleClass().add("deadlineDate");
+			taskBox3.getChildren().add(label3);
+			label3.setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
+		}
+
 		taskBox2.getChildren().add(label1);
-		taskBox2.getChildren().add(label2);	
+		taskBox2.getChildren().add(taskBox3);
 		
 		taskButton = new Button();
 		taskButton.setMnemonicParsing(false);
@@ -62,6 +74,12 @@ public class TaskBar extends HBox{
 		
 	}
 	
+	public TaskBar(Task task) {
+		
+		this(task,false);
+		
+	}
+	
 	public Button getButton() {
 		return taskButton;
 	}
@@ -73,8 +91,5 @@ public class TaskBar extends HBox{
 	public Task getTask() {
 		return task;
 	}
-	
-	public List getList() {
-		return list;
-	}
+
 }

@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Group?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
@@ -19,52 +20,80 @@
 
 <BorderPane minHeight="500.0" minWidth="800.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControllerLoginScene">
    <top>
-      <Group BorderPane.alignment="CENTER_LEFT">
+      <HBox BorderPane.alignment="CENTER_LEFT">
          <BorderPane.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </BorderPane.margin>
          <children>
-            <VBox fx:id="loginBox" fillWidth="false" maxWidth="280.0" style="-fx-background-color: #f1f1f1; -fx-background-radius: 10;">
+            <Group>
                <children>
-                  <Label fx:id="usernameLabel" style="-fx-text-fill: #727272;" text="Username or Email:">
-                     <font>
-                        <Font size="18.0" />
-                     </font></Label>
-                  <HBox prefHeight="18.0" prefWidth="800.0" spacing="20.0">
+                  <VBox fx:id="loginBox" fillWidth="false" maxWidth="280.0" style="-fx-background-color: #f1f1f1; -fx-background-radius: 10;">
                      <children>
-                        <TextField fx:id="usernameField" promptText="example@gmail.com">
+                        <Label fx:id="usernameLabel" style="-fx-text-fill: #727272;" text="Username or Email:">
                            <font>
-                              <Font size="14.0" />
-                           </font></TextField>
-                        <Button fx:id="loginButton" mnemonicParsing="false" onAction="#login" prefHeight="27.0" prefWidth="68.0" style="-fx-background-color: #4385F4; -fx-text-fill: white;" text="Login">
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <HBox prefHeight="18.0" prefWidth="800.0" spacing="20.0">
+                           <children>
+                              <TextField fx:id="usernameField" promptText="example@gmail.com">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </TextField>
+                              <Button fx:id="loginButton" mnemonicParsing="false" onAction="#login" prefHeight="27.0" prefWidth="68.0" style="-fx-background-color: #4385F4; -fx-text-fill: white;" text="Login">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <Label fx:id="passwordLabel" style="-fx-text-fill: #727272;" text="Password:">
                            <font>
-                              <Font size="14.0" />
-                           </font></Button>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <HBox prefHeight="22.0" prefWidth="800.0" spacing="20.0">
+                           <children>
+                              <PasswordField fx:id="passwordField" promptText="*******">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </PasswordField>
+                              <Button fx:id="signUpButton" mnemonicParsing="false" onAction="#signUp" prefHeight="27.0" prefWidth="68.0" style="-fx-background-color: #4385F4; -fx-text-fill: white;" text="Sign Up">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Button>
+                           </children>
+                        </HBox>
                      </children>
-                  </HBox>
-                  <Label fx:id="passwordLabel" style="-fx-text-fill: #727272;" text="Password:">
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </VBox>
+               </children>
+            </Group>
+            <VBox fx:id="searchVerticalBox" alignment="BOTTOM_LEFT" HBox.hgrow="ALWAYS">
+               <HBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </HBox.margin>
+               <children>
+                  <Label text="Search your Task">
                      <font>
                         <Font size="18.0" />
-                     </font></Label>
-                  <HBox prefHeight="22.0" prefWidth="800.0" spacing="20.0">
+                     </font>
+                  </Label>
+                  <HBox alignment="BOTTOM_CENTER" spacing="20.0">
                      <children>
-                        <PasswordField fx:id="passwordField" promptText="*******">
-                           <font>
-                              <Font size="14.0" />
-                           </font></PasswordField>
-                        <Button fx:id="signUpButton" mnemonicParsing="false" onAction="#signUp" prefHeight="27.0" prefWidth="68.0" style="-fx-background-color: #4385F4; -fx-text-fill: white;" text="Sign Up">
-                           <font>
-                              <Font size="14.0" />
-                           </font></Button>
+                        <TextField fx:id="searchBarField" maxWidth="1.7976931348623157E308" onAction="#searchTask" HBox.hgrow="ALWAYS" />
+                        <ChoiceBox fx:id="choiceBox" />
                      </children>
                   </HBox>
                </children>
-               <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </padding>
             </VBox>
          </children>
-      </Group>
+      </HBox>
    </top>
    <center>
       <GridPane hgap="5.0" BorderPane.alignment="CENTER">

@@ -41,7 +41,7 @@ public class PersonalTasksDatabase extends Database {
 			deadlineDateString = "'" + deadlineDate + "'";
 		
 		String query = "INSERT INTO projeto.personal_tasks (list_id, email, name, description, created_date, deadline_date, state)\r\n"
-				+ "VALUES ('" + lst.getId() + "'," + email + "," + name + "," + description + "," 
+				+ "VALUES ('" + lst.getID() + "'," + email + "," + name + "," + description + "," 
 				+ createdDateString + "," + deadlineDateString + ",'" + state + "')"
 				+ " RETURNING id;";
 		

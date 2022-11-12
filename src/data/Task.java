@@ -15,17 +15,22 @@ public class Task implements Serializable {
 	private LocalDate createdDate;
 	private LocalDate deadline;
 	private Boolean completed;
-	
+	private int parentID;
 
-	public Task(String name) {
+	public Task(String name, int parentID) {
 		this.name = name;
+		this.parentID = parentID;
 		
 		createdDate = LocalDate.now();
 		completed = false;
 		id = idCount++;
 	}
 	
-	public Task (String name, int id, String description, LocalDate createdDate, LocalDate deadline, Boolean completed) {
+	public Task(String name) {			//need some changes in the database
+		this(name,0);
+	}
+	
+	public Task(String name, int id, String description, LocalDate createdDate, LocalDate deadline, Boolean completed) {
 		this.name = name;
 		this.id = id;
 		this.description = description;
@@ -54,6 +59,10 @@ public class Task implements Serializable {
 		return deadline;
 	}
 	
+	public int getParentID() {
+		return parentID;
+	}
+	
 	public boolean chekCompleted() {
 		return completed;
 	}
@@ -76,6 +85,10 @@ public class Task implements Serializable {
 	
 	public void setCompleted(boolean state) {
 		completed = state;
+	}
+	
+	public void setParentID(int newParentID) {		// Maybe useless
+		parentID = newParentID;
 	}
 	
 }

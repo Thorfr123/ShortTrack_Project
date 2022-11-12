@@ -6,6 +6,7 @@ import java.util.Collections;
 
 import data.List;
 import data.Task;
+import data.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -74,6 +75,11 @@ public class ControllerEditTaskScene {
 		if(alert.showAndWait().get() == ButtonType.OK){
 			
 			list.removeTask(task);
+			
+			List list1 = User.getList(task.getParentID());
+			list1.removeTask(task);
+			
+			task = null;
 			
 			root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 			stage = (Stage)((Node)e.getSource()).getScene().getWindow();

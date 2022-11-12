@@ -102,8 +102,8 @@ public class Main extends Application {
 	private static int calculateListIdCounter() {
 		int idCount = 1;
 		for (List lst : User.getLists()) {
-			if (lst.getId() >= idCount) {
-				idCount = lst.getId() + 1;
+			if (lst.getID() >= idCount) {
+				idCount = lst.getID() + 1;
 			}
 		}
 		return idCount;

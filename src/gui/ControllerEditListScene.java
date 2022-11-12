@@ -53,6 +53,7 @@ public class ControllerEditListScene {
 		if(alert.showAndWait().get() == ButtonType.OK){
 			
 			arrayList.remove(list);
+			list = null;
 			
 			root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 			stage = (Stage)((Node)e.getSource()).getScene().getWindow();

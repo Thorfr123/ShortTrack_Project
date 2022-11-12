@@ -22,4 +22,14 @@ public class User {
 	public static void setLists(ArrayList<List> lists) {
 		User.lists = lists;
 	}
+	
+	public static List getList(int ID) {
+		
+		for(List l: lists) {
+			if(l.getID() == ID)
+				return l;
+		}
+		
+		return null;
+	}
 }

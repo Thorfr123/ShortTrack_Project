@@ -20,7 +20,7 @@ public class List implements Serializable{
 		taskList = new ArrayList<Task>();
 	}
 	
-	public List (String name, int id, ArrayList<Task> taskList) {
+	public List(String name, int id, ArrayList<Task> taskList) {
 		this.name = name;
 		this.id = id;
 		this.taskList = taskList;
@@ -36,7 +36,7 @@ public class List implements Serializable{
 		return false;
 	}
 	
-	public int getId() {
+	public int getID() {
 		return id;
 	}
 	
@@ -44,7 +44,7 @@ public class List implements Serializable{
 		return name;
 	}
 	
-	public void setId(int id) {
+	public void setID(int id) {
 		this.id = id;
 	}
 	
@@ -163,8 +163,13 @@ public class List implements Serializable{
 
 	}
 	
-	public ArrayList<Task> findTaskByName(String name) { 		// return all tasks that include that string
+	// Add all tasks that include that string in taskList
+	public void findTaskByName(String name, ArrayList<Task> tasks) {
 		
-		return null;
+		for(Task t: taskList) {
+			if(t.getName().contains(name))
+				tasks.add(t);
+		}
+
 	}
 }

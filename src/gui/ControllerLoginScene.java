@@ -15,6 +15,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
@@ -45,6 +46,8 @@ public class ControllerLoginScene {
 	private TextField newListName;
 	@FXML 
 	private TextField newTaskName;
+	@FXML
+	private TextField searchBarField;
 	
 	@FXML
 	private Button loginButton;
@@ -54,6 +57,8 @@ public class ControllerLoginScene {
 	private Button editListButton;
 	@FXML
 	private MenuButton sortByMenu;
+	@FXML
+	private ChoiceBox<String> choiceBox;
 	
 	@FXML 
 	private VBox loginBox;
@@ -67,7 +72,9 @@ public class ControllerLoginScene {
 	private VBox tasksBox;
 	@FXML 
 	private HBox addTaskBox;
-	
+	@FXML
+	private VBox searchVerticalBox;
+
 	private Stage stage;
 	private Scene scene;
 	private Parent root;
@@ -81,6 +88,10 @@ public class ControllerLoginScene {
 		notificationLabel = new Label();
 		notificationLabel.setTextFill(Color.RED);
 		
+		choiceBox.setValue("Search by");
+		choiceBox.getItems().addAll("Name","Created Date","Deadline");
+		choiceBox.setOnAction(this::searchOption);
+		
 		if(lists == null) {
 			lists = User.getLists();
 		}
@@ -93,7 +104,7 @@ public class ControllerLoginScene {
 			listsBox.getChildren().add(listButton);
 		}
 		
-		if (list != null) {
+		if (list != null && !list.getName().contains("Searched by: ")) {
 			if (!lists.contains(list)) {
 				list = null;
 			}
@@ -230,10 +241,10 @@ public class ControllerLoginScene {
 			return;
 		}
 		
-		Task newTask = new Task(taskName);
+		Task newTask = new Task(taskName,list.getID());
 		list.addTask(newTask);
 		
-		TaskBar taskBar = new TaskBar(newTask,list);
+		TaskBar taskBar = new TaskBar(newTask);
 		CheckBox taskCheckBox = taskBar.getCheckBox();
 		Button taskButton = taskBar.getButton();
 		
@@ -264,10 +275,10 @@ public class ControllerLoginScene {
 			return;
 		}
 		
-		Task newTask = new Task(taskName);
+		Task newTask = new Task(taskName,list.getID());
 		list.addTask(newTask);
 		
-		TaskBar taskBar = new TaskBar(newTask,list);
+		TaskBar taskBar = new TaskBar(newTask);
 		CheckBox taskCheckBox = taskBar.getCheckBox();
 		Button taskButton = taskBar.getButton();
 		
@@ -311,14 +322,22 @@ public class ControllerLoginScene {
 	}
 	
 	public void loadTasks() {
+		
+		listNameLabel.setText(list.getName());
+		boolean searchMode = list.getName().contains("Searched by: ");
+		
+		HBox searchBox = (HBox)sortByMenu.getParent();
+		if(searchMode)
+			searchBox.getChildren().remove(editListButton);
+		else if(!searchBox.getChildren().contains(editListButton))
+			searchBox.getChildren().add(editListButton);
+		
 		editListButton.setVisible(true);
 		sortByMenu.setVisible(true);
 		
-		listNameLabel.setText(list.getName());
-		
 		ArrayList<Task> tasks = list.getTaskList();
 		for(Task t : tasks) {
-			TaskBar taskBar = new TaskBar(t,list);
+			TaskBar taskBar = new TaskBar(t, searchMode);
 			CheckBox taskCheckBox = taskBar.getCheckBox();
 			Button taskButton = taskBar.getButton();
 			
@@ -414,12 +433,14 @@ public class ControllerLoginScene {
 		loginBox.getChildren().remove(notificationLabel);
 		newTaskBox.getChildren().remove(notificationLabel);
 		newListBox.getChildren().remove(notificationLabel);
+		searchVerticalBox.getChildren().remove(notificationLabel);
 		
 		usernameField.getStyleClass().removeAll(Collections.singleton("error")); 
 		passwordField.getStyleClass().removeAll(Collections.singleton("error")); 
 		newListName.getStyleClass().removeAll(Collections.singleton("error")); 
 		newTaskName.getStyleClass().removeAll(Collections.singleton("error")); 
-
+		searchBarField.getStyleClass().removeAll(Collections.singleton("error"));
+		
 	}
 	
 	public void sortTasks(ActionEvent e) {
@@ -439,4 +460,52 @@ public class ControllerLoginScene {
 		loadTasks();
 		
 	}
+	
+	public void searchOption(ActionEvent e) {
+		
+		String text;
+		
+		switch(choiceBox.getValue()) {
+		  case "Name":
+			  text = "ex: Task 1";
+			  break;
+		  case "Created Date":
+		  case "Deadline":
+			  text = "ex: 2022-11-12";
+			  break;
+		  default:
+			  text = "ex: Task 1";
+		}
+
+		searchBarField.setPromptText(text);
+		searchBarField.clear();
+		
+	}
+	
+	public void searchTask(ActionEvent e) {
+		
+		removeErrorNotifications();
+		
+		String text = searchBarField.getText();
+		
+		if(text.isBlank()) {
+			//searchVerticalBox
+			Pane newBox = (Pane)searchVerticalBox;
+			String notification = "I'm a notification Label!";
+			showNotification(notification,newBox);
+			searchBarField.getStyleClass().add("error");
+			return;
+		}
+		
+		List searchList = new List("Searched by: " + text);
+		for(List l: lists) {
+			l.findTaskByName(text,searchList.getTaskList());			
+		}
+		
+		list = searchList;
+		tasksBox.getChildren().clear();
+		loadTasks();
+
+	}
+		
 }
