@@ -108,10 +108,8 @@ public class ControllerLoginScene {
 			listsBox.getChildren().add(listButton);
 		}
 		
-		if (list != null && !list.getName().contains("Searched by: ")) {
-			if (!lists.contains(list)) {
-				list = null;
-			}
+		if ((list != null) && (list.getID() != 0) && !lists.contains(list)) {
+			list = null;
 		}
 		
 		if(list == null) {
@@ -428,7 +426,7 @@ public class ControllerLoginScene {
 		if(text.isBlank())
 			return;
 		
-		List searchList = new List("Searched by: " + text);
+		List searchList = new List("Searched by: " + text, 0);
 		
 		switch(choiceBox.getValue()) {
 			case "Name":
@@ -467,7 +465,7 @@ public class ControllerLoginScene {
 	private void loadTasks() {
 		
 		listNameLabel.setText(list.getName());
-		boolean searchMode = list.getName().contains("Searched by: ");
+		boolean searchMode = (list.getID() == 0);
 		
 		HBox searchBox = (HBox)sortByMenu.getParent();
 		if(searchMode)

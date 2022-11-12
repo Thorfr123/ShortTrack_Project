@@ -60,7 +60,7 @@ public class ControllerEditTaskScene {
 			checkButton.setSelected(false);
 			checkButton.setText("To be started");
 		}
-
+		
     }
 	
 	public void delete(ActionEvent e) throws IOException {
@@ -74,8 +74,10 @@ public class ControllerEditTaskScene {
 
 		if(alert.showAndWait().get() == ButtonType.OK){
 			
-			list.removeTask(task);		
-			User.getList(task.getParentID()).removeTask(task);
+			list.removeTask(task);
+			
+			if(list.getID() == 0)
+				User.getList(task.getParentID()).removeTask(task);
 			
 			task = null;
 			

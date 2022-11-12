@@ -21,6 +21,13 @@ public class List implements Serializable{
 		taskList = new ArrayList<Task>();
 	}
 	
+	public List(String name, int id) {
+		this.name = name;
+		this.id = id;
+		
+		taskList = new ArrayList<Task>();
+	}
+	
 	public List(String name, int id, ArrayList<Task> taskList) {
 		this.name = name;
 		this.id = id;

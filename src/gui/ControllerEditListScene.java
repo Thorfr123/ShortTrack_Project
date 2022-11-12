@@ -40,7 +40,7 @@ public class ControllerEditListScene {
 		this.list = list;
 		
 		listNameField.setText(list.getName());
-
+		
     }
 	
 	public void delete(ActionEvent e) throws IOException {
