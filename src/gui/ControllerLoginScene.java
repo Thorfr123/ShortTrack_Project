@@ -233,9 +233,9 @@ public class ControllerLoginScene {
 		Task newTask = new Task(taskName);
 		list.addTask(newTask);
 		
-		TaskBar task = new TaskBar(newTask);
-		CheckBox taskCheckBox = task.getCheckBox();
-		Button taskButton = task.getButton();
+		TaskBar taskBar = new TaskBar(newTask,list);
+		CheckBox taskCheckBox = taskBar.getCheckBox();
+		Button taskButton = taskBar.getButton();
 		
 		taskCheckBox.setOnAction(event -> {
             checkTask(event);
@@ -244,7 +244,7 @@ public class ControllerLoginScene {
             editTask(event);
         });
 		
-		tasksBox.getChildren().add(task.getHBox());
+		tasksBox.getChildren().add(taskBar);
 		
 	}
 	
@@ -267,9 +267,9 @@ public class ControllerLoginScene {
 		Task newTask = new Task(taskName);
 		list.addTask(newTask);
 		
-		TaskBar task = new TaskBar(newTask);
-		CheckBox taskCheckBox = task.getCheckBox();
-		Button taskButton = task.getButton();
+		TaskBar taskBar = new TaskBar(newTask,list);
+		CheckBox taskCheckBox = taskBar.getCheckBox();
+		Button taskButton = taskBar.getButton();
 		
 		taskCheckBox.setOnAction(event -> {
             checkTask(event);
@@ -278,7 +278,7 @@ public class ControllerLoginScene {
             editTask(event);
         });
 		
-		tasksBox.getChildren().add(task.getHBox());
+		tasksBox.getChildren().add(taskBar);
 		
 		try {
 			
@@ -302,18 +302,12 @@ public class ControllerLoginScene {
 		
 		removeErrorNotifications();
 		
-		Button listButton = (Button)e.getSource();
-		String listName = listButton.getText();
-		
-		for(List l : lists) {
-			if(l.getName().equals(listName)) {
-				list = l;
-				break;
-			}
-		}
+		ListButton listButton = (ListButton)e.getSource();
+		list = listButton.getList();
 		
 		tasksBox.getChildren().clear();
 		loadTasks();
+		
 	}
 	
 	public void loadTasks() {
@@ -324,9 +318,9 @@ public class ControllerLoginScene {
 		
 		ArrayList<Task> tasks = list.getTaskList();
 		for(Task t : tasks) {
-			TaskBar task = new TaskBar(t);
-			CheckBox taskCheckBox = task.getCheckBox();
-			Button taskButton = task.getButton();
+			TaskBar taskBar = new TaskBar(t,list);
+			CheckBox taskCheckBox = taskBar.getCheckBox();
+			Button taskButton = taskBar.getButton();
 			
 			if(t.chekCompleted())
 				taskCheckBox.setSelected(true);
@@ -338,7 +332,7 @@ public class ControllerLoginScene {
 	            editTask(event);
 	        });
 			
-			tasksBox.getChildren().add(task.getHBox());
+			tasksBox.getChildren().add(taskBar);
 		}
 		
 		addTaskBox.setVisible(true);
@@ -346,20 +340,6 @@ public class ControllerLoginScene {
 	}
 	
 	public void editList(ActionEvent e) {
-		
-		String listName = listNameLabel.getText();
-
-		List list = null;
-		for (List l : lists) {
-			if (l.getName().equals(listName)) {
-				list = l;
-				break;
-			}
-		}
-		
-		if (list == null) {											//Maybe useless
-			return;
-		}
 		
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditListScene.fxml"));
@@ -371,28 +351,17 @@ public class ControllerLoginScene {
 			controller.initData(list, lists);	
 
 			stage.show();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		
+		} catch (IOException exeption) {
+			exeption.printStackTrace();
+		}	
 		
 	}
 	
 	public void editTask(ActionEvent e) {
 		
 		Button taskButton = (Button)e.getSource();
-		VBox taskLabels = (VBox)taskButton.getGraphic();
-		Label taskNameLabel = (Label)taskLabels.getChildren().get(0);
-		String taskName = taskNameLabel.getText();
-		
-		Task task = null;
-		ArrayList<Task> tasks = list.getTaskList();
-		for(Task t : tasks) {
-			if(t.getName().equals(taskName)) {
-				task = t;
-				break;
-			}
-		}
+		TaskBar taskBar = (TaskBar)taskButton.getParent();
+		Task task = taskBar.getTask();
 		
 		try {
 			
@@ -417,22 +386,11 @@ public class ControllerLoginScene {
 		removeErrorNotifications();
 		
 		CheckBox taskCheckBox = (CheckBox)e.getSource();
-		HBox taskBox = (HBox)taskCheckBox.getParent();
-		Button taskButton = (Button)taskBox.getChildren().get(1);		
-		VBox taskLabels = (VBox)taskButton.getGraphic();
-		Label taskNameLabel = (Label)taskLabels.getChildren().get(0);
-		String taskName = taskNameLabel.getText();
-
-		Task task = null;
-		ArrayList<Task> tasks = list.getTaskList();
-		for(Task t : tasks) {
-			if(t.getName().equals(taskName)) {
-				task = t;
-				break;
-			}
-		}
+		TaskBar taskBar = (TaskBar)taskCheckBox.getParent();
+		Task task = taskBar.getTask();
 		
 		task.setCompleted(taskCheckBox.isSelected());
+		
 	}
 	
 	public void loadScene() {
@@ -479,5 +437,6 @@ public class ControllerLoginScene {
 		
 		tasksBox.getChildren().clear();
 		loadTasks();
+		
 	}
 }

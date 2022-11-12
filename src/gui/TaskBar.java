@@ -1,5 +1,6 @@
 package gui;
 
+import data.List;
 import data.Task;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -10,14 +11,19 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
-public class TaskBar {
+public class TaskBar extends HBox{
 	
-	private HBox taskBox;
 	private Button taskButton;
 	private CheckBox taskCheckBox;
+	private Task task;
+	private List list;
 	
-	
-	public TaskBar(Task task) {
+	public TaskBar(Task task,List list) {
+		
+		super();
+		
+		this.task = task;
+		this.list = list;
 		
 		String taskName = task.getName();
 		String taskDeadlineDate;
@@ -27,9 +33,8 @@ public class TaskBar {
 		else
 			taskDeadlineDate = task.getDeadlineDate().toString();
 		                    
-        taskBox = new HBox();
-		taskBox.setSpacing(10.0);
-		taskBox.setAlignment(Pos.CENTER_LEFT);
+		setSpacing(10.0);
+		setAlignment(Pos.CENTER_LEFT);
 		
 		taskCheckBox = new CheckBox();
 		taskCheckBox.setMnemonicParsing(false);
@@ -52,8 +57,8 @@ public class TaskBar {
 		
 		HBox.setHgrow(taskButton,Priority.ALWAYS);
 		
-		taskBox.getChildren().add(taskCheckBox);
-		taskBox.getChildren().add(taskButton);
+		getChildren().add(taskCheckBox);
+		getChildren().add(taskButton);
 		
 	}
 	
@@ -65,7 +70,11 @@ public class TaskBar {
 		return taskCheckBox;
 	}
 	
-	public HBox getHBox() {
-		return taskBox;
+	public Task getTask() {
+		return task;
+	}
+	
+	public List getList() {
+		return list;
 	}
 }
