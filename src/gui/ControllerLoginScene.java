@@ -4,8 +4,13 @@ import database.*;
 import data.*;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -488,23 +493,59 @@ public class ControllerLoginScene {
 		
 		String text = searchBarField.getText();
 		
-		if(text.isBlank()) {
-			//searchVerticalBox
-			Pane newBox = (Pane)searchVerticalBox;
-			String notification = "I'm a notification Label!";
-			showNotification(notification,newBox);
-			searchBarField.getStyleClass().add("error");
+		if(text.isBlank())
 			return;
-		}
 		
 		List searchList = new List("Searched by: " + text);
-		for(List l: lists) {
-			l.findTaskByName(text,searchList.getTaskList());			
+		
+		switch(choiceBox.getValue()) {
+			case "Name":
+				for(List l: lists) {
+					l.findTaskByName(text,searchList.getTaskList());			
+				}
+				break;
+			case "Created Date":
+				if(!checkValidDate(text))
+					return;
+				for(List l: lists) {
+					l.findTaskByCreatedDate(text,searchList.getTaskList());			
+				}
+				break;
+			case "Deadline":
+				if(!checkValidDate(text))
+					return;
+				for(List l: lists) {
+					l.findTaskByDeadline(text,searchList.getTaskList());			
+				}
+				break;	
+			default:
+				Pane newBox = (Pane)searchVerticalBox;
+				String notification = "Please select one option!";
+				showNotification(notification,newBox);
+				return;
 		}
 		
 		list = searchList;
 		tasksBox.getChildren().clear();
 		loadTasks();
+
+	}
+	
+	private boolean checkValidDate(String date) {
+		
+		String DATE_FORMAT = "yyy-MM-dd";
+
+		try {
+	        DateFormat df = new SimpleDateFormat(DATE_FORMAT);
+	        df.setLenient(false);
+	        df.parse(date);
+	        return true;
+	    } catch (ParseException e) {
+	    	Pane newBox = (Pane)searchVerticalBox;
+			String notification = "Invalid date format!";
+			showNotification(notification,newBox);
+	        return false;
+	    }
 
 	}
 		

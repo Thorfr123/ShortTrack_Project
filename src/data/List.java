@@ -1,6 +1,7 @@
 package data;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class List implements Serializable{
@@ -164,10 +165,38 @@ public class List implements Serializable{
 	}
 	
 	// Add all tasks that include that string in taskList
-	public void findTaskByName(String name, ArrayList<Task> tasks) {
+	public void findTaskByName(String searchName, ArrayList<Task> tasks) {
 		
 		for(Task t: taskList) {
-			if(t.getName().contains(name))
+			if(t.getName().contains(searchName))
+				tasks.add(t);
+		}
+
+	}
+	
+	public void findTaskByCreatedDate(String searchCreatedDate, ArrayList<Task> tasks) {
+		
+		for(Task t: taskList) {
+			
+			String createdDate = t.getCreatedDate().toString();
+			if(createdDate.contains(searchCreatedDate))
+				tasks.add(t);
+		}
+
+	}
+	
+	public void findTaskByDeadline(String searchDeadline, ArrayList<Task> tasks) {
+		
+		String deadline;
+		for(Task t: taskList) {
+			
+			LocalDate deadlineDate = t.getDeadlineDate();
+			if(deadlineDate == null)
+				deadline = "";
+			else
+				deadline = deadlineDate.toString();
+			
+			if(deadline.contains(searchDeadline))
 				tasks.add(t);
 		}
 
