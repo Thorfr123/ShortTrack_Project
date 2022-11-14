@@ -34,7 +34,7 @@ public class ControllerEditTaskScene {
 	private DatePicker dueDateField;
 	@FXML
 	private Label notificationLabel;
-	
+
 	private Task task;
 	private List list;
 	
@@ -140,6 +140,12 @@ public class ControllerEditTaskScene {
 			checkButton.setText("Completed");
 		else
 			checkButton.setText("To be started");
+		
+	}
+	
+	public void clearDeadline(ActionEvent e) {
+		
+		dueDateField.setValue(null);
 		
 	}
 	

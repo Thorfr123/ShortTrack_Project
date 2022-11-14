@@ -31,10 +31,11 @@
                <font>
                   <Font size="18.0" />
                </font></Label>
-            <HBox alignment="CENTER_LEFT" spacing="100.0">
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
                <children>
                   <DatePicker fx:id="dueDateField" editable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-                  <CheckBox fx:id="checkButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#changeState" text="To be done" HBox.hgrow="ALWAYS">
+                  <Button mnemonicParsing="false" onAction="#clearDeadline" text="Clear" />
+                  <CheckBox fx:id="checkButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#changeState" text="To be done" HBox.hgrow="ALWAYS">
                      <font>
                         <Font size="14.0" />
                      </font></CheckBox>
