@@ -2,6 +2,9 @@ package data;
 
 import java.time.LocalDate;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class Task implements Serializable {
 	/**
@@ -89,6 +92,23 @@ public class Task implements Serializable {
 	
 	public void setParentID(int newParentID) {		// Maybe useless
 		parentID = newParentID;
+	}
+	
+	public static String checkValidDate(String date) {
+		
+		String DATE_FORMAT = "yyy-MM-dd";
+		String errorDescription;
+		try {
+			DateFormat df = new SimpleDateFormat(DATE_FORMAT);
+	        df.setLenient(false);
+	        df.parse(date);
+	        return null;
+	    } 
+		catch (ParseException e) {
+			errorDescription = "Invalid date format!";
+			return errorDescription;
+		}
+		
 	}
 	
 }

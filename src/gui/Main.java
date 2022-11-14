@@ -17,6 +17,8 @@ import javafx.scene.image.Image;
 
 public class Main extends Application {
 	
+	private static String css;
+	
 	@Override
 	public void start(Stage primaryStage) {
 		
@@ -59,7 +61,7 @@ public class Main extends Application {
 			
 			Parent root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 			Scene scene = new Scene(root);
-			String css = this.getClass().getResource("application.css").toExternalForm();
+			css = this.getClass().getResource("application.css").toExternalForm();
 			scene.getStylesheets().add(css);
 
 			primaryStage.setScene(scene);
@@ -107,5 +109,13 @@ public class Main extends Application {
 			}
 		}
 		return idCount;
+	}
+	
+	public static void loadScene(Parent root, Stage stage) {
+		
+		Scene scene = new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight());
+		scene.getStylesheets().add(css);
+		stage.setScene(scene);
+		
 	}
 }

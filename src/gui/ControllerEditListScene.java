@@ -3,7 +3,6 @@ package gui;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-
 import data.List;
 import data.User;
 import javafx.event.ActionEvent;
@@ -11,7 +10,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
@@ -31,7 +29,6 @@ public class ControllerEditListScene {
 	private List list;
 	
 	private Stage stage;
-	private Scene scene;
 	private Parent root;
 	
 	public void initData(List list) {
@@ -59,7 +56,8 @@ public class ControllerEditListScene {
 			
 			root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-			loadScene();
+			Main.loadScene(root,stage);
+			stage.show();
 			
 		}
 		
@@ -89,7 +87,8 @@ public class ControllerEditListScene {
 		
 		root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-		loadScene();
+		Main.loadScene(root,stage);
+		stage.show();
 		
 	}
 	
@@ -99,7 +98,8 @@ public class ControllerEditListScene {
 		
 		root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-		loadScene();
+		Main.loadScene(root,stage);
+		stage.show();
 		
 	}
 	
@@ -116,16 +116,6 @@ public class ControllerEditListScene {
 		
 		listNameField.getStyleClass().removeAll(Collections.singleton("error")); 
 		notificationLabel.setVisible(false);
-		
-	}
-	
-	private void loadScene() {
-		
-		scene = new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight());
-		String css = this.getClass().getResource("application.css").toExternalForm();
-		scene.getStylesheets().add(css);
-		stage.setScene(scene);
-		stage.show();
 		
 	}
 	

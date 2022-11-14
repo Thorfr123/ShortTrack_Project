@@ -4,9 +4,6 @@ import database.*;
 import data.*;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import javafx.event.ActionEvent;
@@ -14,7 +11,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
@@ -78,13 +74,14 @@ public class ControllerLoginScene {
 	private VBox searchVerticalBox;
 
 	private Stage stage;
-	private Scene scene;
 	private Parent root;
 	
 	private static ArrayList<List> lists;
 	private static List list;
 	
 	private String[] searchOptions = {"Name", "Created Date", "Deadline"};
+	
+	private int SEARCH_LIST_ID = 0;
 	
 	@FXML
     public void initialize() {
@@ -108,7 +105,7 @@ public class ControllerLoginScene {
 			listsBox.getChildren().add(listButton);
 		}
 		
-		if ((list != null) && (list.getID() != 0) && !lists.contains(list)) {
+		if ((list != null) && (list.getID() != SEARCH_LIST_ID) && !lists.contains(list)) {
 			list = null;
 		}
 		
@@ -149,7 +146,7 @@ public class ControllerLoginScene {
 				
 				return;
 			}
-		} catch (SQLException e1) {
+		} catch (SQLException exeption) {
 			Pane newBox = (Pane)loginBox;
 			String notification = "Error! Please, check your connection";
 			showNotification(notification,newBox);
@@ -160,7 +157,7 @@ public class ControllerLoginScene {
 		Account account = null;
 		try {
 			account = AccountsDatabase.getAccount(username, password);
-		} catch (SQLException e1) {
+		} catch (SQLException exeption) {
 			Pane newBox = (Pane)loginBox;
 			String notification = "Error! Please, check your connection";
 			showNotification(notification,newBox);
@@ -178,7 +175,7 @@ public class ControllerLoginScene {
 		logoutController.displayEmail(email);
 		
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-		loadScene();
+		Main.loadScene(root,stage);
 		stage.show();
 		
 	}
@@ -187,7 +184,7 @@ public class ControllerLoginScene {
 		
 		root = FXMLLoader.load(getClass().getResource("SignUpScene.fxml"));
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-		loadScene();
+		Main.loadScene(root,stage);
 		stage.show();
 		
 	}
@@ -298,7 +295,7 @@ public class ControllerLoginScene {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditTaskScene.fxml"));
 			root = loader.load();
 			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-			loadScene();
+			Main.loadScene(root,stage);
 			
 			ControllerEditTaskScene controller = loader.getController();
 			controller.initData(newTask, list);	
@@ -329,7 +326,7 @@ public class ControllerLoginScene {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditListScene.fxml"));
 			root = loader.load();
 			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-			loadScene();
+			Main.loadScene(root,stage);
 			
 			ControllerEditListScene controller = loader.getController();
 			controller.initData(list);	
@@ -352,7 +349,7 @@ public class ControllerLoginScene {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditTaskScene.fxml"));
 			root = loader.load();
 			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-			loadScene();
+			Main.loadScene(root,stage);
 			
 			ControllerEditTaskScene controller = loader.getController();
 			controller.initData(task, list);	
@@ -428,6 +425,8 @@ public class ControllerLoginScene {
 		
 		List searchList = new List("Searched by: " + text, 0);
 		
+		String errorNotification;
+		Pane newBox = (Pane)searchVerticalBox;
 		switch(choiceBox.getValue()) {
 			case "Name":
 				for(List l: lists) {
@@ -435,21 +434,26 @@ public class ControllerLoginScene {
 				}
 				break;
 			case "Created Date":
-				if(!checkValidDate(text))
+				if((errorNotification = Task.checkValidDate(text)) != null) {
+					showNotification(errorNotification,newBox);
+					searchBarField.getStyleClass().add("error");
 					return;
+				}
 				for(List l: lists) {
 					l.findTaskByCreatedDate(text,searchList.getTaskList());			
 				}
 				break;
 			case "Deadline":
-				if(!checkValidDate(text))
+				if((errorNotification = Task.checkValidDate(text)) != null) {
+					showNotification(errorNotification,newBox);
+					searchBarField.getStyleClass().add("error");
 					return;
+				}
 				for(List l: lists) {
 					l.findTaskByDeadline(text,searchList.getTaskList());			
 				}
 				break;	
 			default:
-				Pane newBox = (Pane)searchVerticalBox;
 				String notification = "Please select one option!";
 				showNotification(notification,newBox);
 				searchBarField.getStyleClass().add("error");
@@ -465,8 +469,15 @@ public class ControllerLoginScene {
 	private void loadTasks() {
 		
 		listNameLabel.setText(list.getName());
-		boolean searchMode = (list.getID() == 0);
+		boolean searchMode = (list.getID() == SEARCH_LIST_ID);
 		
+		if(searchMode)
+			newTaskBox.getChildren().remove(addTaskBox);
+		else if(!newTaskBox.getChildren().contains(addTaskBox))
+			newTaskBox.getChildren().add(addTaskBox);
+
+		addTaskBox.setVisible(true);
+
 		HBox searchBox = (HBox)sortByMenu.getParent();
 		if(searchMode)
 			searchBox.getChildren().remove(editListButton);
@@ -495,23 +506,13 @@ public class ControllerLoginScene {
 			tasksBox.getChildren().add(taskBar);
 		}
 		
-		addTaskBox.setVisible(true);
-		
-	}
-	
-	private void loadScene() {
-		
-		scene = new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight());
-		String css = this.getClass().getResource("application.css").toExternalForm();
-		scene.getStylesheets().add(css);
-		stage.setScene(scene);
-		
 	}
 	
 	private void showNotification(String notification, Pane newBox) {
 		
 		newBox.getChildren().add(notificationLabel);
 		notificationLabel.setText(notification);
+		System.out.println(notification);
 		
 	}
 	
@@ -528,25 +529,6 @@ public class ControllerLoginScene {
 		newTaskName.getStyleClass().removeAll(Collections.singleton("error")); 
 		searchBarField.getStyleClass().removeAll(Collections.singleton("error"));
 		
-	}
-	
-	private boolean checkValidDate(String date) {
-		
-		String DATE_FORMAT = "yyy-MM-dd";
-
-		try {
-	        DateFormat df = new SimpleDateFormat(DATE_FORMAT);
-	        df.setLenient(false);
-	        df.parse(date);
-	        return true;
-	    } catch (ParseException e) {
-	    	Pane newBox = (Pane)searchVerticalBox;
-			String notification = "Invalid date format!";
-			showNotification(notification,newBox);
-			searchBarField.getStyleClass().add("error");
-	        return false;
-	    }
-
 	}
 		
 }

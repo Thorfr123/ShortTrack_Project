@@ -3,7 +3,6 @@ package gui;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Collections;
-
 import data.List;
 import data.Task;
 import data.User;
@@ -12,7 +11,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
@@ -41,7 +39,6 @@ public class ControllerEditTaskScene {
 	private List list;
 	
 	private Stage stage;
-	private Scene scene;
 	private Parent root;
 	
 	public void initData(Task task, List list) {
@@ -83,7 +80,8 @@ public class ControllerEditTaskScene {
 			
 			root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-			loadScene();
+			Main.loadScene(root,stage);
+			stage.show();
 			
 		}
 		
@@ -116,7 +114,8 @@ public class ControllerEditTaskScene {
 		
 		root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-		loadScene();
+		Main.loadScene(root,stage);
+		stage.show();
 		
 	}
 	
@@ -130,7 +129,8 @@ public class ControllerEditTaskScene {
 		
 		root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-		loadScene();
+		Main.loadScene(root,stage);
+		stage.show();
 		
 	}
 	
@@ -155,16 +155,6 @@ public class ControllerEditTaskScene {
 		notificationLabel.setText(notification);
 		notificationLabel.setTextFill(Color.RED);
 		notificationLabel.setVisible(true);
-		
-	}
-	
-	private void loadScene() {
-		
-		scene = new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight());
-		String css = this.getClass().getResource("application.css").toExternalForm();
-		scene.getStylesheets().add(css);
-		stage.setScene(scene);
-		stage.show();
 		
 	}
 	

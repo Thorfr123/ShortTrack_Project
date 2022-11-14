@@ -3,16 +3,13 @@ package gui;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collections;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import data.Account;
 import database.AccountsDatabase;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -37,7 +34,6 @@ public class ControllerSignUpScene {
 	private Label notificationLabel;
 	
 	private Stage stage;
-	private Scene scene;
 	private Parent root;
 
 	public void create(ActionEvent e) throws IOException {
@@ -74,7 +70,7 @@ public class ControllerSignUpScene {
 		logoutController.displayEmail(email);
 		
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-		loadScene();
+		Main.loadScene(root,stage);
 		stage.show();
 		
 	}
@@ -85,7 +81,7 @@ public class ControllerSignUpScene {
 		
 		root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-		loadScene();
+		Main.loadScene(root,stage);
 		stage.show();
 		
 	}
@@ -117,11 +113,37 @@ public class ControllerSignUpScene {
 			return false;
 		}
 		
-		if(!checkName(firstName) || !checkName(lastName) || !checkEmail(email) || !checkUsername(username) 
-				|| !checkPassword(password,repeatPassword) || !checkDatabase(email,username) ) {
+		String errorNotification;
+		if((errorNotification = Account.checkValidName(firstName)) != null) {
+			showNotification(errorNotification);
+			firstNameField.getStyleClass().add("error");
 			return false;
 		}
-		
+		else if((errorNotification = Account.checkValidName(lastName)) != null) {
+			showNotification(errorNotification);
+			lastNameField.getStyleClass().add("error");
+			return false;
+		}
+		else if((errorNotification = Account.checkValidEmail(email)) != null) {
+			showNotification(errorNotification);
+			emailField.getStyleClass().add("error");
+			return false;
+		}
+		else if((errorNotification = Account.checkValidName(username)) != null) {
+			showNotification(errorNotification);
+			usernameField.getStyleClass().add("error");
+			return false;
+		}
+		else if((errorNotification = Account.checkValidPassword(password, repeatPassword)) != null) {
+			showNotification(errorNotification);
+			passwordField.getStyleClass().add("error");
+			repeatPasswordField.getStyleClass().add("error");
+			return false;
+		}
+		else if(!checkDatabase(email,username)) {
+			return false;
+		}
+
 		return true;
 	}
 	
@@ -145,69 +167,6 @@ public class ControllerSignUpScene {
 		
 	}
 	
-	private boolean checkName(String name) {				//Just Scratch
-		if(name.contains(" ")) {
-			showNotification("Invalid name!");
-			firstNameField.getStyleClass().add("error");
-			lastNameField.getStyleClass().add("error");
-			return false;
-		}
-			
-		if(name.length() > 15 || name.length() < 1) {
-			showNotification("Invalid name!");
-			firstNameField.getStyleClass().add("error");
-			lastNameField.getStyleClass().add("error");
-			return false;
-		}
-		
-		return true;
-	}
-	
-	private boolean checkEmail(String email) {
-		//Regular Expression   
-        String regex = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}";  
-        //Compile regular expression to get the pattern  
-        Pattern pattern = Pattern.compile(regex);
-        
-        Matcher matcher = pattern.matcher(email);
-        
-        if(!matcher.matches()) {
-			showNotification("Invalid email!");
-			emailField.getStyleClass().add("error");
-			return false;
-		}
-        	
-		return true;
-	}
-	
-	private boolean checkUsername(String username) {
-		
-		if(username.length() < 5) {
-			showNotification("Username to short!");
-			usernameField.getStyleClass().add("error");
-			return false;
-		}
-		
-		return true;
-	}
-	
-	private boolean checkPassword(String password, String repeatPassword) { 
-		if(password.length() < 5) {
-			showNotification("Password to short!");
-			passwordField.getStyleClass().add("error");
-			return false;
-		}
-		
-		if(!password.equals(repeatPassword)) {
-			showNotification("The passwords don't match!");
-			passwordField.getStyleClass().add("error");
-			repeatPasswordField.getStyleClass().add("error");
-			return false;
-		}
-		
-		return true;
-	}
-	
 	private boolean checkDatabase(String email, String username) {
 		
 		try {
@@ -227,16 +186,6 @@ public class ControllerSignUpScene {
 		}
 		
 		return true;
-	}
-	
-	private void loadScene() {
-		
-		scene = new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight());
-		String css = this.getClass().getResource("application.css").toExternalForm();
-		scene.getStylesheets().add(css);
-		stage.setScene(scene);
-		stage.show();
-		
 	}
 	
 }
