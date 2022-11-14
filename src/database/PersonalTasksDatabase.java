@@ -68,7 +68,7 @@ public class PersonalTasksDatabase extends Database {
 					Task tsk = new Task(rs.getString("name"));
 					tsk.setID(rs.getInt("id"));
 					tsk.setDescription(rs.getString("description"));
-					//Falta setCreatedDate
+					//TODO: Falta setCreatedDate
 					String str = rs.getString("deadline_date");
 					if (str != null) {
 						tsk.setDeadline(LocalDate.parse(str));
