@@ -14,7 +14,7 @@ public class AccountsDatabase extends Database{
 	 * @return True - Successfully login; False - Otherwise
 	 */
 	public static boolean checkLogin(String user, String password) throws SQLException{
-		String query=null;
+		String query = null;
 		
 		/* Como não sabemos à partida se o utilizador está a logar com o username ou com o email,
 		   verificamos qual é através da existencia de @ */
@@ -214,4 +214,3 @@ public class AccountsDatabase extends Database{
 			return false;
 	}
 }
-

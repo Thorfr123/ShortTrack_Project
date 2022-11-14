@@ -7,7 +7,6 @@ public class Account {
 	private String email;
 	
 	public Account(String username, String password, String name, String email) {
-		//this.ID = IDcount++;
 		this.username = username;
 		this.password = password;
 		this.name = name;

@@ -33,8 +33,6 @@ public class FileIO {
 				oos.writeObject(lst);
 			}
 			
-			System.out.println("List successfully written in local file");
-			
 		}
 		
 		file.setReadOnly();
@@ -57,7 +55,6 @@ public class FileIO {
 			}
 			
 		} catch (EOFException eof) {
-			System.out.println("List successfully read from local file");
 			return arrayList;
 		}
 	}
@@ -66,6 +63,7 @@ public class FileIO {
 	 * Writes program data to local file
 	 * 
 	 * @param task_idCounter Task id counter
+	 * @param list_idCounter List id counter
 	 * @throws IOException If some error occurs while writing to the file
 	 */
 	public static void writeIdCountersToFile(int task_idCounter, int list_idCounter) throws IOException{
@@ -77,8 +75,6 @@ public class FileIO {
 
 			fos.write(task_idCounter);
 			fos.write(list_idCounter);
-			
-			System.out.println("idCounters successfully written in local file");
 			
 		}
 		
@@ -93,7 +89,6 @@ public class FileIO {
 	 */
 	public static int[] readIdCountersFromFile() throws IOException, ClassNotFoundException{		
 		int[] idCounters = {1,1};
-		// Task_idCounter, List_idCounter
 		
 		try (FileInputStream fis = new FileInputStream(idCountersFileName)){
 			
@@ -101,7 +96,6 @@ public class FileIO {
 			idCounters[1] = fis.read();
 			
 		}
-		System.out.println("IDCounters successfully read from local file");
 
 		return idCounters;
 	}

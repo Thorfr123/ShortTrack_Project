@@ -29,26 +29,22 @@ public class Main extends Application {
 			System.out.println("Erro a tentar ler o ficheiro de backup local!");
 		}
 		
+		int [] idCounter = {-1, -1};
 		try {
-			int[] idCounter = FileIO.readIdCountersFromFile();
-			
+			idCounter = FileIO.readIdCountersFromFile();
 			if (idCounter[0] < 1) {
-				// Não existe registo logo é necessário descobrir um de alguma forma
 				idCounter[0] = calculateTaskIdCounter();
 			}
-
 			if (idCounter[1] < 1) {
-				// Não existe registo logo é necessário descobrir um de alguma forma
 				idCounter[1] = calculateListIdCounter();
 			}
-			
-			Task.idCount = idCounter[0];
-			List.idCount = idCounter[1];
 		} catch (IOException | ClassNotFoundException e){
 			System.out.println("Erro a tentar ler o ficheiro de idCounters local!");
-			Task.idCount = calculateTaskIdCounter();
-			List.idCount = calculateListIdCounter();
+			idCounter[0] = calculateTaskIdCounter();
+			idCounter[1] = calculateListIdCounter();
 		}
+		Task.idCount = idCounter[0];
+		List.idCount = idCounter[1];
 		
 		try {
 			Image icon = new Image("/teste_icon.png");
@@ -85,7 +81,6 @@ public class Main extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
-	
 	
 	private static int calculateTaskIdCounter() {
 		int idCount = 1;

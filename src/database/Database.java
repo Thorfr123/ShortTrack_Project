@@ -92,7 +92,7 @@ public class Database {
 					return rs.getString(1);
 				}
 			} else {
-				System.out.println("Connection failed");
+				throw new SQLException("Connection failed!");
 			}
 			
 		}
@@ -101,18 +101,15 @@ public class Database {
 	}
 	
 	protected static int executeUpdate(String query) throws SQLException{
-		//Class.forName("org.postgresql.Driver");
-		//connection = DriverManager.getConnection("jdbc:postgresql://db.fe.up.pt:5432/pswa0502","pswa0502","jKWlEeAs");
 		
 		try (Connection connection = dataSource.getConnection()){
 			if (connection != null) {
 				Statement stmt = connection.createStatement();
 				return stmt.executeUpdate(query);
 			} else {
-				System.out.println("Connection failed");
+				throw new SQLException("Connection failed!");
 			}
 		}
 		
-		return -1;
 	}
 }
