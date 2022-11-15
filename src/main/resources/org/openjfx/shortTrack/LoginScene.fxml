@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane minHeight="500.0" minWidth="800.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.shortTrack.ControllerLoginScene">
+   <top>
+      <HBox BorderPane.alignment="CENTER_LEFT">
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </BorderPane.margin>
+         <children>
+            <Group>
+               <children>
+                  <VBox fx:id="loginBox" fillWidth="false" maxWidth="280.0" style="-fx-background-color: #f1f1f1; -fx-background-radius: 10;">
+                     <children>
+                        <Label fx:id="usernameLabel" style="-fx-text-fill: #727272;" text="Username or Email:">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <HBox prefHeight="18.0" prefWidth="800.0" spacing="20.0">
+                           <children>
+                              <TextField fx:id="usernameField" promptText="example@gmail.com">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </TextField>
+                              <Button fx:id="loginButton" mnemonicParsing="false" onAction="#login" prefHeight="27.0" prefWidth="68.0" style="-fx-background-color: #4385F4; -fx-text-fill: white;" text="Login">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <Label fx:id="passwordLabel" style="-fx-text-fill: #727272;" text="Password:">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <HBox prefHeight="22.0" prefWidth="800.0" spacing="20.0">
+                           <children>
+                              <PasswordField fx:id="passwordField" promptText="*******">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </PasswordField>
+                              <Button fx:id="signUpButton" mnemonicParsing="false" onAction="#signUp" prefHeight="27.0" prefWidth="68.0" style="-fx-background-color: #4385F4; -fx-text-fill: white;" text="Sign Up">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Button>
+                           </children>
+                        </HBox>
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </VBox>
+               </children>
+            </Group>
+            <VBox fx:id="searchVerticalBox" alignment="BOTTOM_LEFT" HBox.hgrow="ALWAYS">
+               <HBox.margin>
+                  <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
+               </HBox.margin>
+               <children>
+                  <Label text="Search your Task">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <HBox alignment="BOTTOM_CENTER" spacing="20.0">
+                     <children>
+                        <TextField fx:id="searchBarField" maxWidth="1.7976931348623157E308" onAction="#searchTask" promptText="Choose one search option" HBox.hgrow="ALWAYS" />
+                        <ChoiceBox fx:id="choiceBox" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </top>
+   <center>
+      <GridPane hgap="5.0" BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="35.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="65.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <BorderPane style="-fx-background-color: #f3f3f3; -fx-background-radius: 8;" GridPane.hgrow="SOMETIMES" GridPane.vgrow="SOMETIMES">
+               <center>
+                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: transparent;">
+                     <content>
+                        <VBox fx:id="listsBox" spacing="10.0">
+                           <padding>
+                              <Insets left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                        </VBox>
+                     </content>
+                  </ScrollPane>
+               </center>
+               <top>
+                  <Label text="Personal Lists" BorderPane.alignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                     <BorderPane.margin>
+                        <Insets top="5.0" />
+                     </BorderPane.margin>
+                  </Label>
+               </top>
+               <bottom>
+                  <VBox fx:id="newListBox" BorderPane.alignment="CENTER">
+                     <BorderPane.margin>
+                        <Insets bottom="10.0" left="10.0" top="10.0" />
+                     </BorderPane.margin>
+                     <children>
+                        <HBox spacing="10.0">
+                           <children>
+                              <TextField fx:id="newListName" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#addList" promptText="New List Name" HBox.hgrow="ALWAYS">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font></TextField>
+                              <Button mnemonicParsing="false" onAction="#addList" text="+">
+                                 <HBox.margin>
+                                    <Insets right="5.0" />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Button>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </bottom>
+               <padding>
+                  <Insets left="5.0" right="5.0" />
+               </padding>
+            </BorderPane>
+            <BorderPane style="-fx-background-color: #f3f3f3; -fx-background-radius: 8;" GridPane.columnIndex="1" GridPane.hgrow="SOMETIMES" GridPane.vgrow="SOMETIMES">
+               <top>
+                  <HBox BorderPane.alignment="CENTER">
+                     <BorderPane.margin>
+                        <Insets bottom="5.0" top="2.0" />
+                     </BorderPane.margin>
+                     <children>
+                        <Label fx:id="listNameLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                           <font>
+                              <Font name="System Bold" size="24.0" />
+                           </font>
+                        </Label>
+                        <MenuButton fx:id="sortByMenu" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Sort by" visible="false">
+                          <items>
+                            <MenuItem mnemonicParsing="false" onAction="#sortTasks" text="Name" />
+                            <MenuItem mnemonicParsing="false" onAction="#sortTasks" text="Created Date" />
+                              <MenuItem mnemonicParsing="false" onAction="#sortTasks" text="Deadline" />
+                              <MenuItem mnemonicParsing="false" onAction="#sortTasks" text="Completed" />
+                          </items>
+                           <HBox.margin>
+                              <Insets left="5.0" right="5.0" />
+                           </HBox.margin>
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </MenuButton>
+                        <Button fx:id="editListButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#editList" text="Edit List" visible="false">
+                           <HBox.margin>
+                              <Insets left="5.0" right="5.0" />
+                           </HBox.margin>
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Button>
+                     </children>
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                  </HBox>
+               </top>
+               <bottom>
+                  <VBox fx:id="newTaskBox" BorderPane.alignment="CENTER">
+                     <BorderPane.margin>
+                        <Insets bottom="10.0" left="10.0" top="10.0" />
+                     </BorderPane.margin>
+                     <children>
+                        <HBox fx:id="addTaskBox" alignment="CENTER_LEFT" spacing="10.0" visible="false">
+                           <children>
+                              <TextField fx:id="newTaskName" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#addTask" promptText="New Task Name " HBox.hgrow="ALWAYS">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font></TextField>
+                              <Button mnemonicParsing="false" onAction="#addTaskComplete" text="+">
+                                 <HBox.margin>
+                                    <Insets right="5.0" />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Button>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </bottom>
+               <center>
+                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: transparent;" BorderPane.alignment="CENTER">
+                     <content>
+                        <VBox fx:id="tasksBox" alignment="TOP_CENTER" spacing="10.0">
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                        </VBox>
+                     </content>
+                  </ScrollPane>
+               </center>
+               <padding>
+                  <Insets left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </BorderPane>
+         </children>
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" />
+         </BorderPane.margin>
+      </GridPane>
+   </center>
+</BorderPane>
