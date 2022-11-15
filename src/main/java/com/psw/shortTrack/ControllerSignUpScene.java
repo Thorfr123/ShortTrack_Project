@@ -1,4 +1,4 @@
-package org.openjfx.shortTrack;
+package com.psw.shortTrack;
 
 import java.io.IOException;
 import java.sql.SQLException;

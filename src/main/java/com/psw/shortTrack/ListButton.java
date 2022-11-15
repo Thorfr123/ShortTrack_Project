@@ -1,4 +1,4 @@
-package org.openjfx.shortTrack;
+package com.psw.shortTrack;
 
 import data.List;
 import javafx.geometry.Pos;
