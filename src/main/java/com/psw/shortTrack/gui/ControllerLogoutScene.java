@@ -1,9 +1,10 @@
-package com.psw.shortTrack;
+package com.psw.shortTrack.gui;
 
 import java.io.IOException;
 import java.sql.SQLException;
 
-import database.AccountsDatabase;
+import com.psw.shortTrack.database.AccountsDatabase;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

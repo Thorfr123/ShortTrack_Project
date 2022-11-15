@@ -1,6 +1,7 @@
-package com.psw.shortTrack;
+package com.psw.shortTrack.gui;
 
-import data.List;
+import com.psw.shortTrack.data.List;
+
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.text.Font;

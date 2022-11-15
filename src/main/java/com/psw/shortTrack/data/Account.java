@@ -1,4 +1,4 @@
-package data;
+package com.psw.shortTrack.data;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

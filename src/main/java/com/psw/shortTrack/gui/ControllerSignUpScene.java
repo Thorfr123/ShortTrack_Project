@@ -1,10 +1,12 @@
-package com.psw.shortTrack;
+package com.psw.shortTrack.gui;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collections;
-import data.Account;
-import database.AccountsDatabase;
+
+import com.psw.shortTrack.data.Account;
+import com.psw.shortTrack.database.AccountsDatabase;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -70,7 +72,7 @@ public class ControllerSignUpScene {
 		logoutController.displayEmail(email);
 		
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-		Main.loadScene(root,stage);
+		App.loadScene(root,stage);
 		stage.show();
 		
 	}
@@ -81,7 +83,7 @@ public class ControllerSignUpScene {
 		
 		root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-		Main.loadScene(root,stage);
+		App.loadScene(root,stage);
 		stage.show();
 		
 	}

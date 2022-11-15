@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane minHeight="500.0" minWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.psw.shortTrack.ControllerEditTaskScene">
+<BorderPane minHeight="500.0" minWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.psw.shortTrack.gui.ControllerEditTaskScene">
    <center>
       <VBox maxHeight="455.0" maxWidth="556.0" spacing="5.0" BorderPane.alignment="CENTER">
          <children>

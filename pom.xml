@@ -4,6 +4,7 @@
     <groupId>com.psw</groupId>
     <artifactId>shortTrack</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
@@ -25,15 +26,36 @@
 		    <artifactId>c3p0</artifactId>
 		    <version>0.9.5.5</version>
 		</dependency>
-
 		<dependency>
 		    <groupId>org.postgresql</groupId>
 		    <artifactId>postgresql</artifactId>
 		    <version>42.5.0</version>
 		</dependency>
     </dependencies>
+    
     <build>
         <plugins>
+        	<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <transformers>
+                                <transformer implementation=
+                  					"org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.psw.shortTrack.gui.Main</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -50,7 +72,7 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.psw.shortTrack.Main</mainClass>
+                            <mainClass>com.psw.shortTrack.gui.Main</mainClass>
                         </configuration>
                     </execution>
                 </executions>

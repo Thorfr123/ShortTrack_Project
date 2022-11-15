@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane minHeight="500.0" minWidth="800.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.psw.shortTrack.ControllerLoginScene">
+<BorderPane minHeight="500.0" minWidth="800.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.psw.shortTrack.gui.ControllerLoginScene">
    <top>
       <HBox BorderPane.alignment="CENTER_LEFT">
          <BorderPane.margin>

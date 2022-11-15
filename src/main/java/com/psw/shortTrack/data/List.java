@@ -1,4 +1,4 @@
-package data;
+package com.psw.shortTrack.data;
 
 import java.io.Serializable;
 import java.time.LocalDate;

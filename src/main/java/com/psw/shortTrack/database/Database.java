@@ -1,4 +1,4 @@
-package database;
+package com.psw.shortTrack.database;
 
 import java.beans.PropertyVetoException;
 import java.sql.Connection;

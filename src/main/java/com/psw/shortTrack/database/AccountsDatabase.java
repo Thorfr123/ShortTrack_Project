@@ -1,9 +1,10 @@
-package database;
+package com.psw.shortTrack.database;
 
 import java.sql.*;
 
 import java.time.LocalDate;
-import data.Account;
+
+import com.psw.shortTrack.data.Account;
 
 public class AccountsDatabase extends Database{
 	/**

@@ -1,11 +1,13 @@
-package com.psw.shortTrack;
+package com.psw.shortTrack.gui;
 
-import database.*;
-import data.*;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+
+import com.psw.shortTrack.data.*;
+import com.psw.shortTrack.database.*;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -175,7 +177,7 @@ public class ControllerLoginScene {
 		logoutController.displayEmail(email);
 		
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-		Main.loadScene(root,stage);
+		App.loadScene(root,stage);
 		stage.show();
 		
 	}
@@ -184,7 +186,7 @@ public class ControllerLoginScene {
 		
 		root = FXMLLoader.load(getClass().getResource("SignUpScene.fxml"));
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-		Main.loadScene(root,stage);
+		App.loadScene(root,stage);
 		stage.show();
 		
 	}
@@ -295,7 +297,7 @@ public class ControllerLoginScene {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditTaskScene.fxml"));
 			root = loader.load();
 			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-			Main.loadScene(root,stage);
+			App.loadScene(root,stage);
 			
 			ControllerEditTaskScene controller = loader.getController();
 			controller.initData(newTask, list);	
@@ -326,7 +328,7 @@ public class ControllerLoginScene {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditListScene.fxml"));
 			root = loader.load();
 			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-			Main.loadScene(root,stage);
+			App.loadScene(root,stage);
 			
 			ControllerEditListScene controller = loader.getController();
 			controller.initData(list);	
@@ -349,7 +351,7 @@ public class ControllerLoginScene {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditTaskScene.fxml"));
 			root = loader.load();
 			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-			Main.loadScene(root,stage);
+			App.loadScene(root,stage);
 			
 			ControllerEditTaskScene controller = loader.getController();
 			controller.initData(task, list);	

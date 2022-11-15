@@ -1,8 +1,9 @@
-package com.psw.shortTrack;
+package com.psw.shortTrack.gui;
 
-import data.List;
-import data.Task;
-import data.User;
+import com.psw.shortTrack.data.List;
+import com.psw.shortTrack.data.Task;
+import com.psw.shortTrack.data.User;
+
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;

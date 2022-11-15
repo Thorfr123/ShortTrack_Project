@@ -1,4 +1,4 @@
-package database;
+package com.psw.shortTrack.database;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -6,8 +6,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import data.List;
-import data.User;
+import com.psw.shortTrack.data.List;
+import com.psw.shortTrack.data.User;
 
 public class PersonalListsDatabase extends Database{
 	

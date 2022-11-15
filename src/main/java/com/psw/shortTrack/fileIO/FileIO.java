@@ -1,4 +1,4 @@
-package fileIO;
+package com.psw.shortTrack.fileIO;
 
 import java.io.EOFException;
 import java.io.File;
@@ -9,7 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-import data.List;
+import com.psw.shortTrack.data.List;
 
 public class FileIO {
 	private static String personalListFileName = "personalLists.dat";

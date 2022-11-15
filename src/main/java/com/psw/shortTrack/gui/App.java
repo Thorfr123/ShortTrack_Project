@@ -1,13 +1,14 @@
-package com.psw.shortTrack;
+package com.psw.shortTrack.gui;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import data.List;
-import data.Task;
-import data.User;
-import fileIO.FileIO;
+import com.psw.shortTrack.data.List;
+import com.psw.shortTrack.data.Task;
+import com.psw.shortTrack.data.User;
+import com.psw.shortTrack.fileIO.FileIO;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -15,7 +16,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 
-public class Main extends Application {
+public class App extends Application {
 	
 	private static String css;
 	

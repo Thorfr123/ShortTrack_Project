@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane minHeight="500.0" minWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.psw.shortTrack.ControllerEditListScene">
+<BorderPane minHeight="500.0" minWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.psw.shortTrack.gui.ControllerEditListScene">
    <center>
       <VBox maxHeight="-Infinity" maxWidth="556.0" spacing="10.0" BorderPane.alignment="CENTER">
          <children>
