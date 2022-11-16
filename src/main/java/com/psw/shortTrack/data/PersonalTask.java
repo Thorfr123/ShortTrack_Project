@@ -13,8 +13,8 @@ public class PersonalTask extends Task {
 		//this.listId = listID;
 	}
 	
-	public PersonalTask(String name, int parentID) {
-		super(name, parentID);
+	public PersonalTask(String name, int listID) {
+		super(name, listID);
 	}
 
 	/*public int getListId() {
