@@ -10,33 +10,35 @@ public abstract class Task implements Serializable {
 	
 	private static final long serialVersionUID = -5301804573647411576L;
 	
-	private String name;
-	private int id;
-	private String description;
-	private LocalDate createdDate;
-	private LocalDate deadline;
-	private Boolean completed;
-	private int parentID;
+	private String 		name,
+						description;
+	private LocalDate 	createdDate,
+						deadline;
+	private Boolean 	completed;
+	private int 		id,
+						parent_id;
+	
+	public static int idCount = 1;
 
+
+	// Utilizado durante a criação de uma nova task
 	public Task(String name, int parentID) {
 		this.name = name;
-		this.parentID = parentID;
-		
-		createdDate = LocalDate.now();
-		completed = false;
+		this.parent_id = parentID;
+		this.createdDate = LocalDate.now();
+		this.completed = false;
+		this.id = idCount++;
 	}
 	
-	public Task(String name) {			//need some changes in the database
-		this.name = name;
-	}
-	
-	public Task(String name, int id, String description, LocalDate createdDate, LocalDate deadline, Boolean completed) {
+	//Utilizado quando carrega da database ou local files
+	public Task(String name, int id, String description, LocalDate createdDate, LocalDate deadline, Boolean completed, int parentID) {
 		this.name = name;
 		this.id = id;
 		this.description = description;
 		this.createdDate = createdDate;
 		this.deadline = deadline;
 		this.completed = completed;
+		this.parent_id = parentID;
 	}
 	
 	public String getName() {
@@ -60,10 +62,10 @@ public abstract class Task implements Serializable {
 	}
 	
 	public int getParentID() {
-		return parentID;
+		return parent_id;
 	}
 	
-	public boolean chekCompleted() {
+	public Boolean chekCompleted() {
 		return completed;
 	}
 	
@@ -83,12 +85,12 @@ public abstract class Task implements Serializable {
 		deadline = newDeadline;
 	}
 	
-	public void setCompleted(boolean state) {
+	public void setCompleted(Boolean state) {
 		completed = state;
 	}
 	
 	public void setParentID(int newParentID) {		// Maybe useless
-		parentID = newParentID;
+		parent_id = newParentID;
 	}
 	
 	public static String checkValidDate(String date) {
@@ -100,7 +102,7 @@ public abstract class Task implements Serializable {
 	        df.setLenient(false);
 	        df.parse(date);
 	        return null;
-	    } 
+	    }
 		catch (ParseException e) {
 			errorDescription = "Invalid date format!";
 			return errorDescription;
