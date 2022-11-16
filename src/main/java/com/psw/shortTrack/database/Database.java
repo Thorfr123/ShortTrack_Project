@@ -22,7 +22,6 @@ public class Database {
 			dataSource.setUser("pswa0502");
 			dataSource.setPassword("jKWlEeAs");
 			dataSource.setCheckoutTimeout(5000);
-			System.out.println(dataSource.getCheckoutTimeout());
 		} catch (PropertyVetoException e){
 			System.out.println(e);
 		}

@@ -12,7 +12,7 @@ public class Task implements Serializable {
 	 */
 	private static final long serialVersionUID = -5301804573647411576L;
 	public static int idCount = 1;
-	private String name; 
+	private String name;
 	private int id;
 	private String description;
 	private LocalDate createdDate;
