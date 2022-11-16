@@ -106,6 +106,7 @@ public class Database {
 						+ "ALTER TABLE ONLY projeto.group_tasks DROP CONSTRAINT IF EXISTS group_tasks_pkey;"
 						+ "ALTER TABLE ONLY projeto.group_tasks ADD CONSTRAINT group_tasks_pkey PRIMARY KEY (id);";
 		try {
+			System.out.println(query);
 			executeUpdate(query);
 		} catch (SQLException e) {
 			System.out.println(e);
