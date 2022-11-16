@@ -42,6 +42,15 @@ public class GroupsDatabase extends Database{
 					int group_id = rs.getInt("id");
 					String name = rs.getString("name");
 					String manager = rs.getString("manager");
+					
+					//List<String> list1 = new ArrayList<String>();
+				    //Collections.addAll(list1, array);
+					//ou
+					//List<String> list2 = new ArrayList<String>();
+				    //for(String text:array) {
+				    //    list2.add(text);
+				    // }
+					
 					Array temp = rs.getArray("members");
 					String[] members_temp = (String[]) temp.getArray();
 					ArrayList<String> members = new ArrayList<String>(members_temp.length);
