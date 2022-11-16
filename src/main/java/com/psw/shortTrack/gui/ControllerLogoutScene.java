@@ -8,6 +8,7 @@ import java.util.Collections;
 import com.psw.shortTrack.data.Account;
 import com.psw.shortTrack.data.Group;
 import com.psw.shortTrack.data.List;
+import com.psw.shortTrack.data.PersonalTask;
 import com.psw.shortTrack.data.Task;
 import com.psw.shortTrack.data.User;
 import com.psw.shortTrack.database.AccountsDatabase;
@@ -284,7 +285,7 @@ public class ControllerLogoutScene {
 			return;
 		}
 		
-		Task newTask = new Task(taskName,list.getID());
+		Task newTask = new PersonalTask(taskName,list.getID());
 		list.addTask(newTask);
 		
 		TaskBar taskBar = new TaskBar(newTask);
@@ -312,7 +313,7 @@ public class ControllerLogoutScene {
 			return;
 		}
 		
-		Task newTask = new Task(taskName,group.getID());
+		Task newTask = new PersonalTask(taskName,group.getID());
 		group.addTask(newTask);
 		
 		TaskBar taskBar = new TaskBar(newTask);
@@ -346,7 +347,7 @@ public class ControllerLogoutScene {
 			return;
 		}
 		
-		Task newTask = new Task(taskName,list.getID());
+		Task newTask = new PersonalTask(taskName,list.getID());
 		list.addTask(newTask);
 		
 		TaskBar taskBar = new TaskBar(newTask);
