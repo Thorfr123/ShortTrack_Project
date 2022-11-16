@@ -70,8 +70,22 @@ public class Database {
 						+ "ALTER SEQUENCE projeto.lists_id_seq OWNED BY projeto.personal_lists.id;"
 						+ "ALTER TABLE ONLY projeto.personal_lists ALTER COLUMN id SET DEFAULT nextval('projeto.lists_id_seq'::regclass);"
 						+ "ALTER TABLE ONLY projeto.personal_lists DROP CONSTRAINT IF EXISTS lists_pkey;"
-						+ "ALTER TABLE ONLY projeto.personal_lists ADD CONSTRAINT lists_pkey PRIMARY KEY (id);";
-		
+						+ "ALTER TABLE ONLY projeto.personal_lists ADD CONSTRAINT lists_pkey PRIMARY KEY (id);"
+						+ "CREATE TABLE IF NOT EXISTS projeto.groups ();"
+						+ "ALTER TABLE projeto.groups ADD COLUMN IF NOT EXISTS id integer NOT NULL;"
+						+ "ALTER TABLE projeto.groups ADD COLUMN IF NOT EXISTS name character varying (32) NOT NULL;"
+						+ "ALTER TABLE projeto.groups ADD COLUMN IF NOT EXISTS manager character varying (64) NOT NULL;"
+						+ "CREATE SEQUENCE IF NOT EXISTS projeto.groups_id_seq\r\n"
+						+ "		AS integer\r\n"
+						+ "		START WITH 1\r\n"
+						+ "		INCREMENT BY 1\r\n"
+						+ "		NO MINVALUE\r\n"
+						+ "		NO MAXVALUE\r\n"
+						+ "		CACHE 1;"
+						+ "ALTER SEQUENCE projeto.groups_id_seq OWNED BY projeto.groups.id;"
+						+ "ALTER TABLE ONLY projeto.groups ALTER COLUMN id SET DEFAULT nextval('projeto.groups_id_seq'::regclass);"
+						+ "ALTER TABLE ONLY projeto.groups DROP CONSTRAINT IF EXISTS groups_pkey;"
+						+ "ALTER TABLE ONLY projeto.groups ADD CONSTRAINT groups_pkey PRIMARY KEY (id);";
 		try {
 			executeUpdate(query);
 		} catch (SQLException e) {
