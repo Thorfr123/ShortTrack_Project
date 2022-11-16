@@ -3,13 +3,10 @@ package com.psw.shortTrack.gui;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-
 import com.psw.shortTrack.data.List;
 import com.psw.shortTrack.data.User;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;

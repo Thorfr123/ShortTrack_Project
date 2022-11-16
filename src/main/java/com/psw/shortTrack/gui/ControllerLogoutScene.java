@@ -92,8 +92,6 @@ public class ControllerLogoutScene {
 	
 	private String[] searchOptions = {"Name", "Created Date", "Deadline"};
 	
-	//private int SEARCH_LIST_ID = 0;
-	
 	@FXML
     public void initialize() {
 		
@@ -275,14 +273,14 @@ public class ControllerLogoutScene {
 		
 	}
 	
-	public void addTaskToList(String taskName) {
+	public Task addTaskToList(String taskName) {
 	
 		if(list.checkName(taskName)) {
 			Pane newBox = (Pane)newTaskBox;
 			String notification = "This task already exist!";
 			showNotification(notification,newBox);
 			newTaskName.getStyleClass().add("error");
-			return;
+			return null;
 		}
 		
 		Task newTask = new PersonalTask(taskName,list.getID());
@@ -301,16 +299,18 @@ public class ControllerLogoutScene {
 		
 		tasksBox.getChildren().add(taskBar);
 		
+		return newTask;
+		
 	}
 	
-	public void addTaskToGroup(String taskName) {
+	public Task addTaskToGroup(String taskName) {
 		
 		if(group.checkName(taskName)) {
 			Pane newBox = (Pane)newTaskBox;
 			String notification = "This task already exist!";
 			showNotification(notification,newBox);
 			newTaskName.getStyleClass().add("error");
-			return;
+			return null;
 		}
 		
 		Task newTask = new PersonalTask(taskName,group.getID());
@@ -329,6 +329,7 @@ public class ControllerLogoutScene {
 		
 		tasksBox.getChildren().add(taskBar);
 		
+		return newTask;
 	}
 	
 	public void addTaskComplete(ActionEvent e) {
@@ -339,45 +340,51 @@ public class ControllerLogoutScene {
 		
 		newTaskName.clear();
 		
-		if(list.checkName(taskName)) {
-			Pane newBox = (Pane)newTaskBox;
-			String notification = "This task already exist!";
-			showNotification(notification,newBox);
-			newTaskName.getStyleClass().add("error");
+		Task newTask = null;
+		if(list != null)
+			newTask = addTaskToList(taskName);
+		else if(group != null)
+			newTask = addTaskToGroup(taskName);
+		else
+			System.out.println("Algum erro aconteceu v3!");
+		
+		if(newTask == null)
 			return;
+		
+		if(list != null) {
+			try {
+				FXMLLoader loader = new FXMLLoader(getClass().getResource("EditTaskScene.fxml"));
+				root = loader.load();
+				stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+				App.loadScene(root,stage);
+				
+				ControllerEditTaskScene controller = loader.getController();
+				controller.initData(newTask, list);	
+	
+				stage.show();
+				
+			} catch (IOException exeption) {
+				exeption.printStackTrace();
+			}
 		}
-		
-		Task newTask = new PersonalTask(taskName,list.getID());
-		list.addTask(newTask);
-		
-		TaskBar taskBar = new TaskBar(newTask);
-		CheckBox taskCheckBox = taskBar.getCheckBox();
-		Button taskButton = taskBar.getButton();
-		
-		taskCheckBox.setOnAction(event -> {
-            checkTask(event);
-        });
-		taskButton.setOnAction(event -> {
-            editTask(event);
-        });
-		
-		tasksBox.getChildren().add(taskBar);
-		
-		try {
-			
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditTaskScene.fxml"));
-			root = loader.load();
-			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-			App.loadScene(root,stage);
-			
-			ControllerEditTaskScene controller = loader.getController();
-			controller.initData(newTask, list);	
-
-			stage.show();
-			
-		} catch (IOException exeption) {
-			exeption.printStackTrace();
+		else if(group != null) {
+			try {
+				FXMLLoader loader = new FXMLLoader(getClass().getResource("EditGroupTaskScene.fxml"));
+				root = loader.load();
+				stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+				App.loadScene(root,stage);
+				
+				ControllerEditGroupTaskScene controller = loader.getController();
+				controller.initData(newTask, group);	
+	
+				stage.show();
+				
+			} catch (IOException exeption) {
+				exeption.printStackTrace();
+			}
 		}
+		else
+			System.out.println("Algum erro aconteceu v4!");
 		
 	}
 	
@@ -387,6 +394,7 @@ public class ControllerLogoutScene {
 		group = null;
 		search = null;
 		
+		editListButton.setText("Edit List");
 		ListButton listButton = (ListButton)e.getSource();
 		list = listButton.getList();
 		
@@ -401,6 +409,7 @@ public class ControllerLogoutScene {
 		list = null;
 		search = null;
 		
+		editListButton.setText("Edit Group");
 		GroupButton groupButton = (GroupButton)e.getSource();
 		group = groupButton.getGroup();
 		
@@ -429,7 +438,7 @@ public class ControllerLogoutScene {
 	
 	public void editGroup(ActionEvent e) {
 		
-		System.out.println("addGroup!");
+		System.out.println("addGroup - Not Working!");
 		
 	}
 	
@@ -438,6 +447,8 @@ public class ControllerLogoutScene {
 		Button taskButton = (Button)e.getSource();
 		TaskBar taskBar = (TaskBar)taskButton.getParent();
 		Task task = taskBar.getTask();
+		
+		List list = User.getList(task.getParentID());
 		
 		try {
 			
@@ -471,19 +482,7 @@ public class ControllerLogoutScene {
 	
 	public void sortTasks(ActionEvent e) {
 		
-		String option = ((MenuItem)e.getSource()).getText();
-		
-		if(option.equals("Name"))
-			list.sortByName();
-		else if(option.equals("Created Date"))
-			list.sortByCreatedDate();
-		else if(option.equals("Deadline"))
-			list.sortByDeadline();
-		else if(option.equals("Completed"))
-			list.sortByCompleted();
-		
-		tasksBox.getChildren().clear();
-		loadTasks();
+		System.out.println("Not Working!");
 		
 	}
 	
@@ -511,53 +510,7 @@ public class ControllerLogoutScene {
 	
 	public void searchTask(ActionEvent e) {
 		
-		removeErrorNotifications();
-		
-		String text = searchBarField.getText();
-		
-		if(text.isBlank())
-			return;
-		
-		List searchList = new List("Searched by: " + text, 0);
-		
-		String errorNotification;
-		Pane newBox = (Pane)searchVerticalBox;
-		switch(choiceBox.getValue()) {
-			case "Name":
-				for(List l: lists) {
-					l.findTaskByName(text,searchList.getTaskList());			
-				}
-				break;
-			case "Created Date":
-				if((errorNotification = Task.checkValidDate(text)) != null) {
-					showNotification(errorNotification,newBox);
-					searchBarField.getStyleClass().add("error");
-					return;
-				}
-				for(List l: lists) {
-					l.findTaskByCreatedDate(text,searchList.getTaskList());			
-				}
-				break;
-			case "Deadline":
-				if((errorNotification = Task.checkValidDate(text)) != null) {
-					showNotification(errorNotification,newBox);
-					searchBarField.getStyleClass().add("error");
-					return;
-				}
-				for(List l: lists) {
-					l.findTaskByDeadline(text,searchList.getTaskList());			
-				}
-				break;	
-			default:
-				String notification = "Please select one option!";
-				showNotification(notification,newBox);
-				searchBarField.getStyleClass().add("error");
-				return;
-		}
-		
-		list = searchList;
-		tasksBox.getChildren().clear();
-		loadTasks();
+		System.out.println("searchTask - Not Working!");
 
 	}
 	

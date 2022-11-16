@@ -3,14 +3,11 @@ package com.psw.shortTrack.gui;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Collections;
-
 import com.psw.shortTrack.data.List;
 import com.psw.shortTrack.data.Task;
 import com.psw.shortTrack.data.User;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
@@ -39,13 +36,16 @@ public class ControllerEditTaskScene {
 
 	private Task task;
 	private List list;
+	private List search;
 	
 	private Stage stage;
 	private Parent root;
 	
-	public void initData(Task task, List list) {
+	public void initData(Task task, List search) {
 		this.task = task;
-		this.list = list;
+		this.search = search;
+		
+		list = User.getList(task.getParentID());
 		
 		taskNameField.setText(task.getName());
 		descriptionField.setText(task.getDescription());
@@ -75,8 +75,8 @@ public class ControllerEditTaskScene {
 			
 			list.removeTask(task);
 			
-			if(list.getID() == 0)
-				User.getList(task.getParentID()).removeTask(task);
+			if(search != null)
+				search.removeTask(task);
 			
 			task = null;
 			
