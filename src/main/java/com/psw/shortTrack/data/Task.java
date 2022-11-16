@@ -7,10 +7,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public abstract class Task implements Serializable {
-	/**
-	 * Variavel para a escrita/leitura offline dos dados
-	 */
+	
 	private static final long serialVersionUID = -5301804573647411576L;
+	
 	public static int idCount = 1;
 	private String name;
 	private int id;
