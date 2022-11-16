@@ -120,68 +120,6 @@ public class AccountsDatabase extends Database{
 	}
 	
 	/**
-	 * Gets the user's first name from the database
-	 * 
-	 * @param username String with user's username
-	 * @param password String with user's password
-	 * @return String with user's first name
-	 */
-	public static String getFirstName(String username, String password) throws SQLException{
-		String query = 	  "SELECT first_name FROM projeto.account "
-						+ "WHERE username='" + username + "' AND password='" + password + "';";
-		
-		return executeQuery_SingleColumn(query);
-	}
-	
-	/**
-	 * Gets the user's last name from the database
-	 * 
-	 * @param username String with user's username
-	 * @param password String with user's password
-	 * @return String with user's last name
-	 */
-	public static String getLastName(String username, String password) throws SQLException{
-		String query = 	  "SELECT last_name FROM projeto.account "
-						+ "WHERE username='" + username + "' AND password='" + password + "';";
-		
-		return executeQuery_SingleColumn(query);
-	}
-	
-	/**
-	 * Gets the user's username from the database
-	 * 
-	 * @param email String with user's email
-	 * @param password String with user's password
-	 * @return String with user's username
-	 */
-	public static String getUsername(String email, String password) throws SQLException{
-		String query = 	  "SELECT username FROM projeto.account "
-						+ "WHERE email='" + email + "' AND password='" + password + "';";
-			
-		return executeQuery_SingleColumn(query);
-	}
-	
-	/**
-	 * Gets the user's register Date from the database
-	 * 
-	 * @param username String with user's username
-	 * @param password String with user's password
-	 * @return Date with user's register date
-	 */
-	public static LocalDate getRegisterDate(String username, String password) throws SQLException{
-		String query = 	  "SELECT username FROM projeto.account "
-						+ "WHERE username='" + username + "' AND password='" + password + "';";
-		
-		String dateString = executeQuery_SingleColumn(query);
-		LocalDate register_date = null;
-		
-		if (dateString != null) {
-			register_date = LocalDate.parse(dateString);
-		}
-		return register_date;
-	}
-	
-	/**
 	 * Changes the username in the database
 	 * 
 	 * @param old_username String with the old username
@@ -214,4 +152,66 @@ public class AccountsDatabase extends Database{
 		else
 			return false;
 	}
+	
+	/**
+	 * Gets the user's first name from the database
+	 * 
+	 * @param username String with user's username
+	 * @param password String with user's password
+	 * @return String with user's first name
+	 */
+	/*public static String getFirstName(String username, String password) throws SQLException{
+		String query = 	  "SELECT first_name FROM projeto.account "
+						+ "WHERE username='" + username + "' AND password='" + password + "';";
+		
+		return executeQuery_SingleColumn(query);
+	}*/
+	
+	/**
+	 * Gets the user's last name from the database
+	 * 
+	 * @param username String with user's username
+	 * @param password String with user's password
+	 * @return String with user's last name
+	 */
+	/*public static String getLastName(String username, String password) throws SQLException{
+		String query = 	  "SELECT last_name FROM projeto.account "
+						+ "WHERE username='" + username + "' AND password='" + password + "';";
+		
+		return executeQuery_SingleColumn(query);
+	}*/
+	
+	/**
+	 * Gets the user's username from the database
+	 * 
+	 * @param email String with user's email
+	 * @param password String with user's password
+	 * @return String with user's username
+	 */
+	/*public static String getUsername(String email, String password) throws SQLException{
+		String query = 	  "SELECT username FROM projeto.account "
+						+ "WHERE email='" + email + "' AND password='" + password + "';";
+			
+		return executeQuery_SingleColumn(query);
+	}*/
+	
+	/**
+	 * Gets the user's register Date from the database
+	 * 
+	 * @param username String with user's username
+	 * @param password String with user's password
+	 * @return Date with user's register date
+	 */
+	/*public static LocalDate getRegisterDate(String username, String password) throws SQLException{
+		String query = 	  "SELECT username FROM projeto.account "
+						+ "WHERE username='" + username + "' AND password='" + password + "';";
+		
+		String dateString = executeQuery_SingleColumn(query);
+		LocalDate register_date = null;
+		
+		if (dateString != null) {
+			register_date = LocalDate.parse(dateString);
+		}
+		return register_date;
+	}*/
 }
