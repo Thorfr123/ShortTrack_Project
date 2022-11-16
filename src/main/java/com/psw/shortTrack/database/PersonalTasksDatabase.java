@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import com.psw.shortTrack.data.List;
+import com.psw.shortTrack.data.PersonalTask;
 import com.psw.shortTrack.data.Task;
 import com.psw.shortTrack.data.User;
 
@@ -65,7 +66,7 @@ public class PersonalTasksDatabase extends Database {
 				Statement stmt = connection.createStatement();
 				ResultSet rs = stmt.executeQuery(query);
 				if (rs.next()) {
-					Task tsk = new Task(rs.getString("name"));
+					Task tsk = new PersonalTask(rs.getString("name"));
 					tsk.setID(rs.getInt("id"));
 					tsk.setDescription(rs.getString("description"));
 					//TODO: Falta setCreatedDate
@@ -93,7 +94,7 @@ public class PersonalTasksDatabase extends Database {
 				ResultSet rs = stmt.executeQuery(query);
 				ArrayList<Task> arrayTask = new ArrayList<Task>();
 				while (rs.next()) {
-					Task tsk = new Task(rs.getString("name"));
+					Task tsk = new PersonalTask(rs.getString("name"));
 					tsk.setID(rs.getInt("id"));
 					tsk.setDescription(rs.getString("description"));
 					//Falta setCreatedDate

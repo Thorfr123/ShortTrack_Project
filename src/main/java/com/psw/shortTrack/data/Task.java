@@ -6,7 +6,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-public class Task implements Serializable {
+public abstract class Task implements Serializable {
 	/**
 	 * Variavel para a escrita/leitura offline dos dados
 	 */

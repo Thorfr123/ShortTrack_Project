@@ -242,7 +242,7 @@ public class ControllerLoginScene {
 			return;
 		}
 		
-		Task newTask = new Task(taskName,list.getID());
+		Task newTask = new PersonalTask(taskName,list.getID());
 		list.addTask(newTask);
 		
 		TaskBar taskBar = new TaskBar(newTask);
@@ -276,7 +276,7 @@ public class ControllerLoginScene {
 			return;
 		}
 		
-		Task newTask = new Task(taskName,list.getID());
+		Task newTask = new PersonalTask(taskName,list.getID());
 		list.addTask(newTask);
 		
 		TaskBar taskBar = new TaskBar(newTask);
