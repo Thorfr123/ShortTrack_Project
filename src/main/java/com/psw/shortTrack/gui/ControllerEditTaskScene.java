@@ -80,7 +80,7 @@ public class ControllerEditTaskScene {
 			
 			task = null;
 			
-			root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
+			root = App.getMainScene();
 			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
 			App.loadScene(root,stage);
 			stage.show();
@@ -114,7 +114,7 @@ public class ControllerEditTaskScene {
 		task.setDeadline(newDeadline);
 		task.setCompleted(checkButton.isSelected());
 		
-		root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
+		root = App.getMainScene();
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
 		App.loadScene(root,stage);
 		stage.show();
@@ -129,7 +129,7 @@ public class ControllerEditTaskScene {
 		if(task.getName().isBlank())
 			list.removeTask(task);
 		
-		root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
+		root = App.getMainScene();
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
 		App.loadScene(root,stage);
 		stage.show();

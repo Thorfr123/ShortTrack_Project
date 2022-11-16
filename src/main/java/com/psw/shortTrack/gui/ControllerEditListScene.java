@@ -56,7 +56,7 @@ public class ControllerEditListScene {
 			arrayList.remove(list);
 			list = null;
 			
-			root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
+			root = App.getMainScene();
 			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
 			App.loadScene(root,stage);
 			stage.show();
@@ -87,7 +87,7 @@ public class ControllerEditListScene {
 				
 		list.setName(newListName);
 		
-		root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
+		root = App.getMainScene();
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
 		App.loadScene(root,stage);
 		stage.show();
@@ -98,7 +98,7 @@ public class ControllerEditListScene {
 		
 		removeErrorNotifications();
 		
-		root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
+		root = App.getMainScene();
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
 		App.loadScene(root,stage);
 		stage.show();

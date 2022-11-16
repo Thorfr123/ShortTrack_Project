@@ -167,15 +167,9 @@ public class ControllerLoginScene {
 			return;
 		}
 		
-		String name = account.getName();
-		String email = account.getEmail();
+		User.setAccount(account);
 		
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("LogoutScene.fxml"));
-		root = loader.load();
-		ControllerLogoutScene logoutController = loader.getController();
-		logoutController.displayName(name);
-		logoutController.displayEmail(email);
-		
+		root = FXMLLoader.load(getClass().getResource("LogoutScene.fxml"));
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
 		App.loadScene(root,stage);
 		stage.show();

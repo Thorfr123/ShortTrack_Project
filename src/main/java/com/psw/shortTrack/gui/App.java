@@ -3,12 +3,10 @@ package com.psw.shortTrack.gui;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import com.psw.shortTrack.data.List;
 import com.psw.shortTrack.data.Task;
 import com.psw.shortTrack.data.User;
 import com.psw.shortTrack.fileIO.FileIO;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -51,9 +49,8 @@ public class App extends Application {
 		
 		try {
 			ClassLoader classLoader = getClass().getClassLoader();
-			String icon_str = classLoader.getResource("teste_icon.png").toExternalForm();
+			String icon_str = classLoader.getResource("icon.png").toExternalForm();
 			Image icon = new Image(icon_str);
-			//Image icon = new Image("teste_icon.png");
 			primaryStage.setTitle("ShortTrack");
 			primaryStage.getIcons().add(icon);
 			primaryStage.setMinWidth(820.0);
@@ -117,5 +114,17 @@ public class App extends Application {
 		scene.getStylesheets().add(css);
 		stage.setScene(scene);
 		
+	}
+	
+	public static Parent getMainScene() throws IOException {
+		
+		Parent root;
+		
+		if(User.isLogedIn())
+			root = FXMLLoader.load(App.class.getResource("LogoutScene.fxml"));
+		else
+			root = FXMLLoader.load(App.class.getResource("LoginScene.fxml"));
+		
+		return root;
 	}
 }
