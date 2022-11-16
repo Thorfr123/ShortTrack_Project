@@ -26,7 +26,6 @@ public class GroupsDatabase extends Database{
 		
 		query += "}\') RETURNING id;";
 		
-		
 		return Integer.parseInt(executeQuery_SingleColumn(query));
 	}
 	

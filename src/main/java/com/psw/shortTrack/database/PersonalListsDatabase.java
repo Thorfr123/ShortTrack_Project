@@ -44,43 +44,6 @@ public class PersonalListsDatabase extends Database{
 	}
 	
 	/**
-	 * Returns the name of the list with this id
-	 * @param id
-	 * @return
-	 * @throws SQLException
-	 */
-	public static String getName (int id) throws SQLException {
-		return executeQuery_SingleColumn("SELECT name FROM projeto.personal_lists WHERE id='"+id+"';");
-	}
-	
-	/**
-	 * Returns the list with this id. It also searchs for the tasks of the list.
-	 * 
-	 * @param id
-	 * @return
-	 * @throws SQLException
-	 */
-	public static List getList(int id) throws SQLException{
-		String query = "SELECT name FROM projeto.personal_lists WHERE id='" + id + "';";
-		
-		try (Connection connection = getConnection()){
-			if (connection != null) {
-				Statement stmt = connection.createStatement();
-				ResultSet rs = stmt.executeQuery(query);
-				if (rs.next()) {
-					String name = rs.getString("name");
-					
-					List lst = new List(name, id, PersonalTasksDatabase.getAllTasks(id));
-					return lst;
-				}
-			} else {
-				System.out.println("Connection failed");
-			}
-		}
-		return null;
-	}
-	
-	/**
 	 * Returns all the lists and tasks of a user
 	 * @param email
 	 * @return
@@ -118,4 +81,43 @@ public class PersonalListsDatabase extends Database{
 	public static void changeName(int id, String new_name) throws SQLException {		
 		executeUpdate("UPDATE projeto.personal_lists SET name='" + new_name + "' WHERE id='" + id + "';");
 	}
+
+	/**
+	 * Returns the name of the list with this id
+	 * @param id
+	 * @return
+	 * @throws SQLException
+	 */
+	/*public static String getName (int id) throws SQLException {
+		return executeQuery_SingleColumn("SELECT name FROM projeto.personal_lists WHERE id='"+id+"';");
+	}*/
+	
+	/**
+	 * Returns the list with this id. It also searchs for the tasks of the list.
+	 * 
+	 * @param id
+	 * @return
+	 * @throws SQLException
+	 */
+	/*public static List getList(int id) throws SQLException{
+		String query = "SELECT name FROM projeto.personal_lists WHERE id='" + id + "';";
+		
+		try (Connection connection = getConnection()){
+			if (connection != null) {
+				Statement stmt = connection.createStatement();
+				ResultSet rs = stmt.executeQuery(query);
+				if (rs.next()) {
+					String name = rs.getString("name");
+					
+					List lst = new List(name, id, PersonalTasksDatabase.getAllTasks(id));
+					return lst;
+				}
+			} else {
+				System.out.println("Connection failed");
+			}
+		}
+		return null;
+	}*/
+	
+	
 }
