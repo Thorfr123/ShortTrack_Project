@@ -54,7 +54,6 @@ public class App extends Application {
 			ClassLoader classLoader = getClass().getClassLoader();
 			String icon_str = classLoader.getResource("teste_icon.png").toExternalForm();
 			Image icon = new Image(icon_str);
-			//Image icon = new Image("teste_icon.png");
 			primaryStage.setTitle("ShortTrack");
 			primaryStage.getIcons().add(icon);
 			primaryStage.setMinWidth(820.0);

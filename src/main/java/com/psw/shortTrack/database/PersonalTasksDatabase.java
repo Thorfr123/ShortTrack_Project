@@ -66,17 +66,21 @@ public class PersonalTasksDatabase extends Database {
 				Statement stmt = connection.createStatement();
 				ResultSet rs = stmt.executeQuery(query);
 				if (rs.next()) {
-					Task tsk = new PersonalTask(rs.getString("name"));
-					tsk.setID(rs.getInt("id"));
-					tsk.setDescription(rs.getString("description"));
-					//TODO: Falta setCreatedDate
-					String str = rs.getString("deadline_date");
-					if (str != null) {
-						tsk.setDeadline(LocalDate.parse(str));
-					}
-					tsk.setCompleted(rs.getBoolean("state"));
+					String name = rs.getString("name");
+					String description = rs.getString("description");
+					int taskId = rs.getInt("id");
+					int listId = rs.getInt("list_id");
+					String deadline_str = rs.getString("deadline_date");
+					LocalDate deadline = null;
+					if (deadline_str != null)
+						deadline = LocalDate.parse(deadline_str);
+					String created_str = rs.getString("created_date");
+					LocalDate created = null;
+					if (created_str != null)
+						created = LocalDate.parse(created_str);
+					Boolean state = rs.getBoolean("state");					
 					
-					return tsk;
+					return new PersonalTask(name, taskId, description, created, deadline, state, listId);
 				}
 			} else {
 				System.out.println("Connection failed");
@@ -94,16 +98,21 @@ public class PersonalTasksDatabase extends Database {
 				ResultSet rs = stmt.executeQuery(query);
 				ArrayList<Task> arrayTask = new ArrayList<Task>();
 				while (rs.next()) {
-					Task tsk = new PersonalTask(rs.getString("name"));
-					tsk.setID(rs.getInt("id"));
-					tsk.setDescription(rs.getString("description"));
-					//Falta setCreatedDate
-					String str = rs.getString("deadline_date");
-					if (str != null) {
-						tsk.setDeadline(LocalDate.parse(str));
-					}
-					tsk.setCompleted(rs.getBoolean("state"));
-					arrayTask.add(tsk);
+					String name = rs.getString("name");
+					String description = rs.getString("description");
+					int taskId = rs.getInt("id");
+					int listId = rs.getInt("list_id");
+					String deadline_str = rs.getString("deadline_date");
+					LocalDate deadline = null;
+					if (deadline_str != null)
+						deadline = LocalDate.parse(deadline_str);
+					String created_str = rs.getString("created_date");
+					LocalDate created = null;
+					if (created_str != null)
+						created = LocalDate.parse(created_str);
+					Boolean state = rs.getBoolean("state");	
+					
+					arrayTask.add(new PersonalTask(name, taskId, description, created, deadline, state, listId));
 				}
 				return arrayTask;
 			} else {
