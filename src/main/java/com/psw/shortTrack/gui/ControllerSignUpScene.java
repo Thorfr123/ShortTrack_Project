@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.Collections;
 
 import com.psw.shortTrack.data.Account;
+import com.psw.shortTrack.data.User;
 import com.psw.shortTrack.database.AccountsDatabase;
 
 import javafx.event.ActionEvent;
@@ -54,23 +55,21 @@ public class ControllerSignUpScene {
 			return;
 		
 		String name = firstName + " " +  lastName;
-		
+		Account account;
 		try {
 			if (AccountsDatabase.createAccount(username, password, email, firstName, lastName) < 0) {
 				showNotification("There was an unknown error");
 				return;
 			}
+			account = new Account(username,password,name,email);
 		} catch (SQLException e1) {
 			showNotification("Error! Please, check your conection");
 			return;
 		}
 		
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("LogoutScene.fxml"));
-		root = loader.load();
-		ControllerLogoutScene logoutController = loader.getController();
-		logoutController.displayName(name);
-		logoutController.displayEmail(email);
+		User.setAccount(account);
 		
+		root = FXMLLoader.load(getClass().getResource("LogoutScene.fxml"));
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
 		App.loadScene(root,stage);
 		stage.show();
