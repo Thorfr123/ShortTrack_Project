@@ -6,6 +6,10 @@ import com.psw.shortTrack.data.Task;
 
 public class GroupTasksDatabase extends Database {
 
+	public static void createTask() {
+		
+	}
+	
 	public static ArrayList<Task> getAllTasks(int group_id) {
 		return null;
 	}

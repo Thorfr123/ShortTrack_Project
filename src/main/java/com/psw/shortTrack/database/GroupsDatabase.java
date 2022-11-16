@@ -8,7 +8,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import com.psw.shortTrack.data.Group;
-import com.psw.shortTrack.data.List;
 import com.psw.shortTrack.data.Task;
 
 public class GroupsDatabase extends Database{

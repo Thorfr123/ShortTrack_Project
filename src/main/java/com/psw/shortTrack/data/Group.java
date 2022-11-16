@@ -42,7 +42,7 @@ public class Group {
 		this.manager = manager;
 		this.id = id;
 		this.taskList = taskList;
-		this.members = members;
+		this.setMembers(members);
 	}
 	
 	public boolean checkName(String name) {
@@ -75,6 +75,14 @@ public class Group {
 		name = newName;
 	}
 	
+	public ArrayList<String> getMembers() {
+		return members;
+	}
+
+	public void setMembers(ArrayList<String> members) {
+		this.members = members;
+	}
+	
 	public void addTask(Task newTask) {
 		taskList.add(newTask);
 	}
@@ -86,4 +94,5 @@ public class Group {
 	public ArrayList<Task> getTaskList() {
 		return taskList;
 	}
+
 }
