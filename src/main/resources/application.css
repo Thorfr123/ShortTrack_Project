@@ -10,6 +10,11 @@
     -fx-font-weight: bold;
 }
 
+.label.manager {
+    -fx-font-size: 11;
+    -fx-font-weight: bold;
+}
+
 .date-picker {
 	-fx-font: 14px "System";
 }

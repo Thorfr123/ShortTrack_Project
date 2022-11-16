@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import com.psw.shortTrack.data.Account;
+import com.psw.shortTrack.data.Group;
 import com.psw.shortTrack.data.List;
 import com.psw.shortTrack.data.Task;
 import com.psw.shortTrack.data.User;
@@ -82,14 +83,15 @@ public class ControllerLogoutScene {
 	private Parent root;
 	
 	private static ArrayList<List> lists;
-	//private static ArrayList<Group> groups;
+	private static ArrayList<Group> groups;
 	private static Account account;
 	private static List list;
+	private static Group group;
+	private static List search;
 	
 	private String[] searchOptions = {"Name", "Created Date", "Deadline"};
 	
-	private int SEARCH_LIST_ID = 0;
-	
+	//private int SEARCH_LIST_ID = 0;
 	
 	@FXML
     public void initialize() {
@@ -112,6 +114,9 @@ public class ControllerLogoutScene {
 		if(lists == null)
 			lists = User.getLists();
 		
+		if(groups == null)
+			groups = User.getGroups();
+		
 		for(List l : lists) {
 			ListButton listButton = new ListButton(l);
 			listButton.setOnAction(event -> {
@@ -120,11 +125,21 @@ public class ControllerLogoutScene {
 			listsBox.getChildren().add(listButton);
 		}
 		
-		if ((list != null) && (list.getID() != SEARCH_LIST_ID) && !lists.contains(list)) {
-			list = null;
+		for(Group g : groups) {
+			GroupButton groupButton = new GroupButton(g);
+			groupButton.setOnAction(event -> {
+		        changeGroup(event);
+		    });
+			groupsBox.getChildren().add(groupButton);
 		}
 		
-		if(list == null) {
+		if((list != null) && !lists.contains(list))
+			list = null;
+		
+		if((group != null) && !groups.contains(group))
+			list = null;
+		
+		if((list == null) && (group == null) && (search == null)) {
 			listNameLabel.setText("Choose one List or Group!");
 			return;
 		}
@@ -133,6 +148,8 @@ public class ControllerLogoutScene {
     }
 	
 	public void logout(ActionEvent e) throws IOException {
+		
+		User.setLogedIn(false);
 		
 		root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
@@ -161,6 +178,8 @@ public class ControllerLogoutScene {
 				return;
 			}	
 			
+			User.setLogedIn(false);
+			
 			root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
 			App.loadScene(root,stage);
@@ -170,16 +189,7 @@ public class ControllerLogoutScene {
 		}
 		
 	}
-	
-	public void displayName(String name) {
-		printNameLabel.setText(name);
-	}
-	
-	public void displayEmail(String email) {
-		printEmailLabel.setText(email);
-	}
-	
-	
+		
 	public void addList(ActionEvent e) {
 		
 		removeErrorNotifications();
@@ -214,7 +224,33 @@ public class ControllerLogoutScene {
 	
 	public void addGroup(ActionEvent e) {
 		
-		System.out.println("addGroup!");
+		removeErrorNotifications();
+		
+		String groupName = newGroupName.getText();
+		
+		if(groupName.isBlank())
+			return;
+		
+		newGroupName.clear();
+		
+		for(Group g : groups) {
+			if(g.getName().equals(groupName) && g.getManager().equals(account.getEmail())) {
+				Pane newBox = (Pane)newListBox;
+				String notification = "This group already exist!";
+				showNotification(notification,newBox);
+				newGroupName.getStyleClass().add("error");
+				return;
+			}
+		}
+		
+		Group newGroup = new Group(groupName,account.getEmail());
+		groups.add(newGroup);
+		
+		GroupButton groupButton = new GroupButton(newGroup);
+		groupButton.setOnAction(event -> {
+	        changeGroup(event);
+	    });
+		groupsBox.getChildren().add(groupButton);
 		
 	}
 	
@@ -229,6 +265,17 @@ public class ControllerLogoutScene {
 		
 		newTaskName.clear();
 		
+		if(list != null)
+			addTaskToList(taskName);
+		else if(group != null)
+			addTaskToGroup(taskName);
+		else
+			System.out.println("Algum erro aconteceu v1!");
+		
+	}
+	
+	public void addTaskToList(String taskName) {
+	
 		if(list.checkName(taskName)) {
 			Pane newBox = (Pane)newTaskBox;
 			String notification = "This task already exist!";
@@ -239,6 +286,34 @@ public class ControllerLogoutScene {
 		
 		Task newTask = new Task(taskName,list.getID());
 		list.addTask(newTask);
+		
+		TaskBar taskBar = new TaskBar(newTask);
+		CheckBox taskCheckBox = taskBar.getCheckBox();
+		Button taskButton = taskBar.getButton();
+		
+		taskCheckBox.setOnAction(event -> {
+            checkTask(event);
+        });
+		taskButton.setOnAction(event -> {
+            editTask(event);
+        });
+		
+		tasksBox.getChildren().add(taskBar);
+		
+	}
+	
+	public void addTaskToGroup(String taskName) {
+		
+		if(group.checkName(taskName)) {
+			Pane newBox = (Pane)newTaskBox;
+			String notification = "This task already exist!";
+			showNotification(notification,newBox);
+			newTaskName.getStyleClass().add("error");
+			return;
+		}
+		
+		Task newTask = new Task(taskName,group.getID());
+		group.addTask(newTask);
 		
 		TaskBar taskBar = new TaskBar(newTask);
 		CheckBox taskCheckBox = taskBar.getCheckBox();
@@ -308,9 +383,25 @@ public class ControllerLogoutScene {
 	public void changeList(ActionEvent e) {
 		
 		removeErrorNotifications();
+		group = null;
+		search = null;
 		
 		ListButton listButton = (ListButton)e.getSource();
 		list = listButton.getList();
+		
+		tasksBox.getChildren().clear();
+		loadTasks();
+		
+	}
+	
+	public void changeGroup(ActionEvent e) {
+		
+		removeErrorNotifications();
+		list = null;
+		search = null;
+		
+		GroupButton groupButton = (GroupButton)e.getSource();
+		group = groupButton.getGroup();
 		
 		tasksBox.getChildren().clear();
 		loadTasks();
@@ -332,6 +423,12 @@ public class ControllerLogoutScene {
 		} catch (IOException exeption) {
 			exeption.printStackTrace();
 		}	
+		
+	}
+	
+	public void editGroup(ActionEvent e) {
+		
+		System.out.println("addGroup!");
 		
 	}
 	
@@ -464,9 +561,8 @@ public class ControllerLogoutScene {
 	}
 	
 	private void loadTasks() {
-		
-		listNameLabel.setText(list.getName());
-		boolean searchMode = (list.getID() == SEARCH_LIST_ID);
+
+		boolean searchMode = (search != null);
 		
 		if(searchMode)
 			newTaskBox.getChildren().remove(addTaskBox);
@@ -484,9 +580,44 @@ public class ControllerLogoutScene {
 		editListButton.setVisible(true);
 		sortByMenu.setVisible(true);
 		
+		if(list != null)
+			loadListTasks();
+		else if(group != null)
+			loadGroupTasks();
+		else
+			System.out.println("Algum erro aconteceu v2!");
+	}
+	
+	private void loadListTasks() {
+		
+		listNameLabel.setText(list.getName());
 		ArrayList<Task> tasks = list.getTaskList();
 		for(Task t : tasks) {
-			TaskBar taskBar = new TaskBar(t, searchMode);
+			TaskBar taskBar = new TaskBar(t);
+			CheckBox taskCheckBox = taskBar.getCheckBox();
+			Button taskButton = taskBar.getButton();
+			
+			if(t.chekCompleted())
+				taskCheckBox.setSelected(true);
+			
+			taskCheckBox.setOnAction(event -> {
+	            checkTask(event);
+	        });
+			taskButton.setOnAction(event -> {
+	            editTask(event);
+	        });
+			
+			tasksBox.getChildren().add(taskBar);
+		}
+		
+	}
+	
+	private void loadGroupTasks() {
+		
+		listNameLabel.setText(group.getName());
+		ArrayList<Task> tasks = group.getTaskList();
+		for(Task t : tasks) {
+			TaskBar taskBar = new TaskBar(t);
 			CheckBox taskCheckBox = taskBar.getCheckBox();
 			Button taskButton = taskBar.getButton();
 			
@@ -518,10 +649,12 @@ public class ControllerLogoutScene {
 		logoutBox.getChildren().remove(notificationLabel);
 		newTaskBox.getChildren().remove(notificationLabel);
 		newListBox.getChildren().remove(notificationLabel);
+		newGroupBox.getChildren().remove(notificationLabel);
 		searchVerticalBox.getChildren().remove(notificationLabel);
 		
 		newListName.getStyleClass().removeAll(Collections.singleton("error")); 
 		newTaskName.getStyleClass().removeAll(Collections.singleton("error")); 
+		newGroupName.getStyleClass().removeAll(Collections.singleton("error")); 
 		searchBarField.getStyleClass().removeAll(Collections.singleton("error"));
 		
 	}

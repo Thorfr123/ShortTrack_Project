@@ -149,7 +149,7 @@
                      <center>
                         <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: transparent;">
                            <content>
-                              <VBox fx:id="listsBox1" spacing="10.0">
+                              <VBox fx:id="groupsBox" spacing="10.0">
                                  <padding>
                                     <Insets left="10.0" right="10.0" top="10.0" />
                                  </padding>
