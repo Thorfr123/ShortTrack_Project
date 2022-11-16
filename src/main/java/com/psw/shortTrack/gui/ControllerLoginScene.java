@@ -80,10 +80,9 @@ public class ControllerLoginScene {
 	
 	private static ArrayList<List> lists;
 	private static List list;
+	private static List search;
 	
 	private String[] searchOptions = {"Name", "Created Date", "Deadline"};
-	
-	private int SEARCH_LIST_ID = 0;
 	
 	@FXML
     public void initialize() {
@@ -107,11 +106,10 @@ public class ControllerLoginScene {
 			listsBox.getChildren().add(listButton);
 		}
 		
-		if ((list != null) && (list.getID() != SEARCH_LIST_ID) && !lists.contains(list)) {
+		if((list != null) && !lists.contains(list))
 			list = null;
-		}
 		
-		if(list == null) {
+		if((list == null) && (search == null)) {
 			listNameLabel.setText("Choose one List!");
 			return;
 		}
@@ -294,7 +292,7 @@ public class ControllerLoginScene {
 			App.loadScene(root,stage);
 			
 			ControllerEditTaskScene controller = loader.getController();
-			controller.initData(newTask, list);	
+			controller.initData(newTask, search);	
 
 			stage.show();
 			
@@ -307,6 +305,8 @@ public class ControllerLoginScene {
 	public void changeList(ActionEvent e) {
 		
 		removeErrorNotifications();
+		
+		search = null;
 		
 		ListButton listButton = (ListButton)e.getSource();
 		list = listButton.getList();
@@ -348,7 +348,7 @@ public class ControllerLoginScene {
 			App.loadScene(root,stage);
 			
 			ControllerEditTaskScene controller = loader.getController();
-			controller.initData(task, list);	
+			controller.initData(task, search);	
 
 			stage.show();
 			
@@ -374,14 +374,20 @@ public class ControllerLoginScene {
 		
 		String option = ((MenuItem)e.getSource()).getText();
 		
+		List sortlist = null;
+		if(list != null)
+			sortlist = list;
+		else if(search != null)
+			sortlist = search;
+		
 		if(option.equals("Name"))
-			list.sortByName();
+			sortlist.sortByName();
 		else if(option.equals("Created Date"))
-			list.sortByCreatedDate();
+			sortlist.sortByCreatedDate();
 		else if(option.equals("Deadline"))
-			list.sortByDeadline();
+			sortlist.sortByDeadline();
 		else if(option.equals("Completed"))
-			list.sortByCompleted();
+			sortlist.sortByCompleted();
 		
 		tasksBox.getChildren().clear();
 		loadTasks();
@@ -456,7 +462,8 @@ public class ControllerLoginScene {
 				return;
 		}
 		
-		list = searchList;
+		list = null;
+		search = searchList;
 		tasksBox.getChildren().clear();
 		loadTasks();
 
@@ -464,8 +471,16 @@ public class ControllerLoginScene {
 	
 	private void loadTasks() {
 		
-		listNameLabel.setText(list.getName());
-		boolean searchMode = (list.getID() == SEARCH_LIST_ID);
+		List loadList;
+		if(list != null)
+			loadList = list;
+		else if(search != null)
+			loadList = search;
+		else
+			loadList = null;
+		
+		listNameLabel.setText(loadList.getName());
+		boolean searchMode = (search != null);
 		
 		if(searchMode)
 			newTaskBox.getChildren().remove(addTaskBox);
@@ -483,7 +498,7 @@ public class ControllerLoginScene {
 		editListButton.setVisible(true);
 		sortByMenu.setVisible(true);
 		
-		ArrayList<Task> tasks = list.getTaskList();
+		ArrayList<Task> tasks = loadList.getTaskList();
 		for(Task t : tasks) {
 			TaskBar taskBar = new TaskBar(t, searchMode);
 			CheckBox taskCheckBox = taskBar.getCheckBox();

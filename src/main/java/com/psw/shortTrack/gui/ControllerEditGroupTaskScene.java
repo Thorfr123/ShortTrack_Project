@@ -3,6 +3,8 @@ package com.psw.shortTrack.gui;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Collections;
+
+import com.psw.shortTrack.data.Group;
 import com.psw.shortTrack.data.List;
 import com.psw.shortTrack.data.Task;
 import com.psw.shortTrack.data.User;
@@ -21,7 +23,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-public class ControllerEditTaskScene {
+public class ControllerEditGroupTaskScene {
 	
 	@FXML
 	private TextField taskNameField;
@@ -35,7 +37,7 @@ public class ControllerEditTaskScene {
 	private Label notificationLabel;
 
 	private Task task;
-	private List list;
+	private Group group;
 	private List search;
 	
 	private Stage stage;
@@ -45,7 +47,7 @@ public class ControllerEditTaskScene {
 		this.task = task;
 		this.search = search;
 		
-		list = User.getList(task.getParentID());
+		group = User.getGroup(task.getParentID());
 		
 		taskNameField.setText(task.getName());
 		descriptionField.setText(task.getDescription());
@@ -73,7 +75,7 @@ public class ControllerEditTaskScene {
 
 		if(alert.showAndWait().get() == ButtonType.OK){
 			
-			list.removeTask(task);
+			group.removeTask(task);
 			
 			if(search != null)
 				search.removeTask(task);
@@ -100,7 +102,7 @@ public class ControllerEditTaskScene {
 			return;
 		}
 			
-		if(!newTaskName.equals(task.getName()) && list.checkName(newTaskName)) {
+		if(!newTaskName.equals(task.getName()) && group.checkName(newTaskName)) {
 			showNotification("Already exist a task with that name!");
 			taskNameField.getStyleClass().add("error");
 			return;
@@ -127,7 +129,7 @@ public class ControllerEditTaskScene {
 		
 		// Cancel the complete task creation
 		if(task.getName().isBlank())
-			list.removeTask(task);
+			group.removeTask(task);
 		
 		root = App.getMainScene();
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
