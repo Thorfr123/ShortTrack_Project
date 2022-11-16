@@ -29,7 +29,7 @@ public class User {
 		User.lists = lists;
 	}
 	
-	public static void setGroups(ArrayList<Group> lists) {
+	public static void setGroups(ArrayList<Group> groups) {
 		User.groups = groups;
 	}
 	

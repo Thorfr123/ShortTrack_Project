@@ -3,10 +3,7 @@ package com.psw.shortTrack.data;
 import java.util.ArrayList;
 
 public class Group {
-	/**
-	 * Variavel para a escrita/leitura offline dos dados
-	 */
-	private static final long serialVersionUID = -6310572270119855024L;
+
 	public static int idCount = 1;
 	private int id;
 	private String name;
