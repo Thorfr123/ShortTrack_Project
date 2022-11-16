@@ -9,11 +9,10 @@ import java.sql.Statement;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class Database {
-	protected static ComboPooledDataSource dataSource = null;
+	private static ComboPooledDataSource dataSource;
 	
 	// Initial setup for the database
 	static {
-		
 		// Cria uma forma de manter a conecção persistente
 		dataSource = new ComboPooledDataSource();
 		try {
@@ -81,9 +80,13 @@ public class Database {
 		}
 	}
 	
+	protected static Connection getConnection() throws SQLException {
+		return dataSource.getConnection();
+	}
+	
 	protected static String executeQuery_SingleColumn(String query) throws SQLException{
 		
-		try (Connection connection = dataSource.getConnection()){
+		try (Connection connection = getConnection()){
 			if (connection != null) {
 				Statement stmt = connection.createStatement();
 				ResultSet rs = stmt.executeQuery(query);
@@ -92,23 +95,20 @@ public class Database {
 				}
 			} else {
 				throw new SQLException("Connection failed!");
-			}
-			
+			}	
 		}
-		
 		return null;
 	}
 	
 	protected static int executeUpdate(String query) throws SQLException{
 		
-		try (Connection connection = dataSource.getConnection()){
+		try (Connection connection = getConnection()){
 			if (connection != null) {
 				Statement stmt = connection.createStatement();
 				return stmt.executeUpdate(query);
 			} else {
 				throw new SQLException("Connection failed!");
 			}
-		}
-		
+		}	
 	}
 }

@@ -101,7 +101,7 @@ public class AccountsDatabase extends Database{
 		String query = 	  "SELECT email, first_name, last_name FROM projeto.account "
 				+ "WHERE username='" + username + "' AND password='" + password+ "';";
 		
-		try (Connection connection = dataSource.getConnection()){
+		try (Connection connection = getConnection()){
 			if (connection != null) {
 				Statement stmt = connection.createStatement();
 				ResultSet rs = stmt.executeQuery(query);

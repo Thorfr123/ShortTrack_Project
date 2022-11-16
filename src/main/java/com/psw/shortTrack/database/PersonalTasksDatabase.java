@@ -61,7 +61,7 @@ public class PersonalTasksDatabase extends Database {
 	public static Task getTask(int id) throws SQLException{
 		String query = "SELECT * FROM projeto.personal_tasks WHERE id='" + id + "';";
 		
-		try (Connection connection = dataSource.getConnection()){
+		try (Connection connection = getConnection()){
 			if (connection != null) {
 				Statement stmt = connection.createStatement();
 				ResultSet rs = stmt.executeQuery(query);
@@ -92,7 +92,7 @@ public class PersonalTasksDatabase extends Database {
 	public static ArrayList<Task> getAllTasks (int id_list) throws SQLException {
 		String query = "SELECT * FROM projeto.personal_tasks WHERE list_id = '" + id_list + "';";
 		
-		try (Connection connection = dataSource.getConnection()){
+		try (Connection connection = getConnection()){
 			if (connection != null) {
 				Statement stmt = connection.createStatement();
 				ResultSet rs = stmt.executeQuery(query);

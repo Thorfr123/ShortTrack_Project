@@ -63,7 +63,7 @@ public class PersonalListsDatabase extends Database{
 	public static List getList(int id) throws SQLException{
 		String query = "SELECT name FROM projeto.personal_lists WHERE id='" + id + "';";
 		
-		try (Connection connection = dataSource.getConnection()){
+		try (Connection connection = getConnection()){
 			if (connection != null) {
 				Statement stmt = connection.createStatement();
 				ResultSet rs = stmt.executeQuery(query);
@@ -89,7 +89,7 @@ public class PersonalListsDatabase extends Database{
 	public static ArrayList<List> getAllLists (String email) throws SQLException {
 		String query = "SELECT * FROM projeto.personal_lists WHERE email='" + email + "';";
 		
-		try (Connection connection = dataSource.getConnection()){
+		try (Connection connection = getConnection()){
 			if (connection != null) {
 				Statement stmt = connection.createStatement();
 				ResultSet rs = stmt.executeQuery(query);
