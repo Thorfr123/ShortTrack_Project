@@ -27,6 +27,7 @@ public class Database {
 		
 		// Inicializa a tabela se não existir - não utilizado, mas é uma boa prática		
 		String query =    "CREATE SCHEMA IF NOT EXISTS projeto;"
+				
 						+ "CREATE TABLE IF NOT EXISTS projeto.account ();"
 						+ "ALTER TABLE projeto.account ADD COLUMN IF NOT EXISTS username character varying(32) NOT NULL;"
 						+ "ALTER TABLE projeto.account ADD COLUMN IF NOT EXISTS email character varying(64) NOT NULL;"
@@ -36,6 +37,7 @@ public class Database {
 						+ "ALTER TABLE projeto.account ADD COLUMN IF NOT EXISTS last_name character varying(32);"
 						+ "ALTER TABLE ONLY projeto.account DROP CONSTRAINT IF EXISTS account_pkey;"
 						+ "ALTER TABLE ONLY projeto.account ADD CONSTRAINT account_pkey PRIMARY KEY (username, email);"
+						
 						+ "CREATE TABLE IF NOT EXISTS projeto.personal_tasks ();"
 						+ "ALTER TABLE projeto.personal_tasks ADD COLUMN IF NOT EXISTS id integer NOT NULL;"
 						+ "ALTER TABLE projeto.personal_tasks ADD COLUMN IF NOT EXISTS list_id integer NOT NULL;"
@@ -56,6 +58,7 @@ public class Database {
 						+ "ALTER TABLE ONLY projeto.personal_tasks ALTER COLUMN id SET DEFAULT nextval('projeto.tasks_id_seq'::regclass);"
 						+ "ALTER TABLE ONLY projeto.personal_tasks DROP CONSTRAINT IF EXISTS tasks_pkey;"
 						+ "ALTER TABLE ONLY projeto.personal_tasks ADD CONSTRAINT tasks_pkey PRIMARY KEY (id);"
+						
 						+ "CREATE TABLE IF NOT EXISTS projeto.personal_lists ();"
 						+ "ALTER TABLE projeto.personal_lists ADD COLUMN IF NOT EXISTS id integer NOT NULL;"
 						+ "ALTER TABLE projeto.personal_lists ADD COLUMN IF NOT EXISTS email character varying (64) NOT NULL;"
@@ -71,6 +74,7 @@ public class Database {
 						+ "ALTER TABLE ONLY projeto.personal_lists ALTER COLUMN id SET DEFAULT nextval('projeto.lists_id_seq'::regclass);"
 						+ "ALTER TABLE ONLY projeto.personal_lists DROP CONSTRAINT IF EXISTS lists_pkey;"
 						+ "ALTER TABLE ONLY projeto.personal_lists ADD CONSTRAINT lists_pkey PRIMARY KEY (id);"
+						
 						+ "CREATE TABLE IF NOT EXISTS projeto.groups ();"
 						+ "ALTER TABLE projeto.groups ADD COLUMN IF NOT EXISTS id integer NOT NULL;"
 						+ "ALTER TABLE projeto.groups ADD COLUMN IF NOT EXISTS name character varying (32) NOT NULL;"
@@ -85,7 +89,22 @@ public class Database {
 						+ "ALTER SEQUENCE projeto.groups_id_seq OWNED BY projeto.groups.id;"
 						+ "ALTER TABLE ONLY projeto.groups ALTER COLUMN id SET DEFAULT nextval('projeto.groups_id_seq'::regclass);"
 						+ "ALTER TABLE ONLY projeto.groups DROP CONSTRAINT IF EXISTS groups_pkey;"
-						+ "ALTER TABLE ONLY projeto.groups ADD CONSTRAINT groups_pkey PRIMARY KEY (id);";
+						+ "ALTER TABLE ONLY projeto.groups ADD CONSTRAINT groups_pkey PRIMARY KEY (id);"
+						
+						+ "CREATE TABLE IF NOT EXISTS projeto.group_tasks ();"
+						+ "ALTER TABLE projeto.group_tasks ADD COLUMN IF NOT EXISTS id integer NOT NULL;"
+						+ "ALTER TABLE projeto.group_tasks ADD COLUMN IF NOT EXISTS group_id integer NOT NULL;"
+						+ "ALTER TABLE projeto.group_tasks ADD COLUMN IF NOT EXISTS manager character varying(64) NOT NULL;"
+						+ "ALTER TABLE projeto.group_tasks ADD COLUMN IF NOT EXISTS assigned_to character varying(64);"
+						+ "ALTER TABLE projeto.group_tasks ADD COLUMN IF NOT EXISTS name character varying(32) NOT NULL;"
+						+ "ALTER TABLE projeto.group_tasks ADD COLUMN IF NOT EXISTS description character varying(128);"
+						+ "ALTER TABLE projeto.group_tasks ADD COLUMN IF NOT EXISTS created_date date;"
+						+ "ALTER TABLE projeto.group_tasks ADD COLUMN IF NOT EXISTS deadline_date date;"
+						+ "ALTER TABLE projeto.group_tasks ADD COLUMN IF NOT EXISTS state boolean NOT NULL;"
+						+ "ALTER SEQUENCE projeto.tasks_id_seq OWNED BY projeto.group_tasks.id;"
+						+ "ALTER TABLE ONLY projeto.group_tasks ALTER COLUMN id SET DEFAULT nextval('projeto.tasks_id_seq'::regclass);"
+						+ "ALTER TABLE ONLY projeto.group_tasks DROP CONSTRAINT IF EXISTS group_tasks_pkey;"
+						+ "ALTER TABLE ONLY projeto.group_tasks ADD CONSTRAINT group_tasks_pkey PRIMARY KEY (id);";
 		try {
 			executeUpdate(query);
 		} catch (SQLException e) {

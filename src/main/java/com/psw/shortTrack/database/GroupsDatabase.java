@@ -23,6 +23,6 @@ public class GroupsDatabase extends Database{
 		
 		
 		return Integer.parseInt(executeQuery_SingleColumn(query));
-	}	
+	}
 	
 }
