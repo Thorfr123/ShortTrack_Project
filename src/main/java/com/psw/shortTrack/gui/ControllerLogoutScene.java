@@ -136,7 +136,7 @@ public class ControllerLogoutScene {
 			list = null;
 		
 		if((group != null) && !groups.contains(group))
-			list = null;
+			group = null;
 		
 		if((list == null) && (group == null) && (search == null)) {
 			listNameLabel.setText("Choose one List or Group!");
@@ -273,7 +273,7 @@ public class ControllerLogoutScene {
 		
 	}
 	
-	public Task addTaskToList(String taskName) {
+	private Task addTaskToList(String taskName) {
 	
 		if(list.checkName(taskName)) {
 			Pane newBox = (Pane)newTaskBox;
@@ -303,7 +303,7 @@ public class ControllerLogoutScene {
 		
 	}
 	
-	public Task addTaskToGroup(String taskName) {
+	private Task addTaskToGroup(String taskName) {
 		
 		if(group.checkName(taskName)) {
 			Pane newBox = (Pane)newTaskBox;
@@ -324,7 +324,7 @@ public class ControllerLogoutScene {
             checkTask(event);
         });
 		taskButton.setOnAction(event -> {
-            editTask(event);
+            editGroupTask(event);
         });
 		
 		tasksBox.getChildren().add(taskBar);
@@ -345,8 +345,6 @@ public class ControllerLogoutScene {
 			newTask = addTaskToList(taskName);
 		else if(group != null)
 			newTask = addTaskToGroup(taskName);
-		else
-			System.out.println("Algum erro aconteceu v3!");
 		
 		if(newTask == null)
 			return;
@@ -375,7 +373,7 @@ public class ControllerLogoutScene {
 				App.loadScene(root,stage);
 				
 				ControllerEditGroupTaskScene controller = loader.getController();
-				controller.initData(newTask, group);	
+				controller.initData(newTask, search);	
 	
 				stage.show();
 				
@@ -447,25 +445,44 @@ public class ControllerLogoutScene {
 		Button taskButton = (Button)e.getSource();
 		TaskBar taskBar = (TaskBar)taskButton.getParent();
 		Task task = taskBar.getTask();
-		
-		List list = User.getList(task.getParentID());
-		
+
 		try {
-			
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditTaskScene.fxml"));
 			root = loader.load();
 			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
 			App.loadScene(root,stage);
-			
+				
 			ControllerEditTaskScene controller = loader.getController();
-			controller.initData(task, list);	
+			controller.initData(task, search);	
+	
+			stage.show();
+				
+		} catch (IOException exeption) {
+			exeption.printStackTrace();
+		}
+		
+	}
+	
+	public void editGroupTask(ActionEvent e) {
+		
+		Button taskButton = (Button)e.getSource();
+		TaskBar taskBar = (TaskBar)taskButton.getParent();
+		Task task = taskBar.getTask();
+		
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditGroupTaskScene.fxml"));
+			root = loader.load();
+			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
+			App.loadScene(root,stage);
+			
+			ControllerEditGroupTaskScene controller = loader.getController();
+			controller.initData(task, search);	
 
 			stage.show();
 			
 		} catch (IOException exeption) {
 			exeption.printStackTrace();
 		}
-		
 	}
 	
 	public void checkTask(ActionEvent e) {
@@ -582,7 +599,7 @@ public class ControllerLogoutScene {
 	            checkTask(event);
 	        });
 			taskButton.setOnAction(event -> {
-	            editTask(event);
+	            editGroupTask(event);
 	        });
 			
 			tasksBox.getChildren().add(taskBar);

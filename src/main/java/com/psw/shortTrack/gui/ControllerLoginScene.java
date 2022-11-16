@@ -374,14 +374,20 @@ public class ControllerLoginScene {
 		
 		String option = ((MenuItem)e.getSource()).getText();
 		
+		List sortlist = null;
+		if(list != null)
+			sortlist = list;
+		else if(search != null)
+			sortlist = search;
+		
 		if(option.equals("Name"))
-			list.sortByName();
+			sortlist.sortByName();
 		else if(option.equals("Created Date"))
-			list.sortByCreatedDate();
+			sortlist.sortByCreatedDate();
 		else if(option.equals("Deadline"))
-			list.sortByDeadline();
+			sortlist.sortByDeadline();
 		else if(option.equals("Completed"))
-			list.sortByCompleted();
+			sortlist.sortByCompleted();
 		
 		tasksBox.getChildren().clear();
 		loadTasks();
