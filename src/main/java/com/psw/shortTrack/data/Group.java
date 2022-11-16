@@ -11,7 +11,7 @@ public class Group {
 	private int id;
 	private String name;
 	private ArrayList<Task> taskList;
-	//private ArrayList<String> members;
+	private ArrayList<String> members;
 	private String manager;
 	
 	public Group(String name, String manager) {
@@ -35,6 +35,14 @@ public class Group {
 		this.manager = manager;
 		this.id = id;
 		this.taskList = taskList;
+	}
+	
+	public Group(String name, String manager, int id, ArrayList<Task> taskList, ArrayList<String> members) {
+		this.name = name;
+		this.manager = manager;
+		this.id = id;
+		this.taskList = taskList;
+		this.members = members;
 	}
 	
 	public boolean checkName(String name) {
