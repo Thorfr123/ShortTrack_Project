@@ -14,18 +14,58 @@ public class Database {
 	// Initial setup for the database
 	static {
 		// Cria uma forma de manter a conecção persistente
-		dataSource = new ComboPooledDataSource();
 		try {
-			dataSource.setDriverClass("org.postgresql.Driver");
-			dataSource.setJdbcUrl("jdbc:postgresql://db.fe.up.pt:5432/pswa0502");
-			dataSource.setUser("pswa0502");
-			dataSource.setPassword("jKWlEeAs");
-			dataSource.setCheckoutTimeout(5000);
-		} catch (PropertyVetoException e){
-			System.out.println(e);
+			config();
+			setup();
+		} catch (PropertyVetoException pve) {
+			pve.printStackTrace();
+		} catch (SQLException sqle) {
+			sqle.printStackTrace();
 		}
+	}
+	
+	protected static Connection getConnection() throws SQLException {
+		return dataSource.getConnection();
+	}
+	
+	public static void config() throws PropertyVetoException {
+		dataSource = new ComboPooledDataSource();
+		dataSource.setDriverClass("org.postgresql.Driver");
+		dataSource.setJdbcUrl("jdbc:postgresql://db.fe.up.pt:5432/pswa0502");
+		dataSource.setUser("pswa0502");
+		dataSource.setPassword("jKWlEeAs");
+		dataSource.setCheckoutTimeout(5000);
+	}
+	
+	protected static String executeQueryReturnSingleColumn(String query) throws SQLException{
 		
-		// Inicializa a tabela se não existir - não utilizado, mas é uma boa prática		
+		try (Connection connection = getConnection()){
+			if (connection != null) {
+				Statement stmt = connection.createStatement();
+				ResultSet rs = stmt.executeQuery(query);
+				if (rs.next()) {
+					return rs.getString(1);
+				}
+			} else {
+				throw new SQLException("Connection failed!");
+			}	
+		}
+		return null;
+	}
+	
+	protected static int executeUpdate(String query) throws SQLException{
+		
+		try (Connection connection = getConnection()){
+			if (connection != null) {
+				Statement stmt = connection.createStatement();
+				return stmt.executeUpdate(query);
+			} else {
+				throw new SQLException("Connection failed!");
+			}
+		}
+	}
+	
+	public static void setup() throws SQLException {		
 		String query =    "CREATE SCHEMA IF NOT EXISTS projeto;"
 				
 						+ "CREATE TABLE IF NOT EXISTS projeto.account ();"
@@ -105,44 +145,7 @@ public class Database {
 						+ "ALTER TABLE ONLY projeto.group_tasks ALTER COLUMN id SET DEFAULT nextval('projeto.tasks_id_seq'::regclass);"
 						+ "ALTER TABLE ONLY projeto.group_tasks DROP CONSTRAINT IF EXISTS group_tasks_pkey;"
 						+ "ALTER TABLE ONLY projeto.group_tasks ADD CONSTRAINT group_tasks_pkey PRIMARY KEY (id);";
-		try {
-			System.out.println(query);
-			executeUpdate(query);
-		} catch (SQLException e) {
-			System.out.println(e);
-			System.out.println("There was an conection error in the database setup");
-		}
-	}
-	
-	protected static Connection getConnection() throws SQLException {
-		return dataSource.getConnection();
-	}
-	
-	protected static String executeQuery_SingleColumn(String query) throws SQLException{
 		
-		try (Connection connection = getConnection()){
-			if (connection != null) {
-				Statement stmt = connection.createStatement();
-				ResultSet rs = stmt.executeQuery(query);
-				if (rs.next()) {
-					return rs.getString(1);
-				}
-			} else {
-				throw new SQLException("Connection failed!");
-			}	
-		}
-		return null;
-	}
-	
-	protected static int executeUpdate(String query) throws SQLException{
-		
-		try (Connection connection = getConnection()){
-			if (connection != null) {
-				Statement stmt = connection.createStatement();
-				return stmt.executeUpdate(query);
-			} else {
-				throw new SQLException("Connection failed!");
-			}
-		}	
+		executeUpdate(query);
 	}
 }

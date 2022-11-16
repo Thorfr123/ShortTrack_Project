@@ -33,7 +33,7 @@ public class GroupTasksDatabase extends Database {
 				+ "VALUES ('" + group.getID() + "','" + group.getManager() + "'," + assigned_to + ",'" + tsk.getName() + "'," 
 				+ description + ",'" + tsk.getCreatedDate() + "'," + deadlineString + ",'" + tsk.chekCompleted() + "') RETURNING id;";
 	
-		return Integer.parseInt(executeQuery_SingleColumn(query));
+		return Integer.parseInt(executeQueryReturnSingleColumn(query));
 	}
 	
 	public static ArrayList<Task> getAllTasks(int group_id) throws SQLException {

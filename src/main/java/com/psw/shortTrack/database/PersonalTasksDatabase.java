@@ -46,7 +46,7 @@ public class PersonalTasksDatabase extends Database {
 				+ createdDateString + "," + deadlineDateString + ",'" + state + "')"
 				+ " RETURNING id;";
 		
-		return Integer.parseInt(executeQuery_SingleColumn(query));
+		return Integer.parseInt(executeQueryReturnSingleColumn(query));
 	}
 
 	/**

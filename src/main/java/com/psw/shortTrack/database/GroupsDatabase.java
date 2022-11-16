@@ -26,7 +26,7 @@ public class GroupsDatabase extends Database{
 		
 		query += "}\') RETURNING id;";
 		
-		return Integer.parseInt(executeQuery_SingleColumn(query));
+		return Integer.parseInt(executeQueryReturnSingleColumn(query));
 	}
 	
 	public static ArrayList<Group> getAllGroups(String email) throws SQLException {

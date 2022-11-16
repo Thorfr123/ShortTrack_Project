@@ -25,7 +25,7 @@ public class AccountsDatabase extends Database{
 			query = "SELECT EXISTS (SELECT 1 FROM projeto.account WHERE username='" + user + "' AND password='" + password + "');";
 		}
 		
-		return (executeQuery_SingleColumn(query).equals("t"));
+		return (executeQueryReturnSingleColumn(query).equals("t"));
 	}
 	
 	/**
@@ -38,7 +38,7 @@ public class AccountsDatabase extends Database{
 		String query =   "SELECT EXISTS(SELECT 1 FROM projeto.account "
 							+ "		WHERE email = '" + email + "');";
 		
-		return executeQuery_SingleColumn(query).equals("f");
+		return executeQueryReturnSingleColumn(query).equals("f");
 	}
 	
 	/**
@@ -51,7 +51,7 @@ public class AccountsDatabase extends Database{
 		String query =   "SELECT EXISTS(SELECT 1 FROM projeto.account "
 							+ "		WHERE username = '" + username + "');";
 		
-		return executeQuery_SingleColumn(query).equals("f");
+		return executeQueryReturnSingleColumn(query).equals("f");
 	}
 	
 	
