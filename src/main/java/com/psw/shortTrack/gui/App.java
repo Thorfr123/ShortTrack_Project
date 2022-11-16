@@ -118,4 +118,17 @@ public class App extends Application {
 		stage.setScene(scene);
 		
 	}
+	
+	
+	public static Parent getMainScene() throws IOException {
+		
+		Parent root;
+		
+		if(User.isLogedIn())
+			root = FXMLLoader.load(App.class.getResource("LogoutScene.fxml"));
+		else
+			root = FXMLLoader.load(App.class.getResource("LoginScene.fxml"));
+		
+		return root;
+	}
 }
