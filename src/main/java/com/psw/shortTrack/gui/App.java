@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import com.psw.shortTrack.data.List;
+import com.psw.shortTrack.data.PersonalTask;
 import com.psw.shortTrack.data.Task;
 import com.psw.shortTrack.data.User;
 import com.psw.shortTrack.fileIO.FileIO;
@@ -46,7 +47,7 @@ public class App extends Application {
 			idCounter[0] = calculateTaskIdCounter();
 			idCounter[1] = calculateListIdCounter();
 		}
-		Task.idCount = idCounter[0];
+		PersonalTask.idCount = idCounter[0];
 		List.idCount = idCounter[1];
 		
 		try {
@@ -70,7 +71,7 @@ public class App extends Application {
 			primaryStage.setOnCloseRequest(event -> {
 				try {
 					FileIO.writePersonalListsToFile(User.getLists());
-					FileIO.writeIdCountersToFile(Task.idCount, List.idCount);
+					FileIO.writeIdCountersToFile(PersonalTask.idCount, List.idCount);
 				} catch (IOException e) {
 					System.out.println("Erro a tentar escrever o ficheiro de backup local!");
 				}

@@ -10,7 +10,6 @@ public abstract class Task implements Serializable {
 	
 	private static final long serialVersionUID = -5301804573647411576L;
 	
-	public static int idCount = 1;
 	private String name;
 	private int id;
 	private String description;
@@ -25,11 +24,10 @@ public abstract class Task implements Serializable {
 		
 		createdDate = LocalDate.now();
 		completed = false;
-		id = idCount++;
 	}
 	
 	public Task(String name) {			//need some changes in the database
-		this(name,0);
+		this.name = name;
 	}
 	
 	public Task(String name, int id, String description, LocalDate createdDate, LocalDate deadline, Boolean completed) {
