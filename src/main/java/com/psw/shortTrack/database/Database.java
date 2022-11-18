@@ -18,6 +18,7 @@ public class Database {
 			config();
 			setup();
 		} catch (PropertyVetoException pve) {
+			// Unreachable code
 			pve.printStackTrace();
 		} catch (SQLException sqle) {
 			sqle.printStackTrace();
@@ -51,6 +52,7 @@ public class Database {
 			}	
 		}
 		return null;
+		
 	}
 	
 	protected static int executeUpdate(String query) throws SQLException{
