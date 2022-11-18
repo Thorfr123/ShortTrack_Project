@@ -68,11 +68,9 @@ public class PersonalListsDatabase extends Database{
 				}
 				return arrayList;
 			} else {
-				System.out.println("Connection failed");
+				throw new SQLException("Connection failed");
 			}
 		}
-		
-		return null;
 	}
 	
 	/**

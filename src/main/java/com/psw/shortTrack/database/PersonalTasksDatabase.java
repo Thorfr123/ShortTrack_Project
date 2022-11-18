@@ -15,10 +15,14 @@ import com.psw.shortTrack.data.User;
 public class PersonalTasksDatabase extends Database {
 	
 	/**
-	 * Creates a new task in the database and returns the database id
+	 * Creates a new task in the database and returns the new task's id.
+	 * Doesn't verify if the list exists in the database.
+	 * 
 	 * @param task Task to be added to the database
-	 * @return New id for the task
-	 * @throws SQLException
+	 * @param lst List where the task belong
+	 * @return New id of the task
+	 * 
+	 * @throws SQLException If there was an error in the database connection
 	 */
 	public static int createTask(Task task, List lst) throws SQLException{
 		String 		email			= User.getAccount().getEmail(),
@@ -51,13 +55,23 @@ public class PersonalTasksDatabase extends Database {
 
 	/**
 	 * Deletes the task with the respective id from the database
+	 * 
 	 * @param id ID of the task (in the database)
-	 * @throws SQLException
+	 * 
+	 * @throws SQLException If there was an error in the database connection
 	 */
 	public static void deleteTask(int id) throws SQLException {		
 		executeUpdate("DELETE FROM projeto.personal_tasks WHERE id='" + id + "';");
 	}
 	
+	/**
+	 * Returns the task with this id from the database
+	 * 
+	 * @param id Tasks's id (in the database)
+	 * @return Desired task
+	 * 
+	 * @throws SQLException If there was an error in the database connection
+	 */
 	public static Task getTask(int id) throws SQLException{
 		String query = "SELECT * FROM projeto.personal_tasks WHERE id='" + id + "';";
 		
@@ -66,10 +80,6 @@ public class PersonalTasksDatabase extends Database {
 				Statement stmt = connection.createStatement();
 				ResultSet rs = stmt.executeQuery(query);
 				if (rs.next()) {
-					String name = rs.getString("name");
-					String description = rs.getString("description");
-					int taskId = rs.getInt("id");
-					int listId = rs.getInt("list_id");
 					String deadline_str = rs.getString("deadline_date");
 					LocalDate deadline = null;
 					if (deadline_str != null)
@@ -77,18 +87,31 @@ public class PersonalTasksDatabase extends Database {
 					String created_str = rs.getString("created_date");
 					LocalDate created = null;
 					if (created_str != null)
-						created = LocalDate.parse(created_str);
-					Boolean state = rs.getBoolean("state");					
+						created = LocalDate.parse(created_str);				
 					
-					return new PersonalTask(name, taskId, description, created, deadline, state, listId);
+					return new PersonalTask(rs.getString("name"),
+											rs.getInt("id"),
+											rs.getString("description"),
+											created,
+											deadline,
+											rs.getBoolean("state"),
+											rs.getInt("list_id"));
 				}
 			} else {
-				System.out.println("Connection failed");
+				throw new SQLException("Connection failed");
 			}
 		}
 		return null;
 	}
 	
+	/**
+	 * Returns all the tasks from the list in the database
+	 * 
+	 * @param id_list List
+	 * @return ArrayList with all the list's tasks
+	 * 
+	 * @throws SQLException If there was an error in the database connection
+	 */
 	public static ArrayList<Task> getAllTasks (int id_list) throws SQLException {
 		String query = "SELECT * FROM projeto.personal_tasks WHERE list_id = '" + id_list + "';";
 		
@@ -98,10 +121,6 @@ public class PersonalTasksDatabase extends Database {
 				ResultSet rs = stmt.executeQuery(query);
 				ArrayList<Task> arrayTask = new ArrayList<Task>();
 				while (rs.next()) {
-					String name = rs.getString("name");
-					String description = rs.getString("description");
-					int taskId = rs.getInt("id");
-					int listId = rs.getInt("list_id");
 					String deadline_str = rs.getString("deadline_date");
 					LocalDate deadline = null;
 					if (deadline_str != null)
@@ -110,16 +129,20 @@ public class PersonalTasksDatabase extends Database {
 					LocalDate created = null;
 					if (created_str != null)
 						created = LocalDate.parse(created_str);
-					Boolean state = rs.getBoolean("state");	
 					
-					arrayTask.add(new PersonalTask(name, taskId, description, created, deadline, state, listId));
+					arrayTask.add(new PersonalTask( rs.getString("name"),
+													rs.getInt("id"),
+													rs.getString("description"),
+													created,
+													deadline,
+													rs.getBoolean("state"),
+													rs.getInt("list_id")));
 				}
 				return arrayTask;
 			} else {
-				System.out.println("Connection failed");
+				throw new SQLException("Connection failed");
 			}
 		}
-		return null;
 	}
 
 }

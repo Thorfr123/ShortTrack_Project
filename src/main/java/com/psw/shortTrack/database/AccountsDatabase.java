@@ -110,13 +110,13 @@ public class AccountsDatabase extends Database{
 				Statement stmt = connection.createStatement();
 				ResultSet rs = stmt.executeQuery(query);
 				if (rs.next()) {
-					String email = rs.getString("email");
-					String firstName = rs.getString("first_name");
-					String lastName = rs.getString("last_name");
-					return new Account(username, password, firstName + " " + lastName, email);
+					return new Account( username,
+										password,
+										rs.getString("first_name") + " " + rs.getString("last_name"),
+										rs.getString("email"));
 				}
 			} else {
-				System.out.println("Connection failed");
+				throw new SQLException("Connection failed");
 			}
 		}
 		
