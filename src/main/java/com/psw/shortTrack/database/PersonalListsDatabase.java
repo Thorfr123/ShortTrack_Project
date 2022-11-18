@@ -12,13 +12,14 @@ import com.psw.shortTrack.data.User;
 public class PersonalListsDatabase extends Database{
 	
 	/**
-	 * Creates a new list in the database and returns the database id
-	 * 
+	 * Creates a new list in the database and returns the database id.
 	 * This function does not add the tasks of the list to the database. To do that, you have to call the createTask function
 	 * to add that task to the database
-	 * @param lst
+	 * 
+	 * @param lst List to add in the database
 	 * @return New id of the list
-	 * @throws SQLException
+	 * 
+	 * @throws SQLException If there was an error in the database connection
 	 */
 	public static int createList(List lst) throws SQLException {
 		String email = User.getAccount().getEmail();
@@ -33,21 +34,23 @@ public class PersonalListsDatabase extends Database{
 	
 	/**
 	 * Deletes the list from the database.
-	 * 
 	 * It does not delete the tasks inside the list
 	 * 
 	 * @param id ID of the list to delete
-	 * @throws SQLException
+	 * 
+	 * @throws SQLException If there was an error in the database connection
 	 */
 	public static void deleteList(int id) throws SQLException {
 		executeUpdate("DELETE FROM projeto.personal_lists WHERE id='" + id + "';");
 	}
 	
 	/**
-	 * Returns all the lists and tasks of a user
-	 * @param email
-	 * @return
-	 * @throws SQLException
+	 * Returns all the lists and tasks of a user.
+	 * 
+	 * @param email User's email
+	 * @return ArrayList with all the lists of the user
+	 * 
+	 * @throws SQLException If there was an error in the database connection
 	 */
 	public static ArrayList<List> getAllLists (String email) throws SQLException {
 		String query = "SELECT * FROM projeto.personal_lists WHERE email='" + email + "';";
@@ -73,51 +76,14 @@ public class PersonalListsDatabase extends Database{
 	}
 	
 	/**
-	 * Changes the name of the list with this id
-	 * @param id
-	 * @param new_name
-	 * @throws SQLException
+	 * Changes the list's name in the database
+	 * 
+	 * @param id ID of the list
+	 * @param new_name String with the new list's name
+	 * 
+	 * @throws SQLException If there was an error in the database connection
 	 */
 	public static void changeName(int id, String new_name) throws SQLException {		
 		executeUpdate("UPDATE projeto.personal_lists SET name='" + new_name + "' WHERE id='" + id + "';");
 	}
-
-	/**
-	 * Returns the name of the list with this id
-	 * @param id
-	 * @return
-	 * @throws SQLException
-	 */
-	/*public static String getName (int id) throws SQLException {
-		return executeQuery_SingleColumn("SELECT name FROM projeto.personal_lists WHERE id='"+id+"';");
-	}*/
-	
-	/**
-	 * Returns the list with this id. It also searchs for the tasks of the list.
-	 * 
-	 * @param id
-	 * @return
-	 * @throws SQLException
-	 */
-	/*public static List getList(int id) throws SQLException{
-		String query = "SELECT name FROM projeto.personal_lists WHERE id='" + id + "';";
-		
-		try (Connection connection = getConnection()){
-			if (connection != null) {
-				Statement stmt = connection.createStatement();
-				ResultSet rs = stmt.executeQuery(query);
-				if (rs.next()) {
-					String name = rs.getString("name");
-					
-					List lst = new List(name, id, PersonalTasksDatabase.getAllTasks(id));
-					return lst;
-				}
-			} else {
-				System.out.println("Connection failed");
-			}
-		}
-		return null;
-	}*/
-	
-	
 }
