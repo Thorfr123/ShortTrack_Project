@@ -13,20 +13,29 @@ import com.psw.shortTrack.data.Task;
 
 public class GroupTasksDatabase extends Database {
 
+	/**
+	 * Creates a new task in the database
+	 * 
+	 * @param tsk Task to add to the database
+	 * @param group Group which task belongs to
+	 * @return Task new id
+	 *  
+	 * @throws NumberFormatException If it returns a no integer (unreachable)
+	 * @throws SQLException If there was an error to connect to the database
+	 */
 	public static int createTask(GroupTask tsk, Group group) throws NumberFormatException, SQLException {
-		String description = tsk.getDescription();
-		LocalDate deadline = tsk.getDeadlineDate();
-		String assigned_to = tsk.getAssignedTo();
-		String deadlineString = null;
+		String  description 	= null,
+				assigned_to 	= null,
+				deadlineString 	= null;
 		
-		if (description != null) {
-			description = "'" + description + "'";
+		if (tsk.getDescription() != null) {
+			description = "'" + tsk.getDescription() + "'";
 		}
-		if (deadline != null) {
-			deadlineString = "'" + deadline + "'";
+		if (tsk.getDeadlineDate() != null) {
+			deadlineString = "'" + tsk.getDeadlineDate() + "'";
 		}
-		if (assigned_to != null) {
-			assigned_to = "'" + assigned_to + "'";
+		if (tsk.getAssignedTo() != null) {
+			assigned_to = "'" + tsk.getAssignedTo() + "'";
 		}
 		
 		String query = "INSERT INTO projeto.group_tasks (group_id, manager, assigned_to, name, description, created_date, deadline_date, state)\r\n"
@@ -36,6 +45,14 @@ public class GroupTasksDatabase extends Database {
 		return Integer.parseInt(executeQueryReturnSingleColumn(query));
 	}
 	
+	/**
+	 * Returns all the tasks form one group
+	 * 
+	 * @param group_id Desired Group's id
+	 * @return ArrayList with all the group's tasks
+	 * 
+	 * @throws SQLException If there was an error in the connection to the database
+	 */
 	public static ArrayList<Task> getAllTasks(int group_id) throws SQLException {
 		String query = "SELECT * FROM projeto.group_tasks WHERE group_id = '" + group_id + "';";
 		
@@ -45,11 +62,6 @@ public class GroupTasksDatabase extends Database {
 				ResultSet rs = stmt.executeQuery(query);
 				ArrayList<Task> arrayTask = new ArrayList<Task>();
 				while (rs.next()) {
-					String name = rs.getString("name");
-					String description = rs.getString("description");
-					String assignedTo = rs.getString("assigned_to");
-					int taskId = rs.getInt("id");
-					int groupID = rs.getInt("group_id");
 					String deadline_str = rs.getString("deadline_date");
 					LocalDate deadline = null;
 					if (deadline_str != null)
@@ -58,16 +70,21 @@ public class GroupTasksDatabase extends Database {
 					LocalDate createdDate = null;
 					if (created_str != null)
 						createdDate = LocalDate.parse(created_str);
-					Boolean state = rs.getBoolean("state");	
 					
-					arrayTask.add(new GroupTask(name, taskId, description, createdDate, deadline, state, groupID, assignedTo));
+					arrayTask.add(new GroupTask(rs.getString("name"),
+												rs.getInt("id"),
+												rs.getString("description"),
+												createdDate,
+												deadline,
+												rs.getBoolean("state"),
+												rs.getInt("group_id"),
+												rs.getString("assigned_to")));
 				}
 				return arrayTask;
 			} else {
-				System.out.println("Connection failed");
+				throw new SQLException("Failed to connect");
 			}
 		}
-		return null;
 	}
 
 }
