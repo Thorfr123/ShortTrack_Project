@@ -58,8 +58,15 @@ public class List implements Serializable{
 		name = newName;
 	}
 	
-	public void addTask(Task newTask) {
+	public PersonalTask addTask(String taskName) {
+		
+		if(checkName(taskName))
+			return null;	
+		
+		PersonalTask newTask = new PersonalTask(taskName,id);
 		taskList.add(newTask);
+		
+		return newTask;
 	}
 	
 	public void removeTask(Task task) {

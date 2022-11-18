@@ -2,6 +2,8 @@ package com.psw.shortTrack.data;
 
 import java.util.ArrayList;
 
+import javafx.scene.layout.Pane;
+
 public class User {
 	
 	private static ArrayList<List> lists = new ArrayList<List>(0);
@@ -31,6 +33,32 @@ public class User {
 	
 	public static void setGroups(ArrayList<Group> groups) {
 		User.groups = groups;
+	}
+	
+	public static List addList(String listName) {
+			
+		for(List l : lists) {
+			if(l.getName().equals(listName))
+				return null;
+		}
+		
+		List newList = new List(listName);
+		lists.add(newList);
+		
+		return newList;
+	}
+	
+	public static Group addGroup(String groupName) {
+		
+		for(Group g : groups) {
+			if(g.getName().equals(groupName) && g.getManager().equals(account.getEmail()))
+				return null;
+		}
+		
+		Group newGroup = new Group(groupName,account.getEmail());
+		groups.add(newGroup);
+		
+		return newGroup;
 	}
 	
 	public static List getList(int ID) {

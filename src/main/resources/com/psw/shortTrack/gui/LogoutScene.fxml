@@ -228,7 +228,7 @@
                               <Font size="14.0" />
                            </font>
                         </MenuButton>
-                        <Button fx:id="editListButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#editList" text="Edit List" visible="false">
+                        <Button fx:id="editListButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#editListOrGroup" text="Edit List" visible="false">
                            <HBox.margin>
                               <Insets left="5.0" right="5.0" />
                            </HBox.margin>

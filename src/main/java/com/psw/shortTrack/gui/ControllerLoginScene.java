@@ -185,19 +185,16 @@ public class ControllerLoginScene {
 		
 		newListName.clear();
 		
-		for(List l : lists) {
-			if(l.getName().equals(listName)) {
-				Pane newBox = (Pane)newListBox;
-				String notification = "This list already exist!";
-				showNotification(notification,newBox);
-				newListName.getStyleClass().add("error");
-				return;
-			}
+		List newList = User.addList(listName);
+		
+		if(newList == null) {
+			Pane newBox = (Pane)newListBox;
+			String notification = "This list already exist!";
+			showNotification(notification,newBox);
+			newListName.getStyleClass().add("error");
+			return;
 		}
-		
-		List newList = new List(listName);
-		lists.add(newList);
-		
+
 		ListButton listButton = new ListButton(newList);
 		listButton.setOnAction(event -> {
 	        changeList(event);
@@ -217,16 +214,15 @@ public class ControllerLoginScene {
 		
 		newTaskName.clear();
 		
-		if(list.checkName(taskName)) {
+		Task newTask = list.addTask(taskName);
+		
+		if(newTask == null) {
 			Pane newBox = (Pane)newTaskBox;
 			String notification = "This task already exist!";
 			showNotification(notification,newBox);
 			newTaskName.getStyleClass().add("error");
 			return;
 		}
-		
-		Task newTask = new PersonalTask(taskName,list.getID());
-		list.addTask(newTask);
 		
 		TaskBar taskBar = new TaskBar(newTask);
 		CheckBox taskCheckBox = taskBar.getCheckBox();
@@ -249,18 +245,20 @@ public class ControllerLoginScene {
 		
 		String taskName = newTaskName.getText();
 		
+		if(taskName.isBlank())
+			return;
+		
 		newTaskName.clear();
 		
-		if(list.checkName(taskName)) {
+		Task newTask = list.addTask(taskName);
+		
+		if(newTask == null) {
 			Pane newBox = (Pane)newTaskBox;
 			String notification = "This task already exist!";
 			showNotification(notification,newBox);
 			newTaskName.getStyleClass().add("error");
 			return;
 		}
-		
-		Task newTask = new PersonalTask(taskName,list.getID());
-		list.addTask(newTask);
 		
 		TaskBar taskBar = new TaskBar(newTask);
 		CheckBox taskCheckBox = taskBar.getCheckBox();
