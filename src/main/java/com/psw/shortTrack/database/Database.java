@@ -39,7 +39,7 @@ public class Database {
 	 * 
 	 * @throws PropertyVetoException If the specified driver is not valid
 	 */
-	public static void config() throws PropertyVetoException {
+	private static void config() throws PropertyVetoException {
 		dataSource = new ComboPooledDataSource();
 		dataSource.setDriverClass("org.postgresql.Driver");
 		dataSource.setJdbcUrl("jdbc:postgresql://db.fe.up.pt:5432/pswa0502");
@@ -99,7 +99,7 @@ public class Database {
 	 * 
 	 * @throws SQLException If a database access error occurs
 	 */
-	public static void setup() throws SQLException {		
+	private static void setup() throws SQLException {		
 		String query =    "CREATE SCHEMA IF NOT EXISTS projeto;"
 				
 						+ "CREATE TABLE IF NOT EXISTS projeto.account ();"
