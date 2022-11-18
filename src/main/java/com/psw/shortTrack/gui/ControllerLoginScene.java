@@ -244,10 +244,7 @@ public class ControllerLoginScene {
 		removeErrorNotifications();
 		
 		String taskName = newTaskName.getText();
-		
-		if(taskName.isBlank())
-			return;
-		
+
 		newTaskName.clear();
 		
 		Task newTask = list.addTask(taskName);
