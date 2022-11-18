@@ -80,8 +80,15 @@ public class Group {
 		this.members = members;
 	}
 	
-	public void addTask(Task newTask) {
+	public GroupTask addTask(String taskName) {
+		
+		if(checkName(taskName))
+			return null;	
+		
+		GroupTask newTask = new GroupTask(taskName,id);
 		taskList.add(newTask);
+		
+		return newTask;
 	}
 	
 	public void removeTask(Task task) {

@@ -4,14 +4,11 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
-
 import com.psw.shortTrack.data.*;
 import com.psw.shortTrack.database.*;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -25,7 +22,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 
 public class ControllerLoginScene {
 	
@@ -75,7 +71,6 @@ public class ControllerLoginScene {
 	@FXML
 	private VBox searchVerticalBox;
 
-	private Stage stage;
 	private Parent root;
 	
 	private static ArrayList<List> lists;
@@ -168,18 +163,14 @@ public class ControllerLoginScene {
 		User.setAccount(account);
 		
 		root = FXMLLoader.load(getClass().getResource("LogoutScene.fxml"));
-		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-		App.loadScene(root,stage);
-		stage.show();
+		App.loadScene(root);
 		
 	}
 	
 	public void signUp(ActionEvent e) throws IOException {
 		
 		root = FXMLLoader.load(getClass().getResource("SignUpScene.fxml"));
-		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-		App.loadScene(root,stage);
-		stage.show();
+		App.loadScene(root);
 		
 	}
 	
@@ -194,19 +185,16 @@ public class ControllerLoginScene {
 		
 		newListName.clear();
 		
-		for(List l : lists) {
-			if(l.getName().equals(listName)) {
-				Pane newBox = (Pane)newListBox;
-				String notification = "This list already exist!";
-				showNotification(notification,newBox);
-				newListName.getStyleClass().add("error");
-				return;
-			}
+		List newList = User.addList(listName);
+		
+		if(newList == null) {
+			Pane newBox = (Pane)newListBox;
+			String notification = "This list already exist!";
+			showNotification(notification,newBox);
+			newListName.getStyleClass().add("error");
+			return;
 		}
-		
-		List newList = new List(listName);
-		lists.add(newList);
-		
+
 		ListButton listButton = new ListButton(newList);
 		listButton.setOnAction(event -> {
 	        changeList(event);
@@ -226,16 +214,15 @@ public class ControllerLoginScene {
 		
 		newTaskName.clear();
 		
-		if(list.checkName(taskName)) {
+		Task newTask = list.addTask(taskName);
+		
+		if(newTask == null) {
 			Pane newBox = (Pane)newTaskBox;
 			String notification = "This task already exist!";
 			showNotification(notification,newBox);
 			newTaskName.getStyleClass().add("error");
 			return;
 		}
-		
-		Task newTask = new PersonalTask(taskName,list.getID());
-		list.addTask(newTask);
 		
 		TaskBar taskBar = new TaskBar(newTask);
 		CheckBox taskCheckBox = taskBar.getCheckBox();
@@ -258,18 +245,20 @@ public class ControllerLoginScene {
 		
 		String taskName = newTaskName.getText();
 		
+		if(taskName.isBlank())
+			return;
+		
 		newTaskName.clear();
 		
-		if(list.checkName(taskName)) {
+		Task newTask = list.addTask(taskName);
+		
+		if(newTask == null) {
 			Pane newBox = (Pane)newTaskBox;
 			String notification = "This task already exist!";
 			showNotification(notification,newBox);
 			newTaskName.getStyleClass().add("error");
 			return;
 		}
-		
-		Task newTask = new PersonalTask(taskName,list.getID());
-		list.addTask(newTask);
 		
 		TaskBar taskBar = new TaskBar(newTask);
 		CheckBox taskCheckBox = taskBar.getCheckBox();
@@ -288,13 +277,10 @@ public class ControllerLoginScene {
 			
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditTaskScene.fxml"));
 			root = loader.load();
-			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-			App.loadScene(root,stage);
 			
 			ControllerEditTaskScene controller = loader.getController();
-			controller.initData(newTask, search);	
-
-			stage.show();
+			controller.initData(newTask, search);
+			App.loadScene(root);
 			
 		} catch (IOException exeption) {
 			exeption.printStackTrace();
@@ -321,13 +307,11 @@ public class ControllerLoginScene {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditListScene.fxml"));
 			root = loader.load();
-			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-			App.loadScene(root,stage);
 			
 			ControllerEditListScene controller = loader.getController();
-			controller.initData(list);	
+			controller.initData(list);
+			App.loadScene(root);
 
-			stage.show();
 		} catch (IOException exeption) {
 			exeption.printStackTrace();
 		}	
@@ -344,13 +328,10 @@ public class ControllerLoginScene {
 			
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditTaskScene.fxml"));
 			root = loader.load();
-			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-			App.loadScene(root,stage);
 			
 			ControllerEditTaskScene controller = loader.getController();
 			controller.initData(task, search);	
-
-			stage.show();
+			App.loadScene(root);
 			
 		} catch (IOException exeption) {
 			exeption.printStackTrace();

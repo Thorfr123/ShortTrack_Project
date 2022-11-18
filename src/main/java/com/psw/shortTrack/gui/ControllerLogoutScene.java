@@ -7,6 +7,7 @@ import java.util.Collections;
 
 import com.psw.shortTrack.data.Account;
 import com.psw.shortTrack.data.Group;
+import com.psw.shortTrack.data.GroupTask;
 import com.psw.shortTrack.data.List;
 import com.psw.shortTrack.data.PersonalTask;
 import com.psw.shortTrack.data.Task;
@@ -16,11 +17,10 @@ import com.psw.shortTrack.database.AccountsDatabase;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
@@ -31,7 +31,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 
 public class ControllerLogoutScene {
 		
@@ -79,7 +78,6 @@ public class ControllerLogoutScene {
 	@FXML
 	private VBox searchVerticalBox;
 
-	private Stage stage;
 	private Parent root;
 	
 	private static ArrayList<List> lists;
@@ -150,9 +148,7 @@ public class ControllerLogoutScene {
 		User.setLogedIn(false);
 		
 		root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
-		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-		App.loadScene(root,stage);
-		stage.show();
+		App.loadScene(root);
 		
 	}
 	
@@ -179,9 +175,7 @@ public class ControllerLogoutScene {
 			User.setLogedIn(false);
 			
 			root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
-			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-			App.loadScene(root,stage);
-			stage.show();
+			App.loadScene(root);
 			
 			System.out.println("Your account was successfully deleted!");  	    // Just to debug
 		}
@@ -199,25 +193,22 @@ public class ControllerLogoutScene {
 		
 		newListName.clear();
 		
-		for(List l : lists) {
-			if(l.getName().equals(listName)) {
-				Pane newBox = (Pane)newListBox;
-				String notification = "This list already exist!";
-				showNotification(notification,newBox);
-				newListName.getStyleClass().add("error");
-				return;
-			}
-		}
+		List newList = User.addList(listName);
 		
-		List newList = new List(listName);
-		lists.add(newList);
+		if(newList == null) {
+			Pane newBox = (Pane)newListBox;
+			String notification = "This list already exist!";
+			showNotification(notification,newBox);
+			newListName.getStyleClass().add("error");
+			return;
+		}
 		
 		ListButton listButton = new ListButton(newList);
 		listButton.setOnAction(event -> {
 	        changeList(event);
 	    });
 		listsBox.getChildren().add(listButton);
-		
+
 	}
 	
 	public void addGroup(ActionEvent e) {
@@ -231,18 +222,15 @@ public class ControllerLogoutScene {
 		
 		newGroupName.clear();
 		
-		for(Group g : groups) {
-			if(g.getName().equals(groupName) && g.getManager().equals(account.getEmail())) {
-				Pane newBox = (Pane)newListBox;
-				String notification = "This group already exist!";
-				showNotification(notification,newBox);
-				newGroupName.getStyleClass().add("error");
-				return;
-			}
-		}
+		Group newGroup = User.addGroup(groupName);
 		
-		Group newGroup = new Group(groupName,account.getEmail());
-		groups.add(newGroup);
+		if(newGroup == null) {
+			Pane newBox = (Pane)newListBox;
+			String notification = "This group already exist!";
+			showNotification(notification,newBox);
+			newGroupName.getStyleClass().add("error");
+			return;
+		}
 		
 		GroupButton groupButton = new GroupButton(newGroup);
 		groupButton.setOnAction(event -> {
@@ -272,18 +260,17 @@ public class ControllerLogoutScene {
 		
 	}
 	
-	private Task addTaskToList(String taskName) {
+	private PersonalTask addTaskToList(String taskName) {
 	
-		if(list.checkName(taskName)) {
+		PersonalTask newTask = list.addTask(taskName);
+		
+		if(newTask == null) {
 			Pane newBox = (Pane)newTaskBox;
 			String notification = "This task already exist!";
 			showNotification(notification,newBox);
 			newTaskName.getStyleClass().add("error");
 			return null;
 		}
-		
-		Task newTask = new PersonalTask(taskName,list.getID());
-		list.addTask(newTask);
 		
 		TaskBar taskBar = new TaskBar(newTask);
 		CheckBox taskCheckBox = taskBar.getCheckBox();
@@ -299,21 +286,19 @@ public class ControllerLogoutScene {
 		tasksBox.getChildren().add(taskBar);
 		
 		return newTask;
-		
 	}
 	
-	private Task addTaskToGroup(String taskName) {
+	private GroupTask addTaskToGroup(String taskName) {
 		
-		if(group.checkName(taskName)) {
+		GroupTask newTask = group.addTask(taskName);
+		
+		if(newTask == null) {
 			Pane newBox = (Pane)newTaskBox;
 			String notification = "This task already exist!";
 			showNotification(notification,newBox);
 			newTaskName.getStyleClass().add("error");
 			return null;
 		}
-		
-		Task newTask = new PersonalTask(taskName,group.getID());
-		group.addTask(newTask);
 		
 		TaskBar taskBar = new TaskBar(newTask);
 		CheckBox taskCheckBox = taskBar.getCheckBox();
@@ -352,13 +337,10 @@ public class ControllerLogoutScene {
 			try {
 				FXMLLoader loader = new FXMLLoader(getClass().getResource("EditTaskScene.fxml"));
 				root = loader.load();
-				stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-				App.loadScene(root,stage);
 				
 				ControllerEditTaskScene controller = loader.getController();
 				controller.initData(newTask, list);	
-	
-				stage.show();
+				App.loadScene(root);
 				
 			} catch (IOException exeption) {
 				exeption.printStackTrace();
@@ -368,13 +350,10 @@ public class ControllerLogoutScene {
 			try {
 				FXMLLoader loader = new FXMLLoader(getClass().getResource("EditGroupTaskScene.fxml"));
 				root = loader.load();
-				stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-				App.loadScene(root,stage);
 				
 				ControllerEditGroupTaskScene controller = loader.getController();
 				controller.initData(newTask, search);	
-	
-				stage.show();
+				App.loadScene(root);
 				
 			} catch (IOException exeption) {
 				exeption.printStackTrace();
@@ -415,28 +394,25 @@ public class ControllerLogoutScene {
 		
 	}
 	
-	public void editList(ActionEvent e) {
+	public void editListOrGroup(ActionEvent e) {
 		
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditListScene.fxml"));
-			root = loader.load();
-			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-			App.loadScene(root,stage);
+		if(list != null) {
+			try {
+				FXMLLoader loader = new FXMLLoader(getClass().getResource("EditListScene.fxml"));
+				root = loader.load();
+				
+				ControllerEditListScene controller = loader.getController();
+				controller.initData(list);	
+				App.loadScene(root);
+				
+			} catch (IOException exeption) {
+				exeption.printStackTrace();
+			}	
+		}
+		else if(group != null) {
+			System.out.println("editGroup - Not Working!");
+		}
 			
-			ControllerEditListScene controller = loader.getController();
-			controller.initData(list);	
-
-			stage.show();
-		} catch (IOException exeption) {
-			exeption.printStackTrace();
-		}	
-		
-	}
-	
-	public void editGroup(ActionEvent e) {
-		
-		System.out.println("addGroup - Not Working!");
-		
 	}
 	
 	public void editTask(ActionEvent e) {
@@ -448,13 +424,10 @@ public class ControllerLogoutScene {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditTaskScene.fxml"));
 			root = loader.load();
-			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-			App.loadScene(root,stage);
 				
 			ControllerEditTaskScene controller = loader.getController();
 			controller.initData(task, search);	
-	
-			stage.show();
+			App.loadScene(root);
 				
 		} catch (IOException exeption) {
 			exeption.printStackTrace();
@@ -471,13 +444,10 @@ public class ControllerLogoutScene {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditGroupTaskScene.fxml"));
 			root = loader.load();
-			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-			App.loadScene(root,stage);
 			
 			ControllerEditGroupTaskScene controller = loader.getController();
 			controller.initData(task, search);	
-
-			stage.show();
+			App.loadScene(root);
 			
 		} catch (IOException exeption) {
 			exeption.printStackTrace();

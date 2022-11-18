@@ -3,21 +3,17 @@ package com.psw.shortTrack.gui;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collections;
-
 import com.psw.shortTrack.data.Account;
 import com.psw.shortTrack.data.User;
 import com.psw.shortTrack.database.AccountsDatabase;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 
 public class ControllerSignUpScene {
 	
@@ -36,7 +32,6 @@ public class ControllerSignUpScene {
 	@FXML 
 	private Label notificationLabel;
 	
-	private Stage stage;
 	private Parent root;
 
 	public void create(ActionEvent e) throws IOException {
@@ -70,9 +65,7 @@ public class ControllerSignUpScene {
 		User.setAccount(account);
 		
 		root = FXMLLoader.load(getClass().getResource("LogoutScene.fxml"));
-		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-		App.loadScene(root,stage);
-		stage.show();
+		App.loadScene(root);
 		
 	}
 	
@@ -81,9 +74,7 @@ public class ControllerSignUpScene {
 		removeErrorNotifications();
 		
 		root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
-		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-		App.loadScene(root,stage);
-		stage.show();
+		App.loadScene(root);
 		
 	}
 	
