@@ -1,6 +1,5 @@
 package com.psw.shortTrack.database;
 
-import java.sql.Array;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,10 +7,19 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import com.psw.shortTrack.data.Group;
-import com.psw.shortTrack.data.Task;
 
 public class GroupsDatabase extends Database{
 
+	/**
+	 * Creates a new group in the database
+	 * 
+	 * @param name String with group's name
+	 * @param manager String with manager's email
+	 * @param members ArrayList with member's emails
+	 * @return Group id
+	 * 
+	 * @throws SQLException If a database access error occurs
+	 */
 	public static int createGroup(String name, String manager, ArrayList<String> members) throws SQLException{
 		String query = "INSERT INTO projeto.groups (name, manager, members)" +
 				   "	VALUES ('" + name + "', '" + manager + "\', '{";
@@ -29,6 +37,13 @@ public class GroupsDatabase extends Database{
 		return Integer.parseInt(executeQueryReturnSingleColumn(query));
 	}
 	
+	/**
+	 * Returns every groups with the user's email, as a manager or as a member.
+	 * It also assembles the group's tasks
+	 * @param email String with user's email
+	 * @return ArrayList every group with the user's email
+	 * @throws SQLException If a database access error occurs
+	 */
 	public static ArrayList<Group> getAllGroups(String email) throws SQLException {
 		String query = "SELECT * FROM projeto.groups WHERE manager='" + email + "' OR '" + email + "'=ANY(members);";
 		
@@ -36,30 +51,25 @@ public class GroupsDatabase extends Database{
 			if (connection != null) {
 				Statement stmt = connection.createStatement();
 				ResultSet rs = stmt.executeQuery(query);
-				ArrayList<Group> arrayGroup = new ArrayList<Group>();
+				ArrayList<Group> all_groups = new ArrayList<Group>();
 				while (rs.next()) {
-					int group_id = rs.getInt("id");
-					String name = rs.getString("name");
-					String manager = rs.getString("manager");
 					
-					Array temp = rs.getArray("members");					
-					String[] members_temp = (String[]) temp.getArray();
-					ArrayList<String> members = new ArrayList<String>(members_temp.length);
-					for (String mb: members_temp) {
-						members.add(mb);
+					ArrayList<String> members = new ArrayList<String>();
+					for (String member: (String[]) rs.getArray("members").getArray()) {
+						members.add(member);
 					}
-					ArrayList<Task> tasks = GroupTasksDatabase.getAllTasks(group_id);
 					
-					Group group = new Group(name, manager, group_id, tasks, members);
-					
-					arrayGroup.add(group);
+					Group group = new Group(rs.getString("name"), 
+											rs.getString("manager"), 
+											rs.getInt("id"), 
+											GroupTasksDatabase.getAllTasks(rs.getInt("id")), 
+											members);	
+					all_groups.add(group);
 				}
-				return arrayGroup;
+				return all_groups;
 			} else {
-				System.out.println("Connection failed");
+				throw new SQLException("There was a connection error");
 			}
 		}
-		return null;
 	}
-	
 }

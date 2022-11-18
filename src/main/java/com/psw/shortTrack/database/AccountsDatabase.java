@@ -19,8 +19,7 @@ public class AccountsDatabase extends Database{
 	public static boolean checkLogin(String user, String password) throws SQLException{
 		String query = null;
 		
-		/* Como não sabemos à partida se o utilizador está a logar com o username ou com o email,
-		   verificamos qual é através da existencia de @ */
+		// TODO: Verificar se é um email de forma mais eficaz
 		if (user.contains("@")) {
 			query = "SELECT EXISTS (SELECT 1 FROM projeto.account WHERE email='" + user + "' AND password='" + password + "');";
 		} else {
