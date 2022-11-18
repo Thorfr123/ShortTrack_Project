@@ -20,9 +20,12 @@ import javafx.scene.image.Image;
 public class App extends Application {
 	
 	private static String css;
+	private static Stage stage;
 	
 	@Override
 	public void start(Stage primaryStage) {
+		
+		stage = primaryStage;
 		
 		try {
 			ArrayList<List> lists = FileIO.readPersonalListsFromFile();
@@ -111,16 +114,17 @@ public class App extends Application {
 		return idCount;
 	}
 	
-	public static void loadScene(Parent root, Stage stage) {
+	public static void loadScene(Parent root) {
 		
 		Scene scene = new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight());
 		scene.getStylesheets().add(css);
 		stage.setScene(scene);
+		stage.show();
 		
 	}
 	
 	
-	public static Parent getMainScene() throws IOException {
+	public static void loadMainScene() throws IOException {
 		
 		Parent root;
 		
@@ -129,6 +133,6 @@ public class App extends Application {
 		else
 			root = FXMLLoader.load(App.class.getResource("LoginScene.fxml"));
 		
-		return root;
+		loadScene(root);
 	}
 }

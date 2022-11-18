@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
-
 import com.psw.shortTrack.data.Account;
 import com.psw.shortTrack.data.Group;
 import com.psw.shortTrack.data.List;
@@ -12,11 +11,9 @@ import com.psw.shortTrack.data.PersonalTask;
 import com.psw.shortTrack.data.Task;
 import com.psw.shortTrack.data.User;
 import com.psw.shortTrack.database.AccountsDatabase;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -31,7 +28,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 
 public class ControllerLogoutScene {
 		
@@ -79,7 +75,6 @@ public class ControllerLogoutScene {
 	@FXML
 	private VBox searchVerticalBox;
 
-	private Stage stage;
 	private Parent root;
 	
 	private static ArrayList<List> lists;
@@ -150,9 +145,7 @@ public class ControllerLogoutScene {
 		User.setLogedIn(false);
 		
 		root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
-		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-		App.loadScene(root,stage);
-		stage.show();
+		App.loadScene(root);
 		
 	}
 	
@@ -179,9 +172,7 @@ public class ControllerLogoutScene {
 			User.setLogedIn(false);
 			
 			root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
-			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-			App.loadScene(root,stage);
-			stage.show();
+			App.loadScene(root);
 			
 			System.out.println("Your account was successfully deleted!");  	    // Just to debug
 		}
@@ -352,13 +343,10 @@ public class ControllerLogoutScene {
 			try {
 				FXMLLoader loader = new FXMLLoader(getClass().getResource("EditTaskScene.fxml"));
 				root = loader.load();
-				stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-				App.loadScene(root,stage);
 				
 				ControllerEditTaskScene controller = loader.getController();
 				controller.initData(newTask, list);	
-	
-				stage.show();
+				App.loadScene(root);
 				
 			} catch (IOException exeption) {
 				exeption.printStackTrace();
@@ -368,13 +356,10 @@ public class ControllerLogoutScene {
 			try {
 				FXMLLoader loader = new FXMLLoader(getClass().getResource("EditGroupTaskScene.fxml"));
 				root = loader.load();
-				stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-				App.loadScene(root,stage);
 				
 				ControllerEditGroupTaskScene controller = loader.getController();
 				controller.initData(newTask, search);	
-	
-				stage.show();
+				App.loadScene(root);
 				
 			} catch (IOException exeption) {
 				exeption.printStackTrace();
@@ -420,13 +405,11 @@ public class ControllerLogoutScene {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditListScene.fxml"));
 			root = loader.load();
-			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-			App.loadScene(root,stage);
 			
 			ControllerEditListScene controller = loader.getController();
 			controller.initData(list);	
-
-			stage.show();
+			App.loadScene(root);
+			
 		} catch (IOException exeption) {
 			exeption.printStackTrace();
 		}	
@@ -448,13 +431,10 @@ public class ControllerLogoutScene {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditTaskScene.fxml"));
 			root = loader.load();
-			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-			App.loadScene(root,stage);
 				
 			ControllerEditTaskScene controller = loader.getController();
 			controller.initData(task, search);	
-	
-			stage.show();
+			App.loadScene(root);
 				
 		} catch (IOException exeption) {
 			exeption.printStackTrace();
@@ -471,13 +451,10 @@ public class ControllerLogoutScene {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditGroupTaskScene.fxml"));
 			root = loader.load();
-			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-			App.loadScene(root,stage);
 			
 			ControllerEditGroupTaskScene controller = loader.getController();
 			controller.initData(task, search);	
-
-			stage.show();
+			App.loadScene(root);
 			
 		} catch (IOException exeption) {
 			exeption.printStackTrace();

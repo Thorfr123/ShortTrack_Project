@@ -8,8 +8,6 @@ import com.psw.shortTrack.data.Task;
 import com.psw.shortTrack.data.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
@@ -19,7 +17,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 
 public class ControllerEditTaskScene {
 	
@@ -37,9 +34,6 @@ public class ControllerEditTaskScene {
 	private Task task;
 	private List list;
 	private List search;
-	
-	private Stage stage;
-	private Parent root;
 	
 	public void initData(Task task, List search) {
 		this.task = task;
@@ -80,10 +74,7 @@ public class ControllerEditTaskScene {
 			
 			task = null;
 			
-			root = App.getMainScene();
-			stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-			App.loadScene(root,stage);
-			stage.show();
+			App.loadMainScene();
 			
 		}
 		
@@ -114,10 +105,7 @@ public class ControllerEditTaskScene {
 		task.setDeadline(newDeadline);
 		task.setCompleted(checkButton.isSelected());
 		
-		root = App.getMainScene();
-		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-		App.loadScene(root,stage);
-		stage.show();
+		App.loadMainScene();
 		
 	}
 	
@@ -129,10 +117,7 @@ public class ControllerEditTaskScene {
 		if(task.getName().isBlank())
 			list.removeTask(task);
 		
-		root = App.getMainScene();
-		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-		App.loadScene(root,stage);
-		stage.show();
+		App.loadMainScene();
 		
 	}
 	
