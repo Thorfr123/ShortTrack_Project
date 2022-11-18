@@ -18,17 +18,27 @@ public class Database {
 			config();
 			setup();
 		} catch (PropertyVetoException pve) {
-			// Unreachable code
 			pve.printStackTrace();
 		} catch (SQLException sqle) {
 			sqle.printStackTrace();
 		}
 	}
 	
+	/**
+	 * Attempts to establish a connection with the database.
+	 *
+	 * @return a connection to the data source
+	 * @throws SQLException If a database access error occurs
+	 */
 	protected static Connection getConnection() throws SQLException {
 		return dataSource.getConnection();
 	}
 	
+	/**
+	 * Configures the database access pool
+	 * 
+	 * @throws PropertyVetoException If the specified driver is not valid
+	 */
 	public static void config() throws PropertyVetoException {
 		dataSource = new ComboPooledDataSource();
 		dataSource.setDriverClass("org.postgresql.Driver");
@@ -38,6 +48,14 @@ public class Database {
 		dataSource.setCheckoutTimeout(5000);
 	}
 	
+	/**
+	 * Executes a query to the database and returns the first column of the response as a string
+	 * 
+	 * @param query SQL code to execute
+	 * @return String - First column of the response
+	 * 
+	 * @throws SQLException If a database access error occurs 
+	 */
 	protected static String executeQueryReturnSingleColumn(String query) throws SQLException{
 		
 		try (Connection connection = getConnection()){
@@ -55,6 +73,14 @@ public class Database {
 		
 	}
 	
+	/**
+	 * Executes a update query to the database
+	 * @param query String with the sql code
+	 * @return either (1) the row count for SQL Data Manipulation Language (DML) statementsor 
+	 * (2) 0 for SQL statements that return nothing
+	 * 
+	 * @throws SQLException If a database access error occurs
+	 */
 	protected static int executeUpdate(String query) throws SQLException{
 		
 		try (Connection connection = getConnection()){
@@ -67,6 +93,12 @@ public class Database {
 		}
 	}
 	
+	/**
+	 * Executes the sql code to do the initial setup of the database.
+	 * Creates the needed tables, columns, sequences, etc.
+	 * 
+	 * @throws SQLException If a database access error occurs
+	 */
 	public static void setup() throws SQLException {		
 		String query =    "CREATE SCHEMA IF NOT EXISTS projeto;"
 				
