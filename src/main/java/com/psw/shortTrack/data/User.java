@@ -2,8 +2,6 @@ package com.psw.shortTrack.data;
 
 import java.util.ArrayList;
 
-import javafx.scene.layout.Pane;
-
 public class User {
 	
 	private static ArrayList<List> lists = new ArrayList<List>(0);
