@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Collections;
 import com.psw.shortTrack.data.List;
+import com.psw.shortTrack.data.SearchList;
 import com.psw.shortTrack.data.Task;
+import com.psw.shortTrack.data.TaskOrganizer;
 import com.psw.shortTrack.data.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -33,11 +35,11 @@ public class ControllerEditTaskScene {
 
 	private Task task;
 	private List list;
-	private List search;
+	private TaskOrganizer loadList;
 	
-	public void initData(Task task, List search) {
+	public void initData(Task task, TaskOrganizer loadList) {
 		this.task = task;
-		this.search = search;
+		this.loadList = loadList;
 		
 		list = User.getList(task.getParentID());
 		
@@ -69,8 +71,8 @@ public class ControllerEditTaskScene {
 			
 			list.removeTask(task);
 			
-			if(search != null)
-				search.removeTask(task);
+			if(loadList instanceof SearchList)
+				loadList.removeTask(task);
 			
 			task = null;
 			

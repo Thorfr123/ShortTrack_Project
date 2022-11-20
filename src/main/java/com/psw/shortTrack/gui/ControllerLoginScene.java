@@ -74,8 +74,7 @@ public class ControllerLoginScene {
 	private Parent root;
 	
 	private static ArrayList<List> lists;
-	private static List list;
-	private static List search;
+	private static TaskOrganizer loadList;
 	
 	private String[] searchOptions = {"Name", "Created Date", "Deadline"};
 	
@@ -101,10 +100,10 @@ public class ControllerLoginScene {
 			listsBox.getChildren().add(listButton);
 		}
 		
-		if((list != null) && !lists.contains(list))
-			list = null;
+		if ((loadList instanceof List) && !lists.contains(loadList))
+			loadList = null;
 		
-		if((list == null) && (search == null)) {
+		if(loadList == null) {
 			listNameLabel.setText("Choose one List!");
 			return;
 		}
@@ -214,7 +213,7 @@ public class ControllerLoginScene {
 		
 		newTaskName.clear();
 		
-		Task newTask = list.addTask(taskName);
+		Task newTask = ((List)loadList).addTask(taskName);
 		
 		if(newTask == null) {
 			Pane newBox = (Pane)newTaskBox;
@@ -247,7 +246,7 @@ public class ControllerLoginScene {
 
 		newTaskName.clear();
 		
-		Task newTask = list.addTask(taskName);
+		Task newTask = ((List)loadList).addTask(taskName);
 		
 		if(newTask == null) {
 			Pane newBox = (Pane)newTaskBox;
@@ -276,7 +275,7 @@ public class ControllerLoginScene {
 			root = loader.load();
 			
 			ControllerEditTaskScene controller = loader.getController();
-			controller.initData(newTask, search);
+			controller.initData(newTask, loadList);
 			App.loadScene(root);
 			
 		} catch (IOException exeption) {
@@ -289,10 +288,8 @@ public class ControllerLoginScene {
 		
 		removeErrorNotifications();
 		
-		search = null;
-		
 		ListButton listButton = (ListButton)e.getSource();
-		list = listButton.getList();
+		loadList = listButton.getList();
 		
 		tasksBox.getChildren().clear();
 		loadTasks();
@@ -306,7 +303,7 @@ public class ControllerLoginScene {
 			root = loader.load();
 			
 			ControllerEditListScene controller = loader.getController();
-			controller.initData(list);
+			controller.initData((List)loadList);
 			App.loadScene(root);
 
 		} catch (IOException exeption) {
@@ -327,7 +324,7 @@ public class ControllerLoginScene {
 			root = loader.load();
 			
 			ControllerEditTaskScene controller = loader.getController();
-			controller.initData(task, search);	
+			controller.initData(task, loadList);	
 			App.loadScene(root);
 			
 		} catch (IOException exeption) {
@@ -352,20 +349,14 @@ public class ControllerLoginScene {
 		
 		String option = ((MenuItem)e.getSource()).getText();
 		
-		List sortlist = null;
-		if(list != null)
-			sortlist = list;
-		else if(search != null)
-			sortlist = search;
-		
 		if(option.equals("Name"))
-			sortlist.sortByName();
+			loadList.sortByName();
 		else if(option.equals("Created Date"))
-			sortlist.sortByCreatedDate();
+			loadList.sortByCreatedDate();
 		else if(option.equals("Deadline"))
-			sortlist.sortByDeadline();
+			loadList.sortByDeadline();
 		else if(option.equals("Completed"))
-			sortlist.sortByCompleted();
+			loadList.sortByCompleted();
 		
 		tasksBox.getChildren().clear();
 		loadTasks();
@@ -403,35 +394,31 @@ public class ControllerLoginScene {
 		if(text.isBlank())
 			return;
 		
-		List searchList = new List("Searched by: " + text, 0);
+		SearchList searchList = new SearchList("Searched by: " + text);
 		
+		String searchOption = choiceBox.getValue();
+		Boolean isDateType = searchOption.equals("Created Date") || searchOption.equals("Deadline");
 		String errorNotification;
 		Pane newBox = (Pane)searchVerticalBox;
-		switch(choiceBox.getValue()) {
+		
+		if(isDateType && (errorNotification = Task.checkValidDate(text)) != null) {
+			showNotification(errorNotification,newBox);
+			searchBarField.getStyleClass().add("error");
+			return;
+		}
+		
+		switch(searchOption) {
 			case "Name":
-				for(List l: lists) {
+				for(List l: lists)
 					l.findTaskByName(text,searchList.getTaskList());			
-				}
 				break;
 			case "Created Date":
-				if((errorNotification = Task.checkValidDate(text)) != null) {
-					showNotification(errorNotification,newBox);
-					searchBarField.getStyleClass().add("error");
-					return;
-				}
-				for(List l: lists) {
+				for(List l: lists)
 					l.findTaskByCreatedDate(text,searchList.getTaskList());			
-				}
 				break;
 			case "Deadline":
-				if((errorNotification = Task.checkValidDate(text)) != null) {
-					showNotification(errorNotification,newBox);
-					searchBarField.getStyleClass().add("error");
-					return;
-				}
-				for(List l: lists) {
+				for(List l: lists)
 					l.findTaskByDeadline(text,searchList.getTaskList());			
-				}
 				break;	
 			default:
 				String notification = "Please select one option!";
@@ -440,8 +427,14 @@ public class ControllerLoginScene {
 				return;
 		}
 		
-		list = null;
-		search = searchList;
+		if(searchList.getTaskList().isEmpty()) {
+			String notification = "Nothing was found!";
+			showNotification(notification,newBox);
+			searchBarField.getStyleClass().add("error");
+			return;
+		}
+		
+		loadList = searchList;
 		tasksBox.getChildren().clear();
 		loadTasks();
 
@@ -449,16 +442,8 @@ public class ControllerLoginScene {
 	
 	private void loadTasks() {
 		
-		List loadList;
-		if(list != null)
-			loadList = list;
-		else if(search != null)
-			loadList = search;
-		else
-			loadList = null;
-		
 		listNameLabel.setText(loadList.getName());
-		boolean searchMode = (search != null);
+		boolean searchMode = (loadList instanceof SearchList);
 		
 		if(searchMode)
 			newTaskBox.getChildren().remove(addTaskBox);

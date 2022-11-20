@@ -10,7 +10,9 @@ import com.psw.shortTrack.data.Group;
 import com.psw.shortTrack.data.GroupTask;
 import com.psw.shortTrack.data.List;
 import com.psw.shortTrack.data.PersonalTask;
+import com.psw.shortTrack.data.SearchList;
 import com.psw.shortTrack.data.Task;
+import com.psw.shortTrack.data.TaskOrganizer;
 import com.psw.shortTrack.data.User;
 import com.psw.shortTrack.database.AccountsDatabase;
 
@@ -26,6 +28,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -83,9 +86,7 @@ public class ControllerLogoutScene {
 	private static ArrayList<List> lists;
 	private static ArrayList<Group> groups;
 	private static Account account;
-	private static List list;
-	private static Group group;
-	private static List search;
+	private static TaskOrganizer loadList;
 	
 	private String[] searchOptions = {"Name", "Created Date", "Deadline"};
 	
@@ -129,16 +130,20 @@ public class ControllerLogoutScene {
 			groupsBox.getChildren().add(groupButton);
 		}
 		
-		if((list != null) && !lists.contains(list))
-			list = null;
+		if ((loadList instanceof List) && !lists.contains(loadList))
+			loadList = null;
 		
-		if((group != null) && !groups.contains(group))
-			group = null;
+		if ((loadList instanceof Group) && !groups.contains(loadList))
+			loadList = null;
 		
-		if((list == null) && (group == null) && (search == null)) {
+		if(loadList == null) {
 			listNameLabel.setText("Choose one List or Group!");
 			return;
 		}
+		else if(loadList instanceof Group)
+			editListButton.setText("Edit Group");
+		else
+			editListButton.setText("Edit List");
 		
 		loadTasks();
     }
@@ -251,18 +256,16 @@ public class ControllerLogoutScene {
 		
 		newTaskName.clear();
 		
-		if(list != null)
+		if(loadList instanceof List)
 			addTaskToList(taskName);
-		else if(group != null)
+		else if(loadList instanceof Group)
 			addTaskToGroup(taskName);
-		else
-			System.out.println("Algum erro aconteceu v1!");
 		
 	}
 	
 	private PersonalTask addTaskToList(String taskName) {
 	
-		PersonalTask newTask = list.addTask(taskName);
+		PersonalTask newTask = ((List)loadList).addTask(taskName);
 		
 		if(newTask == null) {
 			Pane newBox = (Pane)newTaskBox;
@@ -290,7 +293,7 @@ public class ControllerLogoutScene {
 	
 	private GroupTask addTaskToGroup(String taskName) {
 		
-		GroupTask newTask = group.addTask(taskName);
+		GroupTask newTask = ((Group)loadList).addTask(taskName);
 		
 		if(newTask == null) {
 			Pane newBox = (Pane)newTaskBox;
@@ -300,12 +303,12 @@ public class ControllerLogoutScene {
 			return null;
 		}
 		
-		TaskBar taskBar = new TaskBar(newTask);
+		GroupTaskBar taskBar = new GroupTaskBar(newTask);
 		CheckBox taskCheckBox = taskBar.getCheckBox();
 		Button taskButton = taskBar.getButton();
 		
 		taskCheckBox.setOnAction(event -> {
-            checkTask(event);
+			checkGroupTask(event);
         });
 		taskButton.setOnAction(event -> {
             editGroupTask(event);
@@ -325,54 +328,50 @@ public class ControllerLogoutScene {
 		newTaskName.clear();
 		
 		Task newTask = null;
-		if(list != null)
+		if(loadList instanceof List)
 			newTask = addTaskToList(taskName);
-		else if(group != null)
+		else if(loadList instanceof Group)
 			newTask = addTaskToGroup(taskName);
 		
 		if(newTask == null)
 			return;
 		
-		if(list != null) {
+		if(loadList instanceof List) {
 			try {
 				FXMLLoader loader = new FXMLLoader(getClass().getResource("EditTaskScene.fxml"));
 				root = loader.load();
 				
 				ControllerEditTaskScene controller = loader.getController();
-				controller.initData(newTask, list);	
+				controller.initData(newTask, loadList);	
 				App.loadScene(root);
 				
 			} catch (IOException exeption) {
 				exeption.printStackTrace();
 			}
 		}
-		else if(group != null) {
+		else if(loadList instanceof Group) {
 			try {
 				FXMLLoader loader = new FXMLLoader(getClass().getResource("EditGroupTaskScene.fxml"));
 				root = loader.load();
 				
 				ControllerEditGroupTaskScene controller = loader.getController();
-				controller.initData(newTask, search);	
+				controller.initData(newTask, loadList);	
 				App.loadScene(root);
 				
 			} catch (IOException exeption) {
 				exeption.printStackTrace();
 			}
 		}
-		else
-			System.out.println("Algum erro aconteceu v4!");
 		
 	}
 	
 	public void changeList(ActionEvent e) {
 		
 		removeErrorNotifications();
-		group = null;
-		search = null;
 		
 		editListButton.setText("Edit List");
 		ListButton listButton = (ListButton)e.getSource();
-		list = listButton.getList();
+		loadList = listButton.getList();
 		
 		tasksBox.getChildren().clear();
 		loadTasks();
@@ -382,12 +381,10 @@ public class ControllerLogoutScene {
 	public void changeGroup(ActionEvent e) {
 		
 		removeErrorNotifications();
-		list = null;
-		search = null;
 		
 		editListButton.setText("Edit Group");
 		GroupButton groupButton = (GroupButton)e.getSource();
-		group = groupButton.getGroup();
+		loadList = groupButton.getGroup();
 		
 		tasksBox.getChildren().clear();
 		loadTasks();
@@ -396,21 +393,31 @@ public class ControllerLogoutScene {
 	
 	public void editListOrGroup(ActionEvent e) {
 		
-		if(list != null) {
+		if(loadList instanceof List) {
 			try {
 				FXMLLoader loader = new FXMLLoader(getClass().getResource("EditListScene.fxml"));
 				root = loader.load();
 				
 				ControllerEditListScene controller = loader.getController();
-				controller.initData(list);	
+				controller.initData((List)loadList);	
 				App.loadScene(root);
 				
 			} catch (IOException exeption) {
 				exeption.printStackTrace();
 			}	
 		}
-		else if(group != null) {
-			System.out.println("editGroup - Not Working!");
+		else if(loadList instanceof Group) {
+			try {
+				FXMLLoader loader = new FXMLLoader(getClass().getResource("EditGroupScene.fxml"));
+				root = loader.load();
+				
+				ControllerEditGroupScene controller = loader.getController();
+				controller.initData((Group)loadList);	
+				App.loadScene(root);
+				
+			} catch (IOException exeption) {
+				exeption.printStackTrace();
+			}	
 		}
 			
 	}
@@ -426,7 +433,7 @@ public class ControllerLogoutScene {
 			root = loader.load();
 				
 			ControllerEditTaskScene controller = loader.getController();
-			controller.initData(task, search);	
+			controller.initData(task,loadList);	
 			App.loadScene(root);
 				
 		} catch (IOException exeption) {
@@ -438,7 +445,7 @@ public class ControllerLogoutScene {
 	public void editGroupTask(ActionEvent e) {
 		
 		Button taskButton = (Button)e.getSource();
-		TaskBar taskBar = (TaskBar)taskButton.getParent();
+		GroupTaskBar taskBar = (GroupTaskBar)taskButton.getParent();
 		Task task = taskBar.getTask();
 		
 		try {
@@ -446,7 +453,7 @@ public class ControllerLogoutScene {
 			root = loader.load();
 			
 			ControllerEditGroupTaskScene controller = loader.getController();
-			controller.initData(task, search);	
+			controller.initData(task,loadList);	
 			App.loadScene(root);
 			
 		} catch (IOException exeption) {
@@ -466,9 +473,33 @@ public class ControllerLogoutScene {
 		
 	}
 	
+	public void checkGroupTask(ActionEvent e) {
+		
+		removeErrorNotifications();
+		
+		CheckBox taskCheckBox = (CheckBox)e.getSource();
+		GroupTaskBar taskBar = (GroupTaskBar)taskCheckBox.getParent();
+		Task task = taskBar.getTask();
+		
+		task.setCompleted(taskCheckBox.isSelected());
+		
+	}
+	
 	public void sortTasks(ActionEvent e) {
 		
-		System.out.println("Not Working!");
+		String option = ((MenuItem)e.getSource()).getText();
+		
+		if(option.equals("Name"))
+			loadList.sortByName();
+		else if(option.equals("Created Date"))
+			loadList.sortByCreatedDate();
+		else if(option.equals("Deadline"))
+			loadList.sortByDeadline();
+		else if(option.equals("Completed"))
+			loadList.sortByCompleted();
+		
+		tasksBox.getChildren().clear();
+		loadTasks();
 		
 	}
 	
@@ -496,13 +527,68 @@ public class ControllerLogoutScene {
 	
 	public void searchTask(ActionEvent e) {
 		
-		System.out.println("searchTask - Not Working!");
+		removeErrorNotifications();
+		
+		String text = searchBarField.getText();
+		
+		if(text.isBlank())
+			return;
+		
+		SearchList searchList = new SearchList("Searched by: " + text);
+		
+		String searchOption = choiceBox.getValue();
+		Boolean isDateType = searchOption.equals("Created Date") || searchOption.equals("Deadline");
+		String errorNotification;
+		Pane newBox = (Pane)searchVerticalBox;
+		
+		if(isDateType && (errorNotification = Task.checkValidDate(text)) != null) {
+			showNotification(errorNotification,newBox);
+			searchBarField.getStyleClass().add("error");
+			return;
+		}
+		
+		switch(searchOption) {
+			case "Name":
+				for(List l: lists)
+					l.findTaskByName(text,searchList.getTaskList());			
+				for(Group g: groups)
+					g.findTaskByName(text,searchList.getTaskList());			
+				break;
+			case "Created Date":
+				for(List l: lists)
+					l.findTaskByCreatedDate(text,searchList.getTaskList());			
+				for(Group g: groups)
+					g.findTaskByName(text,searchList.getTaskList());			
+				break;
+			case "Deadline":
+				for(List l: lists)
+					l.findTaskByDeadline(text,searchList.getTaskList());			
+				for(Group g: groups)
+					g.findTaskByName(text,searchList.getTaskList());			
+				break;	
+			default:
+				String notification = "Please select one option!";
+				showNotification(notification,newBox);
+				searchBarField.getStyleClass().add("error");
+				return;
+		}
+		
+		if(searchList.getTaskList().isEmpty()) {
+			String notification = "Nothing was found!";
+			showNotification(notification,newBox);
+			searchBarField.getStyleClass().add("error");
+			return;
+		}
+		
+		loadList = searchList;
+		tasksBox.getChildren().clear();
+		loadTasks();
 
 	}
 	
 	private void loadTasks() {
 
-		boolean searchMode = (search != null);
+		boolean searchMode = (loadList instanceof SearchList);
 		
 		if(searchMode)
 			newTaskBox.getChildren().remove(addTaskBox);
@@ -520,62 +606,47 @@ public class ControllerLogoutScene {
 		editListButton.setVisible(true);
 		sortByMenu.setVisible(true);
 		
-		if(list != null)
-			loadListTasks();
-		else if(group != null)
-			loadGroupTasks();
-		else
-			System.out.println("Algum erro aconteceu v2!");
-	}
-	
-	private void loadListTasks() {
-		
-		listNameLabel.setText(list.getName());
-		ArrayList<Task> tasks = list.getTaskList();
+		listNameLabel.setText(loadList.getName());
+		ArrayList<Task> tasks = loadList.getTaskList();
 		for(Task t : tasks) {
-			TaskBar taskBar = new TaskBar(t);
-			CheckBox taskCheckBox = taskBar.getCheckBox();
-			Button taskButton = taskBar.getButton();
-			
-			if(t.chekCompleted())
-				taskCheckBox.setSelected(true);
-			
-			taskCheckBox.setOnAction(event -> {
-	            checkTask(event);
-	        });
-			taskButton.setOnAction(event -> {
-	            editTask(event);
-	        });
-			
-			tasksBox.getChildren().add(taskBar);
+			if (t instanceof PersonalTask) {
+				TaskBar taskBar = new TaskBar(t,searchMode);
+				CheckBox taskCheckBox = taskBar.getCheckBox();
+				Button taskButton = taskBar.getButton();
+				
+				if(t.chekCompleted())
+					taskCheckBox.setSelected(true);
+				
+				taskCheckBox.setOnAction(event -> {
+		            checkTask(event);
+		        });
+				taskButton.setOnAction(event -> {
+		            editTask(event);
+		        });
+				
+				tasksBox.getChildren().add(taskBar);
+			}
+			else if(t instanceof GroupTask) {
+				GroupTaskBar taskBar = new GroupTaskBar((GroupTask)t,searchMode);
+				CheckBox taskCheckBox = taskBar.getCheckBox();
+				Button taskButton = taskBar.getButton();
+				
+				if(t.chekCompleted())
+					taskCheckBox.setSelected(true);
+				
+				taskCheckBox.setOnAction(event -> {
+					checkGroupTask(event);
+		        });
+				taskButton.setOnAction(event -> {
+		            editGroupTask(event);
+		        });
+				
+				tasksBox.getChildren().add(taskBar);
+			}
+
 		}
-		
 	}
-	
-	private void loadGroupTasks() {
-		
-		listNameLabel.setText(group.getName());
-		ArrayList<Task> tasks = group.getTaskList();
-		for(Task t : tasks) {
-			TaskBar taskBar = new TaskBar(t);
-			CheckBox taskCheckBox = taskBar.getCheckBox();
-			Button taskButton = taskBar.getButton();
-			
-			if(t.chekCompleted())
-				taskCheckBox.setSelected(true);
-			
-			taskCheckBox.setOnAction(event -> {
-	            checkTask(event);
-	        });
-			taskButton.setOnAction(event -> {
-	            editGroupTask(event);
-	        });
-			
-			tasksBox.getChildren().add(taskBar);
-		}
-		
-	}
-	
+
 	private void showNotification(String notification, Pane newBox) {
 		
 		newBox.getChildren().add(notificationLabel);
