@@ -45,7 +45,21 @@ public class Database {
 		dataSource.setJdbcUrl("jdbc:postgresql://db.fe.up.pt:5432/pswa0502");
 		dataSource.setUser("pswa0502");
 		dataSource.setPassword("jKWlEeAs");
-		dataSource.setCheckoutTimeout(5000);
+		
+		// Define o numero máximo de conexões
+		dataSource.setMaxPoolSize(30);
+		// Timeout de checkout (getConnection)
+		dataSource.setCheckoutTimeout(3000);
+		// Define o numero máximo de tentativas de checkout
+		dataSource.setAcquireRetryAttempts(5);
+		// Define o delay entre cada tentativa de checkout
+		dataSource.setAcquireRetryDelay(1000);
+		// Define um teste obrigatório da conexão ao chamar getConnection
+		dataSource.setTestConnectionOnCheckout(true);
+		// Segundos que as conexões não usadas para além do minimo (3 conexões) duram
+		dataSource.setMaxIdleTimeExcessConnections(180);
+		// Define a query a executar nos testes (query mais rapida)
+		dataSource.setPreferredTestQuery("SELECT 1");
 	}
 	
 	/**
