@@ -50,7 +50,9 @@ public class PersonalTasksDatabase extends Database {
 				+ createdDateString + "," + deadlineDateString + ",'" + state + "')"
 				+ " RETURNING id;";
 		
-		return Integer.parseInt(executeQueryReturnSingleColumn(query));
+		task.setID(Integer.parseInt(executeQueryReturnSingleColumn(query)));
+		
+		return 1;
 	}
 
 	/**

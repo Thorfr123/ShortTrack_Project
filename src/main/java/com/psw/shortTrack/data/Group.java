@@ -2,11 +2,13 @@ package com.psw.shortTrack.data;
 
 import java.util.ArrayList;
 
+import com.psw.shortTrack.database.GroupTasksDatabase;
+
 public class Group extends TaskOrganizer{
 
 	private static final long serialVersionUID = 8490848681679284579L;
 	
-	private ArrayList<String> members;
+	private ArrayList<String> members = new ArrayList<String>(0);
 	private String manager;
 	
 	public Group(String name, String manager) {
@@ -42,12 +44,13 @@ public class Group extends TaskOrganizer{
 		this.members = members;
 	}
 	
-	public GroupTask addTask(String taskName) {
+	public GroupTask addTask(String taskName) throws Exception {
 		
 		if(checkName(taskName))
-			return null;	
+			throw new IllegalArgumentException("This task already exist!");
 		
 		GroupTask newTask = new GroupTask(taskName,id);
+		GroupTasksDatabase.createTask(newTask, this);
 		taskList.add(newTask);
 		
 		return newTask;

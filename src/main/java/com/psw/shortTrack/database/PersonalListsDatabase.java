@@ -29,7 +29,9 @@ public class PersonalListsDatabase extends Database{
 		String query = "INSERT INTO projeto.personal_lists (name, email)\r\n"
 					 + "VALUES ('" + lst.getName() + "','" + email +"') RETURNING id;";
 		
-		return Integer.parseInt(executeQueryReturnSingleColumn(query));
+		lst.setID(Integer.parseInt(executeQueryReturnSingleColumn(query)));
+		
+		return 1;
 	}
 	
 	/**

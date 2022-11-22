@@ -34,7 +34,9 @@ public class GroupsDatabase extends Database{
 		
 		query += "}\') RETURNING id;";
 		
-		return Integer.parseInt(executeQueryReturnSingleColumn(query));
+		group.setID(Integer.parseInt(executeQueryReturnSingleColumn(query)));
+		
+		return 1;
 	}
 	
 	public static boolean updateGroup(Group group) throws SQLException {

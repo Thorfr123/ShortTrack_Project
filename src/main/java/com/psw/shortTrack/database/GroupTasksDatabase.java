@@ -41,8 +41,10 @@ public class GroupTasksDatabase extends Database {
 		String query = "INSERT INTO projeto.group_tasks (group_id, manager, assigned_to, name, description, created_date, deadline_date, state)\r\n"
 				+ "VALUES ('" + group.getID() + "','" + group.getManager() + "'," + assigned_to + ",'" + tsk.getName() + "'," 
 				+ description + ",'" + tsk.getCreatedDate() + "'," + deadlineString + ",'" + tsk.chekCompleted() + "') RETURNING id;";
-	
-		return Integer.parseInt(executeQueryReturnSingleColumn(query));
+		
+		tsk.setID(Integer.parseInt(executeQueryReturnSingleColumn(query)));
+		
+		return 1;
 	}
 	
 	/**
