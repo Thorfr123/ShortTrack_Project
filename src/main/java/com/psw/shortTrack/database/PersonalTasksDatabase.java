@@ -7,7 +7,6 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import com.psw.shortTrack.data.List;
 import com.psw.shortTrack.data.PersonalTask;
 import com.psw.shortTrack.data.Task;
 import com.psw.shortTrack.data.User;
@@ -24,7 +23,7 @@ public class PersonalTasksDatabase extends Database {
 	 * 
 	 * @throws SQLException If there was an error in the database connection
 	 */
-	public static int createTask(Task task, List lst) throws SQLException{
+	public static int createTask(Task task) throws SQLException{
 		String 		email			= User.getAccount().getEmail(),
 					name			= task.getName(),
 					description 	= task.getDescription(),
@@ -46,7 +45,7 @@ public class PersonalTasksDatabase extends Database {
 			deadlineDateString = "'" + deadlineDate + "'";
 		
 		String query = "INSERT INTO projeto.personal_tasks (list_id, email, name, description, created_date, deadline_date, state)\r\n"
-				+ "VALUES ('" + lst.getID() + "'," + email + "," + name + "," + description + "," 
+				+ "VALUES ('" + task.getParentID() + "'," + email + "," + name + "," + description + "," 
 				+ createdDateString + "," + deadlineDateString + ",'" + state + "')"
 				+ " RETURNING id;";
 		
@@ -57,11 +56,11 @@ public class PersonalTasksDatabase extends Database {
 	 * Deletes the task with the respective id from the database
 	 * 
 	 * @param id ID of the task (in the database)
-	 * 
+	 * @return (True) Success; (False) Nothing was deleted
 	 * @throws SQLException If there was an error in the database connection
 	 */
-	public static void deleteTask(int id) throws SQLException {		
-		executeUpdate("DELETE FROM projeto.personal_tasks WHERE id='" + id + "';");
+	public static boolean deleteTask(int id) throws SQLException {		
+		return (executeUpdate("DELETE FROM projeto.personal_tasks WHERE id='" + id + "';") > 0);
 	}
 	
 	/**

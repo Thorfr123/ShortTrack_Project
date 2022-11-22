@@ -18,38 +18,24 @@ public class GroupsDatabase extends Database{
 	 * 
 	 * @throws SQLException If a database access error occurs
 	 */
-	public static int createGroup(Group group) throws NumberFormatException, SQLException {
-		String query = "INSERT INTO projeto.groups (name, manager, members)" +
-				   "	VALUES ('" + group.getName() + "', '" + group.getManager() + "\', '{";
-
-		ArrayList<String> members = group.getMembers();
-		
-		for (int i = 0; i < members.size(); i++) {
-			if (i == members.size() - 1) {
-				query += "\"" + members.get(i) + "\"";
-			} else {
-			query += "\"" + members.get(i) + "\",";
-			}
-		}
-		
-		query += "}\') RETURNING id;";
+	public static int createGroup(Group group) throws SQLException {
+		String query = 	"INSERT INTO projeto.groups (name, manager, members)\r\n"
+				   		+ "VALUES ('" + group.getName() + "', '" + group.getManager() + "\', '" + returnSQL_Array(group.getMembers()) + "')\r\n"
+				   		+ "RETURNING id;";
 		
 		return Integer.parseInt(executeQueryReturnSingleColumn(query));
 	}
 	
+	/**
+	 * Updates, in the database, the name and members in a group
+	 * 
+	 * @param group Group to update in database
+	 * @return (True) Success; (False) Error
+	 * @throws SQLException If a database access error occurs
+	 */
 	public static boolean updateGroup(Group group) throws SQLException {
-		String query = "UPDATE projeto.groups SET name='" + group.getName() + "', members='{";
-		
-		ArrayList<String> members = group.getMembers();
-		
-		for (int i = 0; i < members.size(); i++) {
-			if (i == members.size() - 1) {
-				query += "\"" + members.get(i) + "\"";
-			} else {
-			query += "\"" + members.get(i) + "\",";
-			}
- 		}
-		query += "}' WHERE id='" + group.getID() + "';";
+		String query = "UPDATE projeto.groups SET name='" + group.getName() + "', members='" + returnSQL_Array(group.getMembers()) + "'\r\n"
+				+ "WHERE id='" + group.getID() + "';";
 		
 		return (executeUpdate(query) > 0);
 	}
@@ -88,5 +74,27 @@ public class GroupsDatabase extends Database{
 				throw new SQLException("There was a connection error");
 			}
 		}
+	}
+	
+	/**
+	 * Parses an ArrayList(String) to SQL Array
+	 * 
+	 * @param array - ArrayList to parse
+	 * @return SQL Array
+	 */
+	private static String returnSQL_Array(ArrayList<String> array) {
+		String str = "{";
+		
+		for (int i = 0; i < array.size(); i++) {
+			if (i == array.size() - 1) {
+				str += "\"" + array.get(i) + "\"";
+			} else {
+			str += "\"" + array.get(i) + "\",";
+			}
+		}
+		
+		str += "}";
+		
+		return str;
 	}
 }

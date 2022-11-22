@@ -37,11 +37,11 @@ public class PersonalListsDatabase extends Database{
 	 * It does not delete the tasks inside the list
 	 * 
 	 * @param id ID of the list to delete
-	 * 
+	 * @return (True) Success; (False) Nothing was deleted
 	 * @throws SQLException If there was an error in the database connection
 	 */
-	public static void deleteList(int id) throws SQLException {
-		executeUpdate("DELETE FROM projeto.personal_lists WHERE id='" + id + "';");
+	public static boolean deleteList(int id) throws SQLException {
+		return (executeUpdate("DELETE FROM projeto.personal_lists WHERE id='" + id + "';") > 0);
 	}
 	
 	/**
@@ -78,10 +78,10 @@ public class PersonalListsDatabase extends Database{
 	 * 
 	 * @param id ID of the list
 	 * @param new_name String with the new list's name
-	 * 
+	 * @return (True) Success; (False) Nothing was deleted
 	 * @throws SQLException If there was an error in the database connection
 	 */
-	public static void changeName(int id, String new_name) throws SQLException {		
-		executeUpdate("UPDATE projeto.personal_lists SET name='" + new_name + "' WHERE id='" + id + "';");
+	public static boolean changeName(int id, String new_name) throws SQLException {		
+		return (executeUpdate("UPDATE projeto.personal_lists SET name='" + new_name + "' WHERE id='" + id + "';") > 0);
 	}
 }

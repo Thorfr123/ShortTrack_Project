@@ -7,7 +7,6 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import com.psw.shortTrack.data.Group;
 import com.psw.shortTrack.data.GroupTask;
 import com.psw.shortTrack.data.Task;
 
@@ -16,14 +15,13 @@ public class GroupTasksDatabase extends Database {
 	/**
 	 * Creates a new task in the database
 	 * 
-	 * @param tsk Task to add to the database
-	 * @param group Group which task belongs to
-	 * @return Task new id
+	 * @param tsk Group task to add to the database
+	 * @return Task's new id
 	 *  
 	 * @throws NumberFormatException If it returns a no integer (unreachable)
 	 * @throws SQLException If there was an error to connect to the database
 	 */
-	public static int createTask(GroupTask tsk, Group group) throws NumberFormatException, SQLException {
+	public static int createTask(GroupTask tsk) throws SQLException {
 		String  description 	= null,
 				assigned_to 	= null,
 				deadlineString 	= null;
@@ -38,10 +36,10 @@ public class GroupTasksDatabase extends Database {
 			assigned_to = "'" + tsk.getAssignedTo() + "'";
 		}
 		
-		String query = "INSERT INTO projeto.group_tasks (group_id, manager, assigned_to, name, description, created_date, deadline_date, state)\r\n"
-				+ "VALUES ('" + group.getID() + "','" + group.getManager() + "'," + assigned_to + ",'" + tsk.getName() + "'," 
+		String query = "INSERT INTO projeto.group_tasks (group_id, assigned_to, name, description, created_date, deadline_date, state)\r\n"
+				+ "VALUES ('" + tsk.getParentID() + "'," + assigned_to + ",'" + tsk.getName() + "'," 
 				+ description + ",'" + tsk.getCreatedDate() + "'," + deadlineString + ",'" + tsk.chekCompleted() + "') RETURNING id;";
-	
+		
 		return Integer.parseInt(executeQueryReturnSingleColumn(query));
 	}
 	

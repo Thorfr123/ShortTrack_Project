@@ -83,8 +83,25 @@ public class Database {
 				throw new SQLException("Connection failed!");
 			}	
 		}
-		return null;
 		
+		return null;
+	}
+	
+	protected static boolean executeQueryReturnBoolean(String query) throws SQLException {
+		
+		try (Connection connection = getConnection()){
+			if (connection != null) {
+				Statement stmt = connection.createStatement();
+				ResultSet rs = stmt.executeQuery(query);
+				if (rs.next()) {
+					return rs.getBoolean(1);
+				}
+			} else {
+				throw new SQLException("Connection failed!");
+			}
+		}
+		
+		return false;
 	}
 	
 	/**

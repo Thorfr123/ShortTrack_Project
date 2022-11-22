@@ -7,7 +7,8 @@ import com.psw.shortTrack.data.Account;
 public class AccountsDatabase extends Database{
 	
 	/**
-	 * Verifies if the user can login
+	 * Verifies if the user can login. Before sending the query to the database, email and password values are
+	 * tested with the same create Account's requirements.
 	 * 
 	 * @param email String with user's email
 	 * @param password String with user's password
@@ -15,9 +16,16 @@ public class AccountsDatabase extends Database{
 	 * @throws SQLException If there's a network error
 	 */
 	public static boolean checkLogin(String email, String password) throws SQLException{
+		if (Account.checkValidEmail(email) != null) {
+			return false;
+		}
+		else if (Account.checkValidPassword(password) != null) {
+			return false;
+		}
+		
 		String query = "SELECT EXISTS (SELECT 1 FROM projeto.account WHERE email='" + email + "' AND password='" + password + "');";
 		
-		return (executeQueryReturnSingleColumn(query).equals("t"));
+		return executeQueryReturnBoolean(query);
 	}
 	
 	/**
@@ -31,7 +39,7 @@ public class AccountsDatabase extends Database{
 	public static boolean checkEmail(String email) throws SQLException{
 		String query = "SELECT EXISTS(SELECT 1 FROM projeto.account WHERE email = '" + email + "');";
 		
-		return (executeQueryReturnSingleColumn(query).equals("f"));
+		return !executeQueryReturnBoolean(query);
 	}
 	
 	/**
@@ -70,8 +78,8 @@ public class AccountsDatabase extends Database{
 	 * @throws SQLException If there is a network error
 	 */
 	public static Account getAccount (String email, String password) throws SQLException{
-		String query = 	  "SELECT email, name FROM projeto.account "
-				+ "WHERE email='" + email + "' AND password='" + password + "';";
+		String query =	"SELECT email, name FROM projeto.account\r\n"
+						+ "WHERE email='" + email + "' AND password='" + password + "';";
 		
 		try (Connection connection = getConnection()){
 			if (connection != null) {
@@ -111,7 +119,7 @@ public class AccountsDatabase extends Database{
 	 * @return Either (True) if it succeeds or (False) if it fails
 	 * @throws SQLException If there is a network error
 	 */
-	public static boolean changeName(String email, String new_name) throws SQLException {
+	public static boolean changeName(String email, String new_name) throws SQLException {		
 		String query = "UPDATE projeto.account SET name='" + new_name + "'\r\n"
 						+"WHERE email='" + email + "';";
 		

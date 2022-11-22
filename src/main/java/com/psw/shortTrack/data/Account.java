@@ -64,20 +64,26 @@ public class Account {
 		return null;
 	}
 	
-	public static String checkValidPassword(String password, String repeatPassword) {
-		
+	public static String checkValidPassword(String password) {
 		String errorDescription;
 		if(password.length() < 5) {
 			errorDescription = "Password to short!";
 			return errorDescription;
 		}
+		return null;
+	}
+	
+	public static String checkValidPassword(String password, String repeatPassword) {
 		
-		if(!password.equals(repeatPassword)) {
-			errorDescription = "The passwords don't match!";
-			return errorDescription;
+		String errorDescription = checkValidPassword(password);
+		
+		if (errorDescription == null) {
+			if(!password.equals(repeatPassword)) {
+				errorDescription = "The passwords don't match!";
+			}
 		}
 		
-		return null;
+		return errorDescription;
 	}
 	
 }
