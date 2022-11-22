@@ -133,7 +133,7 @@ public class ControllerLoginScene {
 			if(!AccountsDatabase.checkLogin(username, password)) {
 				
 				Pane newBox = (Pane)loginBox;
-				String notification = "Invalid username or password!";
+				String notification = "Invalid email or password!";
 				showNotification(notification,newBox);
 				usernameField.getStyleClass().add("error");
 				passwordField.getStyleClass().add("error");

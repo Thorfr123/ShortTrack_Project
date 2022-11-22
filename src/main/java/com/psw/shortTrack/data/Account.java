@@ -4,20 +4,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Account {
-	private String username;
 	private String password;
 	private String name;
 	private String email;
 	
-	public Account(String username, String password, String name, String email) {
-		this.username = username;
+	public Account(String email, String password, String name) {
 		this.password = password;
 		this.name = name;
 		this.email = email;
 	}
 	
-	public String getUsername() {
-		return username;
+	public Account(String email, String name) {
+		this.name = name;
+		this.email = email;
 	}
 	
 	public String getPassword() {
@@ -62,17 +61,6 @@ public class Account {
 			return errorDescription;
 		}
         	
-		return null;
-	}
-	
-	public static String checkValidUsername(String username) {
-		
-		String errorDescription;
-		if(username.length() < 5) {
-			errorDescription = "Username to short!";
-			return errorDescription;
-		}
-		
 		return null;
 	}
 	

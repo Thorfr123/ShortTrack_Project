@@ -2,8 +2,6 @@ package com.psw.shortTrack.database;
 
 import java.sql.*;
 
-import java.time.LocalDate;
-
 import com.psw.shortTrack.data.Account;
 
 public class AccountsDatabase extends Database{
@@ -11,20 +9,13 @@ public class AccountsDatabase extends Database{
 	/**
 	 * Verifies if the user can login
 	 * 
-	 * @param user String with user's username or email
+	 * @param email String with user's email
 	 * @param password String with user's password
 	 * @return True - Both user and password are correct; False - Otherwise
 	 * @throws SQLException If there's a network error
 	 */
-	public static boolean checkLogin(String user, String password) throws SQLException{
-		String query = null;
-		
-		// TODO: Verificar se é um email de forma mais eficaz
-		if (user.contains("@")) {
-			query = "SELECT EXISTS (SELECT 1 FROM projeto.account WHERE email='" + user + "' AND password='" + password + "');";
-		} else {
-			query = "SELECT EXISTS (SELECT 1 FROM projeto.account WHERE username='" + user + "' AND password='" + password + "');";
-		}
+	public static boolean checkLogin(String email, String password) throws SQLException{
+		String query = "SELECT EXISTS (SELECT 1 FROM projeto.account WHERE email='" + email + "' AND password='" + password + "');";
 		
 		return (executeQueryReturnSingleColumn(query).equals("t"));
 	}
@@ -38,46 +29,23 @@ public class AccountsDatabase extends Database{
 	 * 
 	 */
 	public static boolean checkEmail(String email) throws SQLException{
-		String query =   "SELECT EXISTS(SELECT 1 FROM projeto.account "
-							+ "		WHERE email = '" + email + "');";
+		String query = "SELECT EXISTS(SELECT 1 FROM projeto.account WHERE email = '" + email + "');";
 		
-		return executeQueryReturnSingleColumn(query).equals("f");
+		return (executeQueryReturnSingleColumn(query).equals("f"));
 	}
-	
-	/**
-	 * Checks if the username is already in use
-	 * 
-	 * @param username String with username
-	 * @return True - This username isn't in use; False - This username is already in use
-	 * @throws SQLException If there is a network error
-	 */
-	public static boolean checkUsername(String username) throws SQLException{
-		String query =   "SELECT EXISTS(SELECT 1 FROM projeto.account "
-							+ "		WHERE username = '" + username + "');";
-		
-		return executeQueryReturnSingleColumn(query).equals("f");
-	}
-	
 	
 	/**
 	 * Creates a new account in the database
 	 * 
-	 * @param username String with user's username
-	 * @param password String with user's password
-	 * @param email String with user's email
-	 * @param first_name String with user's first name
-	 * @param last_name String with user's last name
-	 * @return (1) - if the account is created; (0) - if the account isn't created (It's already in use or someother problem
+	 * @param account User's new account
+	 * @return (True) - if the account is created; (False) - if the account isn't created (i.e. it's already in use)
 	 * @throws SQLException If there is a network error
 	 */
-	public static int createAccount(String username, String password, String email, String first_name, String last_name) throws SQLException{
-		LocalDate createdDate = LocalDate.now();
+	public static boolean createAccount(Account account) throws SQLException {		
+		String query = "INSERT INTO projeto.account (email, password, name)"
+					   + "	VALUES ('" + account.getEmail() + "', '" + account.getPassword() + "','" + account.getName() + "');";
 		
-		String query = "INSERT INTO projeto.account (username, password, email, register_date, first_name, last_name)" +
-					   "	VALUES ('" + username + "', '" + password + "', '" + email +
-					   "	', '" + createdDate + "', '" + first_name + "', '" + last_name + "');";
-		
-		return executeUpdate(query);
+		return (executeUpdate(query) > 0);
 	}
 	
 	/**
@@ -96,24 +64,21 @@ public class AccountsDatabase extends Database{
 	/**
 	 * Gets account data from the database
 	 * 
-	 * @param username String with user's username
+	 * @param email String with user's email
 	 * @param password String with user's password
 	 * @return Desired account or null if it fails
 	 * @throws SQLException If there is a network error
 	 */
-	public static Account getAccount (String username, String password) throws SQLException{
-		String query = 	  "SELECT email, first_name, last_name FROM projeto.account "
-				+ "WHERE username='" + username + "' AND password='" + password+ "';";
+	public static Account getAccount (String email, String password) throws SQLException{
+		String query = 	  "SELECT email, name FROM projeto.account "
+				+ "WHERE email='" + email + "' AND password='" + password + "';";
 		
 		try (Connection connection = getConnection()){
 			if (connection != null) {
 				Statement stmt = connection.createStatement();
 				ResultSet rs = stmt.executeQuery(query);
 				if (rs.next()) {
-					return new Account( username,
-										password,
-										rs.getString("first_name") + " " + rs.getString("last_name"),
-										rs.getString("email"));
+					return new Account( rs.getString("email"), rs.getString("name"));
 				}
 			} else {
 				throw new SQLException("Connection failed");
@@ -124,31 +89,31 @@ public class AccountsDatabase extends Database{
 	}
 	
 	/**
-	 * Changes the username of the user in the database
+	 * Changes the password of the user in the database
 	 * 
-	 * @param old_username String with the old username
-	 * @param new_username String with the new username
-	 * @return Either True if it succeeds or False if it fails
+	 * @param email String with the email
+	 * @param new_password String with the new password
+	 * @return Either (True) if it succeeds or (False) if it fails
 	 * @throws SQLException If there is a network error
 	 */
-	public static boolean changeUserName(String old_username, String new_username) throws SQLException{
-		String query = "UPDATE projeto.account SET username='" + new_username + "'" +
-					   " WHERE username='"+ old_username + "'";
+	public static boolean changePassword(String email, String old_password, String new_password) throws SQLException{
+		String query = "UPDATE projeto.account SET password='" + new_password + "'\r\n"
+						+"WHERE email='"+ email + "' AND password='" + old_password +"';";
 		
 		return (executeUpdate(query) > 0);
 	}
 	
 	/**
-	 * Changes the password of the user in the database
+	 * Changes the name of the user in the database
 	 * 
-	 * @param username String with the username
-	 * @param new_password String with the new password
-	 * @return Either True if it succeeds or False if it fails
+	 * @param email String with the email
+	 * @param new_name String with the new name
+	 * @return Either (True) if it succeeds or (False) if it fails
 	 * @throws SQLException If there is a network error
 	 */
-	public static boolean changePassword(String username, String new_password) throws SQLException{
-		String query = "UPDATE projeto.account SET password='" + new_password +"'" +
-					   " WHERE username='"+ username + "'";
+	public static boolean changeName(String email, String new_name) throws SQLException {
+		String query = "UPDATE projeto.account SET name='" + new_name + "'\r\n"
+						+"WHERE email='" + email + "';";
 		
 		return (executeUpdate(query) > 0);
 	}

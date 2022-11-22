@@ -8,26 +8,5 @@ public class SearchList extends TaskOrganizer {
 		super(name,0);
 	}
 	
-	public PersonalTask addPersonalTask(String taskName) {
-		
-		if(checkName(taskName))
-			return null;	
-		
-		PersonalTask newTask = new PersonalTask(taskName,id);
-		taskList.add(newTask);
-		
-		return newTask;
-	}
-	
-	public GroupTask addGroupTask(String taskName) {
-		
-		if(checkName(taskName))
-			return null;	
-		
-		GroupTask newTask = new GroupTask(taskName,id);
-		taskList.add(newTask);
-		
-		return newTask;
-	}
 
 }

@@ -29,7 +29,7 @@
                <children>
                   <VBox fx:id="loginBox" fillWidth="false" maxWidth="280.0" style="-fx-background-color: #f1f1f1; -fx-background-radius: 10;">
                      <children>
-                        <Label fx:id="usernameLabel" style="-fx-text-fill: #727272;" text="Username or Email:">
+                        <Label fx:id="usernameLabel" style="-fx-text-fill: #727272;" text="Email:">
                            <font>
                               <Font size="18.0" />
                            </font>

@@ -11,19 +11,37 @@ import com.psw.shortTrack.data.Group;
 public class GroupsDatabase extends Database{
 
 	/**
-	 * Creates a new group in the database
+	 * Creates a new group in the database. Returns the groups' id
 	 * 
-	 * @param name String with group's name
-	 * @param manager String with manager's email
-	 * @param members ArrayList with member's emails
+	 * @param group Group that you want to add in the database
 	 * @return Group id
 	 * 
 	 * @throws SQLException If a database access error occurs
 	 */
-	public static int createGroup(String name, String manager, ArrayList<String> members) throws SQLException{
+	public static int createGroup(Group group) throws NumberFormatException, SQLException {
 		String query = "INSERT INTO projeto.groups (name, manager, members)" +
-				   "	VALUES ('" + name + "', '" + manager + "\', '{";
+				   "	VALUES ('" + group.getName() + "', '" + group.getManager() + "\', '{";
 
+		ArrayList<String> members = group.getMembers();
+		
+		for (int i = 0; i < members.size(); i++) {
+			if (i == members.size() - 1) {
+				query += "\"" + members.get(i) + "\"";
+			} else {
+			query += "\"" + members.get(i) + "\",";
+			}
+		}
+		
+		query += "}\') RETURNING id;";
+		
+		return Integer.parseInt(executeQueryReturnSingleColumn(query));
+	}
+	
+	public static boolean updateGroup(Group group) throws SQLException {
+		String query = "UPDATE projeto.groups SET name='" + group.getName() + "', members='{";
+		
+		ArrayList<String> members = group.getMembers();
+		
 		for (int i = 0; i < members.size(); i++) {
 			if (i == members.size() - 1) {
 				query += "\"" + members.get(i) + "\"";
@@ -31,10 +49,9 @@ public class GroupsDatabase extends Database{
 			query += "\"" + members.get(i) + "\",";
 			}
  		}
+		query += "}' WHERE id='" + group.getID() + "';";
 		
-		query += "}\') RETURNING id;";
-		
-		return Integer.parseInt(executeQueryReturnSingleColumn(query));
+		return (executeUpdate(query) > 0);
 	}
 	
 	/**

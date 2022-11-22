@@ -24,8 +24,6 @@ public class ControllerSignUpScene {
 	@FXML 
 	private TextField emailField;
 	@FXML 
-	private TextField usernameField;
-	@FXML 
 	private PasswordField passwordField;
 	@FXML 
 	private PasswordField repeatPasswordField;
@@ -42,21 +40,20 @@ public class ControllerSignUpScene {
 		String firstName = firstNameField.getText();
 		String lastName =  lastNameField.getText();
 		String email = emailField.getText();
-		String username = usernameField.getText();
 		String password = passwordField.getText();
 		String repeatPassword = repeatPasswordField.getText();
 		
-		if(!checkFields(firstName, lastName, email, username, password, repeatPassword))
+		if(!checkFields(firstName, lastName, email, password, repeatPassword))
 			return;
 		
 		String name = firstName + " " +  lastName;
 		Account account;
 		try {
-			if (AccountsDatabase.createAccount(username, password, email, firstName, lastName) < 0) {
+			account = new Account(email,password,name);
+			if (!AccountsDatabase.createAccount(account)) {
 				showNotification("There was an unknown error");
 				return;
 			}
-			account = new Account(username,password,name,email);
 		} catch (SQLException e1) {
 			showNotification("Error! Please, check your conection");
 			return;
@@ -78,7 +75,7 @@ public class ControllerSignUpScene {
 		
 	}
 	
-	private boolean checkFields(String firstName, String lastName, String email, String username,
+	private boolean checkFields(String firstName, String lastName, String email,
 								String password, String repeatPassword) {
 		
 		if(firstName.isBlank())
@@ -90,9 +87,6 @@ public class ControllerSignUpScene {
 		if(email.isBlank())
 			emailField.getStyleClass().add("error");
 		
-		if(username.isBlank())
-			usernameField.getStyleClass().add("error");
-		
 		if(password.isBlank())
 			passwordField.getStyleClass().add("error");
 		
@@ -100,7 +94,7 @@ public class ControllerSignUpScene {
 			repeatPasswordField.getStyleClass().add("error");
 		
 		if(firstName.isBlank() || lastName.isBlank() || email.isBlank() 
-				|| username.isBlank() || password.isBlank() || repeatPassword.isBlank()) {
+				|| password.isBlank() || repeatPassword.isBlank()) {
 			showNotification("Please complete all the fields!");
 			return false;
 		}
@@ -121,18 +115,13 @@ public class ControllerSignUpScene {
 			emailField.getStyleClass().add("error");
 			return false;
 		}
-		else if((errorNotification = Account.checkValidName(username)) != null) {
-			showNotification(errorNotification);
-			usernameField.getStyleClass().add("error");
-			return false;
-		}
 		else if((errorNotification = Account.checkValidPassword(password, repeatPassword)) != null) {
 			showNotification(errorNotification);
 			passwordField.getStyleClass().add("error");
 			repeatPasswordField.getStyleClass().add("error");
 			return false;
 		}
-		else if(!checkDatabase(email,username)) {
+		else if(!checkDatabase(email)) {
 			return false;
 		}
 
@@ -152,24 +141,18 @@ public class ControllerSignUpScene {
 		firstNameField.getStyleClass().removeAll(Collections.singleton("error"));
 		lastNameField.getStyleClass().removeAll(Collections.singleton("error"));
 		emailField.getStyleClass().removeAll(Collections.singleton("error"));
-		usernameField.getStyleClass().removeAll(Collections.singleton("error"));
 		passwordField.getStyleClass().removeAll(Collections.singleton("error"));
 		repeatPasswordField.getStyleClass().removeAll(Collections.singleton("error"));
 		notificationLabel.setVisible(false);
 		
 	}
 	
-	private boolean checkDatabase(String email, String username) {
+	private boolean checkDatabase(String email) {
 		
 		try {
 			if(!AccountsDatabase.checkEmail(email)) {
 				showNotification("Email already in use!");
 				emailField.getStyleClass().add("error");
-				return false;
-			}
-			if(!AccountsDatabase.checkUsername(username)) {
-				showNotification("Username already in use!");
-				usernameField.getStyleClass().add("error");
 				return false;
 			}
 		} catch (SQLException e) {

@@ -117,14 +117,11 @@ public class Database {
 		String query =    "CREATE SCHEMA IF NOT EXISTS projeto;"
 				
 						+ "CREATE TABLE IF NOT EXISTS projeto.account ();"
-						+ "ALTER TABLE projeto.account ADD COLUMN IF NOT EXISTS username character varying(32) NOT NULL;"
 						+ "ALTER TABLE projeto.account ADD COLUMN IF NOT EXISTS email character varying(64) NOT NULL;"
 						+ "ALTER TABLE projeto.account ADD COLUMN IF NOT EXISTS password character varying(32) NOT NULL;"
-						+ "ALTER TABLE projeto.account ADD COLUMN IF NOT EXISTS register_date date;"
-						+ "ALTER TABLE projeto.account ADD COLUMN IF NOT EXISTS first_name character varying(32);"
-						+ "ALTER TABLE projeto.account ADD COLUMN IF NOT EXISTS last_name character varying(32);"
+						+ "ALTER TABLE projeto.account ADD COLUMN IF NOT EXISTS name character varying(64);"
 						+ "ALTER TABLE ONLY projeto.account DROP CONSTRAINT IF EXISTS account_pkey;"
-						+ "ALTER TABLE ONLY projeto.account ADD CONSTRAINT account_pkey PRIMARY KEY (username, email);"
+						+ "ALTER TABLE ONLY projeto.account ADD CONSTRAINT account_pkey PRIMARY KEY (email);"
 						
 						+ "CREATE TABLE IF NOT EXISTS projeto.personal_tasks ();"
 						+ "ALTER TABLE projeto.personal_tasks ADD COLUMN IF NOT EXISTS id integer NOT NULL;"
