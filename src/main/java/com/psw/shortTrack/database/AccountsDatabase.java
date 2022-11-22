@@ -41,9 +41,9 @@ public class AccountsDatabase extends Database{
 	 * @return (True) - if the account is created; (False) - if the account isn't created (i.e. it's already in use)
 	 * @throws SQLException If there is a network error
 	 */
-	public static boolean createAccount(Account account) throws SQLException {		
-		String query = "INSERT INTO projeto.account (email, password, name)"
-					   + "	VALUES ('" + account.getEmail() + "', '" + account.getPassword() + "','" + account.getName() + "');";
+	public static boolean createAccount(Account account) throws SQLException {
+		String query = "INSERT INTO projeto.account (email, password, name)\r\n"
+					   + "VALUES ('" + account.getEmail() + "', '" + account.getPassword() + "','" + account.getName() + "');";
 		
 		return (executeUpdate(query) > 0);
 	}

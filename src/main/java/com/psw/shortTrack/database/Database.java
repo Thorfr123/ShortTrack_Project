@@ -116,7 +116,7 @@ public class Database {
 	private static void setup() throws SQLException {		
 		String query =    "CREATE SCHEMA IF NOT EXISTS projeto;"
 				
-						+ "CREATE TABLE IF NOT EXISTS projeto.account ();"
+						+ "CREATE TABLE IF NOT EXISTS projeto.account ();"						
 						+ "ALTER TABLE projeto.account ADD COLUMN IF NOT EXISTS email character varying(64) NOT NULL;"
 						+ "ALTER TABLE projeto.account ADD COLUMN IF NOT EXISTS password character varying(32) NOT NULL;"
 						+ "ALTER TABLE projeto.account ADD COLUMN IF NOT EXISTS name character varying(64);"
