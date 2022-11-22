@@ -40,7 +40,10 @@ public class GroupTasksDatabase extends Database {
 				+ "VALUES ('" + tsk.getParentID() + "'," + assigned_to + ",'" + tsk.getName() + "'," 
 				+ description + ",'" + tsk.getCreatedDate() + "'," + deadlineString + ",'" + tsk.chekCompleted() + "') RETURNING id;";
 		
-		return Integer.parseInt(executeQueryReturnSingleColumn(query));
+
+		tsk.setID(Integer.parseInt(executeQueryReturnSingleColumn(query)));
+		
+		return 1;
 	}
 	
 	/**

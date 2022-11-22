@@ -151,6 +151,11 @@ public class ControllerLogoutScene {
 	public void logout(ActionEvent e) throws IOException {
 		
 		User.setLogedIn(false);
+		User.setGroups(null);
+		User.setLists(null);
+		User.setAccount(null);
+
+		App.readLocalFiles();
 		
 		root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 		App.loadScene(root);
@@ -198,13 +203,21 @@ public class ControllerLogoutScene {
 		
 		newListName.clear();
 		
-		List newList = User.addList(listName);
-		
-		if(newList == null) {
+		List newList;
+		try {
+			newList = User.addList(listName);
+		} catch (Exception exception) {
 			Pane newBox = (Pane)newListBox;
-			String notification = "This list already exist!";
+			String notification;
+			
+			if(exception instanceof SQLException)
+				notification = "Error! Please, check your connection";
+			else {
+				notification = "This List already exist!";
+				newListName.getStyleClass().add("error");
+			}
+			
 			showNotification(notification,newBox);
-			newListName.getStyleClass().add("error");
 			return;
 		}
 		
@@ -227,13 +240,21 @@ public class ControllerLogoutScene {
 		
 		newGroupName.clear();
 		
-		Group newGroup = User.addGroup(groupName);
-		
-		if(newGroup == null) {
-			Pane newBox = (Pane)newListBox;
-			String notification = "This group already exist!";
+		Group newGroup;
+		try {
+			newGroup = User.addGroup(groupName);
+		} catch (Exception exception) {
+			Pane newBox = (Pane)newGroupBox;
+			String notification;
+			
+			if(exception instanceof SQLException)
+				notification = "Error! Please, check your connection";
+			else {
+				notification = "This Group already exist!";
+				newGroupName.getStyleClass().add("error");
+			}
+			
 			showNotification(notification,newBox);
-			newGroupName.getStyleClass().add("error");
 			return;
 		}
 		
@@ -265,13 +286,21 @@ public class ControllerLogoutScene {
 	
 	private PersonalTask addTaskToList(String taskName) {
 	
-		PersonalTask newTask = ((List)loadList).addTask(taskName);
-		
-		if(newTask == null) {
+		PersonalTask newTask;
+		try {
+			newTask = ((List)loadList).addTask(taskName);
+		} catch (Exception exception) {
 			Pane newBox = (Pane)newTaskBox;
-			String notification = "This task already exist!";
+			String notification;
+			
+			if(exception instanceof SQLException)
+				notification = "Error! Please, check your connection";
+			else {
+				notification = "This Task already exist!";
+				newTaskName.getStyleClass().add("error");
+			}
+			
 			showNotification(notification,newBox);
-			newTaskName.getStyleClass().add("error");
 			return null;
 		}
 		
@@ -293,13 +322,23 @@ public class ControllerLogoutScene {
 	
 	private GroupTask addTaskToGroup(String taskName) {
 		
-		GroupTask newTask = ((Group)loadList).addTask(taskName);
-		
-		if(newTask == null) {
+		GroupTask newTask;
+		try {
+			newTask = ((Group)loadList).addTask(taskName);
+		} catch (Exception exception) {
 			Pane newBox = (Pane)newTaskBox;
-			String notification = "This task already exist!";
+			String notification;
+			
+			if(exception instanceof SQLException) {
+				notification = "Error! Please, check your connection";
+				System.out.println(exception);
+			}
+			else {
+				notification = "This Task already exist!";
+				newTaskName.getStyleClass().add("error");
+			}
+
 			showNotification(notification,newBox);
-			newTaskName.getStyleClass().add("error");
 			return null;
 		}
 		

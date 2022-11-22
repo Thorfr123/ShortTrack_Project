@@ -2,10 +2,16 @@ package com.psw.shortTrack.gui;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import com.psw.shortTrack.data.Account;
+import com.psw.shortTrack.data.Group;
+import com.psw.shortTrack.data.List;
 import com.psw.shortTrack.data.User;
 import com.psw.shortTrack.database.AccountsDatabase;
+import com.psw.shortTrack.database.GroupsDatabase;
+import com.psw.shortTrack.database.PersonalListsDatabase;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -35,7 +41,6 @@ public class ControllerSignUpScene {
 	public void create(ActionEvent e) throws IOException {
 		
 		removeErrorNotifications();
-		
 
 		String firstName = firstNameField.getText();
 		String lastName =  lastNameField.getText();
@@ -60,6 +65,21 @@ public class ControllerSignUpScene {
 		}
 		
 		User.setAccount(account);
+		
+		App.writeLocalFiles();
+
+		ArrayList<Group> groups;
+		ArrayList<List> lists; 
+		try {
+			groups = GroupsDatabase.getAllGroups(account.getEmail());
+			lists = PersonalListsDatabase.getAllLists(account.getEmail());
+		} catch (SQLException exeption) {
+			System.out.println("Error! Please, check your connection");
+			return;
+		}
+		User.setGroups(groups);
+		User.setLists(lists);
+		
 		
 		root = FXMLLoader.load(getClass().getResource("LogoutScene.fxml"));
 		App.loadScene(root);

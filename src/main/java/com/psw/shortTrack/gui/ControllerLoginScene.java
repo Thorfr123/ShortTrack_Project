@@ -25,17 +25,13 @@ import javafx.scene.paint.Color;
 
 public class ControllerLoginScene {
 	
-	@FXML
-	private Label usernameLabel;
-	@FXML
-	private Label passwordLabel;
 	@FXML 
 	private Label notificationLabel;
 	@FXML
 	private Label listNameLabel;
 	
 	@FXML 
-	private TextField usernameField;
+	private TextField emailField;
 	@FXML 
 	private PasswordField passwordField;
 	@FXML 
@@ -115,51 +111,53 @@ public class ControllerLoginScene {
 		
 		removeErrorNotifications();
 		
-		String username = usernameField.getText();
+		String email = emailField.getText();
 		String password = passwordField.getText();
 		
-		if(username.isBlank() || password.isBlank()) {
-			
+		if(email.isBlank() || password.isBlank()) {
 			Pane newBox = (Pane)loginBox;
 			String notification = "Please complete both fields!";
 			showNotification(notification,newBox);
-			usernameField.getStyleClass().add("error");
+			emailField.getStyleClass().add("error");
 			passwordField.getStyleClass().add("error");
-			
 			return;
 		}
 		
 		try {
-			if(!AccountsDatabase.checkLogin(username, password)) {
-				
+			if(!AccountsDatabase.checkLogin(email, password)) {
 				Pane newBox = (Pane)loginBox;
 				String notification = "Invalid email or password!";
 				showNotification(notification,newBox);
-				usernameField.getStyleClass().add("error");
+				emailField.getStyleClass().add("error");
 				passwordField.getStyleClass().add("error");
-				
 				return;
 			}
 		} catch (SQLException exeption) {
 			Pane newBox = (Pane)loginBox;
 			String notification = "Error! Please, check your connection";
 			showNotification(notification,newBox);
-			
 			return;
 		}
 		
+		App.writeLocalFiles();
+		
 		Account account = null;
+		ArrayList<Group> groups;
+		ArrayList<List> lists; 
 		try {
-			account = AccountsDatabase.getAccount(username, password);
+			account = AccountsDatabase.getAccount(email, password);
+			groups = GroupsDatabase.getAllGroups(account.getEmail());
+			lists = PersonalListsDatabase.getAllLists(account.getEmail());
 		} catch (SQLException exeption) {
 			Pane newBox = (Pane)loginBox;
 			String notification = "Error! Please, check your connection";
 			showNotification(notification,newBox);
-			
 			return;
 		}
 		
-		User.setAccount(account);
+		User.setAccount(account);	
+		User.setGroups(groups);
+		User.setLists(lists);
 		
 		root = FXMLLoader.load(getClass().getResource("LogoutScene.fxml"));
 		App.loadScene(root);
@@ -184,11 +182,12 @@ public class ControllerLoginScene {
 		
 		newListName.clear();
 		
-		List newList = User.addList(listName);
-		
-		if(newList == null) {
+		List newList;
+		try {
+			newList = User.addList(listName);
+		} catch (Exception exception) {
 			Pane newBox = (Pane)newListBox;
-			String notification = "This list already exist!";
+			String notification = "This List already exist!";
 			showNotification(notification,newBox);
 			newListName.getStyleClass().add("error");
 			return;
@@ -213,11 +212,12 @@ public class ControllerLoginScene {
 		
 		newTaskName.clear();
 		
-		Task newTask = ((List)loadList).addTask(taskName);
-		
-		if(newTask == null) {
+		Task newTask;
+		try {
+			newTask = ((List)loadList).addTask(taskName);
+		} catch (Exception exception) {
 			Pane newBox = (Pane)newTaskBox;
-			String notification = "This task already exist!";
+			String notification = "This Task already exist!";
 			showNotification(notification,newBox);
 			newTaskName.getStyleClass().add("error");
 			return;
@@ -246,11 +246,12 @@ public class ControllerLoginScene {
 
 		newTaskName.clear();
 		
-		Task newTask = ((List)loadList).addTask(taskName);
-		
-		if(newTask == null) {
+		Task newTask;
+		try {
+			newTask = ((List)loadList).addTask(taskName);
+		} catch (Exception exception) {
 			Pane newBox = (Pane)newTaskBox;
-			String notification = "This task already exist!";
+			String notification = "This List already exist!";
 			showNotification(notification,newBox);
 			newTaskName.getStyleClass().add("error");
 			return;
@@ -497,7 +498,7 @@ public class ControllerLoginScene {
 		newListBox.getChildren().remove(notificationLabel);
 		searchVerticalBox.getChildren().remove(notificationLabel);
 		
-		usernameField.getStyleClass().removeAll(Collections.singleton("error")); 
+		emailField.getStyleClass().removeAll(Collections.singleton("error")); 
 		passwordField.getStyleClass().removeAll(Collections.singleton("error")); 
 		newListName.getStyleClass().removeAll(Collections.singleton("error")); 
 		newTaskName.getStyleClass().removeAll(Collections.singleton("error")); 

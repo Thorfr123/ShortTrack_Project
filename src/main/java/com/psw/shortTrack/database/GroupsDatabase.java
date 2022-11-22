@@ -23,7 +23,9 @@ public class GroupsDatabase extends Database{
 				   		+ "VALUES ('" + group.getName() + "', '" + group.getManager() + "\', '" + returnSQL_Array(group.getMembers()) + "')\r\n"
 				   		+ "RETURNING id;";
 		
-		return Integer.parseInt(executeQueryReturnSingleColumn(query));
+		group.setID(Integer.parseInt(executeQueryReturnSingleColumn(query)));
+		
+		return 1;
 	}
 	
 	/**

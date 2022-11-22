@@ -26,32 +26,8 @@ public class App extends Application {
 	public void start(Stage primaryStage) {
 		
 		stage = primaryStage;
-		
-		try {
-			ArrayList<List> lists = FileIO.readPersonalListsFromFile();
-			User.setLists(lists);			
-		} catch (FileNotFoundException fnfe) {
-			System.out.println("Couldn't find local backup file");
-		} catch (ClassNotFoundException | IOException e) {
-			System.out.println("Erro a tentar ler o ficheiro de backup local!");
-		}
-		
-		int [] idCounter = {-1, -1};
-		try {
-			idCounter = FileIO.readIdCountersFromFile();
-			if (idCounter[0] < 1) {
-				idCounter[0] = calculateTaskIdCounter();
-			}
-			if (idCounter[1] < 1) {
-				idCounter[1] = calculateListIdCounter();
-			}
-		} catch (IOException | ClassNotFoundException e){
-			System.out.println("Erro a tentar ler o ficheiro de idCounters local!");
-			idCounter[0] = calculateTaskIdCounter();
-			idCounter[1] = calculateListIdCounter();
-		}
-		PersonalTask.idCount = idCounter[0];
-		List.idCount = idCounter[1];
+
+		readLocalFiles();
 		
 		try {
 			ClassLoader classLoader = getClass().getClassLoader();
@@ -71,13 +47,8 @@ public class App extends Application {
 			primaryStage.centerOnScreen();
 			
 			primaryStage.setOnCloseRequest(event -> {
-				try {
-					FileIO.writePersonalListsToFile(User.getLists());
-					FileIO.writeIdCountersToFile(PersonalTask.idCount, List.idCount);
-				} catch (IOException e) {
-					System.out.println("Erro a tentar escrever o ficheiro de backup local!");
-				}
-				
+				if(!User.isLogedIn())
+					writeLocalFiles();
 			});
 			
 			primaryStage.show();
@@ -114,6 +85,47 @@ public class App extends Application {
 		return idCount;
 	}
 	
+	public static void readLocalFiles() {
+		
+		try {
+			ArrayList<List> lists = FileIO.readPersonalListsFromFile();
+			User.setLists(lists);			
+		} catch (FileNotFoundException fnfe) {
+			System.out.println("Couldn't find local backup file");
+		} catch (ClassNotFoundException | IOException e) {
+			System.out.println("Erro a tentar ler o ficheiro de backup local!");
+		}
+		
+		int [] idCounter = {-1, -1};
+		try {
+			idCounter = FileIO.readIdCountersFromFile();
+			if (idCounter[0] < 1) {
+				idCounter[0] = calculateTaskIdCounter();
+			}
+			if (idCounter[1] < 1) {
+				idCounter[1] = calculateListIdCounter();
+			}
+		} catch (IOException | ClassNotFoundException e){
+			System.out.println("Erro a tentar ler o ficheiro de idCounters local!");
+			idCounter[0] = calculateTaskIdCounter();
+			idCounter[1] = calculateListIdCounter();
+		}
+		PersonalTask.idCount = idCounter[0];
+		List.idCount = idCounter[1];
+		
+	}
+	
+	public static void writeLocalFiles() {
+		
+		try {
+			FileIO.writePersonalListsToFile(User.getLists());
+			FileIO.writeIdCountersToFile(PersonalTask.idCount, List.idCount);
+		} catch (IOException e) {
+			System.out.println("Erro a tentar escrever o ficheiro de backup local!");
+		}
+		
+	}
+	
 	public static void loadScene(Parent root) {
 		
 		Scene scene = new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight());
@@ -135,4 +147,5 @@ public class App extends Application {
 		
 		loadScene(root);
 	}
+	
 }

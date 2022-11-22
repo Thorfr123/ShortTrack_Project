@@ -29,14 +29,14 @@
                <children>
                   <VBox fx:id="loginBox" fillWidth="false" maxWidth="280.0" style="-fx-background-color: #f1f1f1; -fx-background-radius: 10;">
                      <children>
-                        <Label fx:id="usernameLabel" style="-fx-text-fill: #727272;" text="Email:">
+                        <Label style="-fx-text-fill: #727272;" text="Email:">
                            <font>
                               <Font size="18.0" />
                            </font>
                         </Label>
                         <HBox prefHeight="18.0" prefWidth="800.0" spacing="20.0">
                            <children>
-                              <TextField fx:id="usernameField" promptText="example@gmail.com">
+                              <TextField fx:id="emailField" promptText="example@gmail.com">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -48,7 +48,7 @@
                               </Button>
                            </children>
                         </HBox>
-                        <Label fx:id="passwordLabel" style="-fx-text-fill: #727272;" text="Password:">
+                        <Label style="-fx-text-fill: #727272;" text="Password:">
                            <font>
                               <Font size="18.0" />
                            </font>
