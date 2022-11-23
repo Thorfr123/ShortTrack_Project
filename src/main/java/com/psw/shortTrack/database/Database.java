@@ -196,7 +196,6 @@ public class Database {
 						+ "CREATE TABLE IF NOT EXISTS projeto.group_tasks ();"
 						+ "ALTER TABLE projeto.group_tasks ADD COLUMN IF NOT EXISTS id integer NOT NULL;"
 						+ "ALTER TABLE projeto.group_tasks ADD COLUMN IF NOT EXISTS group_id integer NOT NULL;"
-						+ "ALTER TABLE projeto.group_tasks ADD COLUMN IF NOT EXISTS manager character varying(64) NOT NULL;"
 						+ "ALTER TABLE projeto.group_tasks ADD COLUMN IF NOT EXISTS assigned_to character varying(64);"
 						+ "ALTER TABLE projeto.group_tasks ADD COLUMN IF NOT EXISTS name character varying(32) NOT NULL;"
 						+ "ALTER TABLE projeto.group_tasks ADD COLUMN IF NOT EXISTS description character varying(128);"

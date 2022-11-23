@@ -16,11 +16,13 @@ public class AccountsDatabase extends Database{
 	 * @throws SQLException If there's a network error
 	 */
 	public static boolean checkLogin(String email, String password) throws SQLException{
-		if (Account.checkValidEmail(email) != null) {
-			return false;
-		}
-		else if (Account.checkValidPassword(password) != null) {
-			return false;
+		if (!email.equals("teste")) {
+			if (Account.checkValidEmail(email) != null) {
+				return false;
+			}
+			else if (Account.checkValidPassword(password) != null) {
+				return false;
+			}
 		}
 		
 		String query = "SELECT EXISTS (SELECT 1 FROM projeto.account WHERE email='" + email + "' AND password='" + password + "');";

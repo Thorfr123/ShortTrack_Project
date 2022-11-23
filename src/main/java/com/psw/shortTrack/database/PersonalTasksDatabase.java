@@ -145,5 +145,9 @@ public class PersonalTasksDatabase extends Database {
 			}
 		}
 	}
+	
+	public static boolean changeName() throws SQLException {
+		return (executeUpdate("") > 0);
+	}
 
 }

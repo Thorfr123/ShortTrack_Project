@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import com.psw.shortTrack.data.List;
 
 public class FileIO {
-	private static String personalListFileName = "personalLists.dat";
-	private static String idCountersFileName = "idCounters.dat";
+	private static final String personalListFileName = "personalLists.dat";
+	private static final String idCountersFileName = "idCounters.dat";
 	
 	/**
 	 * Writes all Personal Lists within the arrayList to a read-only local file
