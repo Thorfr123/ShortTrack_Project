@@ -1,10 +1,13 @@
 package com.psw.shortTrack.gui;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import com.psw.shortTrack.data.List;
 import com.psw.shortTrack.data.User;
+import com.psw.shortTrack.database.PersonalListsDatabase;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -44,6 +47,15 @@ public class ControllerEditListScene {
 
 		if(alert.showAndWait().get() == ButtonType.OK){
 			
+			if(User.isLogedIn()) {
+				try {
+					PersonalListsDatabase.deleteList(list.getID());
+				} catch (SQLException exception) {
+					showNotification("Error! Please, check your connection");
+					return;
+				}
+			}
+			
 			arrayList.remove(list);
 			list = null;
 			
@@ -64,15 +76,23 @@ public class ControllerEditListScene {
 			return;
 		}
 		
-		if (!newListName.equals(list.getName())) {
-			for (List l : arrayList) {
-				if (l.getName().equals(newListName)) {
-					showNotification("Already exist a task with that name!");
-					return;
-				}
+		if (newListName.equals(list.getName()))
+			return;
+		
+		if (User.checkListName(newListName)) {
+			showNotification("Already exist a task with that name!");
+			return;
+		}
+		
+		if(User.isLogedIn()) {
+			try {
+				PersonalListsDatabase.update(list.getID(),newListName);
+			} catch (SQLException exception) {
+				showNotification("Error! Please, check your connection");
+				return;
 			}
 		}
-				
+
 		list.setName(newListName);
 		
 		App.loadMainScene();

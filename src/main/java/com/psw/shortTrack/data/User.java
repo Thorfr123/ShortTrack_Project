@@ -2,9 +2,6 @@ package com.psw.shortTrack.data;
 
 import java.util.ArrayList;
 
-import com.psw.shortTrack.database.GroupsDatabase;
-import com.psw.shortTrack.database.PersonalListsDatabase;
-
 public class User {
 	
 	private static ArrayList<List> lists = new ArrayList<List>(0);
@@ -36,35 +33,23 @@ public class User {
 		User.groups = groups;
 	}
 	
-	public static List addList(String listName) throws Exception {
-			
-		for(List l : lists) {
-			if(l.getName().equals(listName))
-				throw new IllegalArgumentException("This list already exist!");
+	public static boolean checkListName(String listName) {
+		for (List l : lists) {
+			if (l.getName().equals(listName))
+				return true;
 		}
 		
-		List newList = new List(listName);
-		
-		if(logedIn)
-			PersonalListsDatabase.createList(newList);
-		
-		lists.add(newList);
-		
-		return newList;
+		return false;
 	}
 	
-	public static Group addGroup(String groupName) throws Exception {
+	public static boolean checkGroupName(String groupName) {
 		
 		for(Group g : groups) {
 			if(g.getName().equals(groupName) && g.getManager().equals(account.getEmail()))
-				throw new IllegalArgumentException("This group already exist!");
+				return true;
 		}
 		
-		Group newGroup = new Group(groupName,account.getEmail());
-		GroupsDatabase.createGroup(newGroup);
-		groups.add(newGroup);
-		
-		return newGroup;
+		return false;
 	}
 	
 	public static List getList(int ID) {

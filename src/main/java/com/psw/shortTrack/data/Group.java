@@ -2,8 +2,6 @@ package com.psw.shortTrack.data;
 
 import java.util.ArrayList;
 
-import com.psw.shortTrack.database.GroupTasksDatabase;
-
 public class Group extends TaskOrganizer{
 
 	private static final long serialVersionUID = 8490848681679284579L;
@@ -42,18 +40,6 @@ public class Group extends TaskOrganizer{
 
 	public void setMembers(ArrayList<String> members) {
 		this.members = members;
-	}
-	
-	public GroupTask addTask(String taskName) throws Exception {
-		
-		if(checkName(taskName))
-			throw new IllegalArgumentException("This task already exist!");
-		
-		GroupTask newTask = new GroupTask(taskName,id);
-		GroupTasksDatabase.createTask(newTask);
-		taskList.add(newTask);
-		
-		return newTask;
 	}
 	
 }
