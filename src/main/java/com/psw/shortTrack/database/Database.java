@@ -142,7 +142,7 @@ public class Database {
 						
 						+ "CREATE TABLE IF NOT EXISTS projeto.personal_tasks ();"
 						+ "ALTER TABLE projeto.personal_tasks ADD COLUMN IF NOT EXISTS id integer NOT NULL;"
-						+ "ALTER TABLE projeto.personal_tasks ADD COLUMN IF NOT EXISTS list_id integer NOT NULL REFERENCES projeto.personal_lists (id) ON DELETE CASCADE;"
+						//+ "ALTER TABLE projeto.personal_tasks ADD COLUMN IF NOT EXISTS list_id integer NOT NULL REFERENCES projeto.personal_lists (id) ON DELETE CASCADE;"
 						+ "ALTER TABLE projeto.personal_tasks ADD COLUMN IF NOT EXISTS name character varying(32) NOT NULL;"
 						+ "ALTER TABLE projeto.personal_tasks ADD COLUMN IF NOT EXISTS description character varying(128);"
 						+ "ALTER TABLE projeto.personal_tasks ADD COLUMN IF NOT EXISTS created_date date;"
@@ -162,7 +162,7 @@ public class Database {
 						
 						+ "CREATE TABLE IF NOT EXISTS projeto.personal_lists ();"
 						+ "ALTER TABLE projeto.personal_lists ADD COLUMN IF NOT EXISTS id integer NOT NULL;"
-						+ "ALTER TABLE projeto.personal_lists ADD COLUMN IF NOT EXISTS email character varying (64) NOT NULL REFERENCES projeto.account (email) ON DELETE CASCADE;"
+						//+ "ALTER TABLE projeto.personal_lists ADD COLUMN IF NOT EXISTS email character varying (64) NOT NULL REFERENCES projeto.account (email) ON DELETE CASCADE;"
 						+ "ALTER TABLE projeto.personal_lists ADD COLUMN IF NOT EXISTS name character varying (32) NOT NULL;"
 						+ "CREATE SEQUENCE IF NOT EXISTS projeto.lists_id_seq\r\n"
 						+ "		AS integer\r\n"
@@ -178,7 +178,7 @@ public class Database {
 						
 						+ "CREATE TABLE IF NOT EXISTS projeto.groups ();"
 						+ "ALTER TABLE projeto.groups ADD COLUMN IF NOT EXISTS id integer NOT NULL;"
-						+ "ALTER TABLE projeto.groups ADD COLUMN IF NOT EXISTS manager character varying(64) not null references projeto.account (email) ON DELETE CASCADE;"
+						//+ "ALTER TABLE projeto.groups ADD COLUMN IF NOT EXISTS manager character varying(64) not null references projeto.account (email) ON DELETE CASCADE;"
 						+ "ALTER TABLE projeto.groups ADD COLUMN IF NOT EXISTS name character varying (32) NOT NULL;"
 						+ "CREATE SEQUENCE IF NOT EXISTS projeto.groups_id_seq\r\n"
 						+ "		AS integer\r\n"
@@ -194,7 +194,7 @@ public class Database {
 						
 						+ "CREATE TABLE IF NOT EXISTS projeto.group_tasks ();"
 						+ "ALTER TABLE projeto.group_tasks ADD COLUMN IF NOT EXISTS id integer NOT NULL;"
-						+ "ALTER TABLE projeto.group_tasks ADD COLUMN IF NOT EXISTS group_id integer NOT NULL REFERENCES projeto.groups (id) ON DELETE CASCADE;"
+						//+ "ALTER TABLE projeto.group_tasks ADD COLUMN IF NOT EXISTS group_id integer NOT NULL REFERENCES projeto.groups (id) ON DELETE CASCADE;"
 						+ "ALTER TABLE projeto.group_tasks ADD COLUMN IF NOT EXISTS assigned_to character varying(64) REFERENCES projeto.account (email) ON DELETE SET NULL;"
 						+ "ALTER TABLE projeto.group_tasks ADD COLUMN IF NOT EXISTS name character varying(32) NOT NULL;"
 						+ "ALTER TABLE projeto.group_tasks ADD COLUMN IF NOT EXISTS description character varying(128);"
