@@ -30,6 +30,10 @@ public class GroupsDatabase extends Database{
 		return 1;
 	}
 	
+	public static int deleteGroup(int id) throws SQLException {
+		return (executeUpdate("DELETE FROM projeto.groups WHERE id=" + toSQL(id) + ";"));
+	}
+	
 	/**
 	 * Returns every groups with the user's email, as a manager or as a member.
 	 * It also assembles the group's tasks

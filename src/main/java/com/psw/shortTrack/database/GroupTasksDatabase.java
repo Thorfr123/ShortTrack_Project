@@ -36,6 +36,10 @@ public class GroupTasksDatabase extends Database {
 		return 1;
 	}
 	
+	public static int deleteTask(int id) throws SQLException {
+		return (executeUpdate("DELETE FROM projeto.group_tasks WHERE id=" + toSQL(id) + ";"));
+	}
+	
 	/**
 	 * Returns all the tasks form one group
 	 * 
