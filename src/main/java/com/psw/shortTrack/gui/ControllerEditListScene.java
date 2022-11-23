@@ -1,10 +1,13 @@
 package com.psw.shortTrack.gui;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import com.psw.shortTrack.data.List;
 import com.psw.shortTrack.data.User;
+import com.psw.shortTrack.database.PersonalListsDatabase;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -43,6 +46,15 @@ public class ControllerEditListScene {
 		alert.setContentText("Are you sure you really want to delete the list?");
 
 		if(alert.showAndWait().get() == ButtonType.OK){
+			
+			if(User.isLogedIn()) {
+				try {
+					PersonalListsDatabase.deleteList(list.getID());
+				} catch (SQLException exception) {
+					showNotification("Error! Please, check your connection");
+					return;
+				}
+			}
 			
 			arrayList.remove(list);
 			list = null;
