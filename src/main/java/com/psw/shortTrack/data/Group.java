@@ -6,7 +6,7 @@ public class Group extends TaskOrganizer{
 
 	private static final long serialVersionUID = 8490848681679284579L;
 	
-	private ArrayList<String> members = new ArrayList<String>(0);
+	private ArrayList<Account> members = new ArrayList<Account>(0);
 	private String manager;
 	
 	public Group(String name, String manager) {
@@ -24,7 +24,7 @@ public class Group extends TaskOrganizer{
 		this.manager = manager;
 	}
 	
-	public Group(String name, String manager, int id, ArrayList<Task> taskList, ArrayList<String> members) {
+	public Group(String name, String manager, int id, ArrayList<Task> taskList, ArrayList<Account> members) {
 		super(name,id,taskList);
 		this.manager = manager;
 		this.members = members;
@@ -34,12 +34,21 @@ public class Group extends TaskOrganizer{
 		return manager;
 	}
 	
-	public ArrayList<String> getMembers() {
+	public ArrayList<Account> getMemberAccounts() {
 		return members;
 	}
+	
+	public ArrayList<String> getMemberEmails() {
+		
+		ArrayList<String> memberEmails = new ArrayList<String>(0);
+		for(Account a : members)
+			memberEmails.add(a.getEmail());
+		
+		return memberEmails;
+	}
 
-	public void setMembers(ArrayList<String> members) {
+	public void setMembers(ArrayList<Account> members) {
 		this.members = members;
 	}
-	
+
 }

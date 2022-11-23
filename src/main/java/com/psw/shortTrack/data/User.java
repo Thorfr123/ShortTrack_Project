@@ -42,14 +42,14 @@ public class User {
 		return false;
 	}
 	
-	public static boolean checkGroupName(String groupName) {
+	public static Group checkGroupName(String groupName) {
 		
 		for(Group g : groups) {
 			if(g.getName().equals(groupName) && g.getManager().equals(account.getEmail()))
-				return true;
+				return g;
 		}
 		
-		return false;
+		return null;
 	}
 	
 	public static List getList(int ID) {

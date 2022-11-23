@@ -28,7 +28,7 @@ public class GroupTaskBar extends HBox{
 		
 		String taskName = task.getName();
 		String taskDeadlineDate;
-		String manager = group.getManager();
+		String assignedTo = task.getAssignedTo();
 		
 		if(task.getDeadlineDate() == null)
 			taskDeadlineDate = "";
@@ -46,15 +46,19 @@ public class GroupTaskBar extends HBox{
 		HBox taskBox3 = new HBox();
 		Label label1 = new Label(taskName);
 		Label label2 = new Label(taskDeadlineDate);
-		Label label3 = new Label("Assign to: " + manager);			// NEED TO BE CHANGED
 		label1.setFont(Font.font(14.0));
 		label2.getStyleClass().add("taskFooter");
-		label3.getStyleClass().add("taskFooter");
 		taskBox3.getChildren().add(label2);
-		taskBox3.getChildren().add(label3);
 		HBox.setHgrow(label2,Priority.ALWAYS);
 		label2.setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
-		label3.setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
+		
+		Label label3 = new Label();
+		if(assignedTo != null) {
+			label3.setText("Assign to: " + assignedTo);
+			label3.getStyleClass().add("taskFooter");
+			taskBox3.getChildren().add(label3);
+			label3.setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
+		}
 		
 		if(searchMode) {
 			HBox.setHgrow(label3,Priority.ALWAYS);

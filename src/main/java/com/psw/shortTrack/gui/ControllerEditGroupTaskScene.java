@@ -16,6 +16,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -33,6 +34,8 @@ public class ControllerEditGroupTaskScene {
 	private CheckBox checkButton;
 	@FXML 
 	private DatePicker dueDateField;
+	@FXML
+	private ChoiceBox<String> assignedToBox;
 	@FXML
 	private Label notificationLabel;
 
@@ -58,6 +61,15 @@ public class ControllerEditGroupTaskScene {
 			checkButton.setSelected(false);
 			checkButton.setText("To be started");
 		}
+		
+		assignedToBox.getItems().add("Nobody");
+		assignedToBox.getItems().addAll(group.getMemberEmails());
+		assignedToBox.getItems().add(group.getManager());
+		
+		if(task.getAssignedTo() == null)
+			assignedToBox.setValue("Nobody");
+		else
+			assignedToBox.setValue(task.getAssignedTo());
 		
     }
 	
@@ -113,12 +125,14 @@ public class ControllerEditGroupTaskScene {
 		
 		String newDescription = descriptionField.getText();
 		LocalDate newDeadline = dueDateField.getValue();
-		//TODO: Add members
-		String newAssignTo = task.getAssignedTo();
+		String newAssignedTo = assignedToBox.getValue();
+		
+		if(newAssignedTo.equals("Nobody"))
+			newAssignedTo = null;
 		
 		if(User.isLogedIn()) {
 			try {
-				GroupTasksDatabase.updateTask(task.getID(), newTaskName, newDescription, newDeadline, checkButton.isSelected(), newAssignTo);
+				GroupTasksDatabase.updateTask(task.getID(), newTaskName, newDescription, newDeadline, checkButton.isSelected(), newAssignedTo);
 			} catch (SQLException exception) {
 				System.out.println(exception);
 				showNotification("Error! Please, check your connection");
@@ -130,6 +144,7 @@ public class ControllerEditGroupTaskScene {
 		task.setDescription(newDescription);
 		task.setDeadline(newDeadline);
 		task.setCompleted(checkButton.isSelected());
+		task.setAssignedTo(newAssignedTo);
 		
 		App.loadMainScene();
 		

@@ -5,8 +5,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import com.psw.shortTrack.data.Account;
 import com.psw.shortTrack.data.Group;
 import com.psw.shortTrack.data.User;
+import com.psw.shortTrack.database.AccountsDatabase;
 import com.psw.shortTrack.database.GroupsDatabase;
 
 import javafx.event.ActionEvent;
@@ -14,6 +16,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.control.Alert.AlertType;
@@ -25,13 +28,21 @@ public class ControllerEditGroupScene {
 	@FXML
 	private TextField memberTextField;
 	@FXML
+	private ListView<String> memberList;
+	@FXML
 	private Label notificationLabel;
 	
 	private Group group;
+	private ArrayList<Account> newMembers = new ArrayList<Account>(0);
 	
 	public void initData(Group group) {
 
 		this.group = group;
+		
+		for(Account a : group.getMemberAccounts()) {
+			newMembers.add(a);
+			memberList.getItems().add(a.getName() + " (" + a.getEmail() + ")");
+		}
 		
 		groupNameField.setText(group.getName());
 		
@@ -69,8 +80,7 @@ public class ControllerEditGroupScene {
 		removeErrorNotifications();
 		
 		String newGroupName = groupNameField.getText();
-		//TODO: Add members
-		ArrayList<String> newMembers = group.getMembers();
+		//ArrayList<String> newMembers = group.getMembers();
 		
 		if(newGroupName.isBlank()) {
 			showNotification("The Group needs a name!");
@@ -78,11 +88,9 @@ public class ControllerEditGroupScene {
 			return;
 		}
 		
-		if (newGroupName.equals(group.getName()))
-			return;
-		
-		if (User.checkGroupName(newGroupName)) {
-			showNotification("Already exist a task with that name!");
+		Group g = User.checkGroupName(newGroupName);
+		if ((g != null) && (g != group)) {
+			showNotification("Already exist a group with that name!");
 			return;
 		}
 		
@@ -96,6 +104,7 @@ public class ControllerEditGroupScene {
 		}
 
 		group.setName(newGroupName);
+		group.setMembers(newMembers);
 		
 		App.loadMainScene();
 		
@@ -105,25 +114,73 @@ public class ControllerEditGroupScene {
 		
 		removeErrorNotifications();
 		
-		System.out.println("cancel - Not Working!");
-		
 		App.loadMainScene();
 		
 	}
 	
-	public void add(ActionEvent e) throws IOException {
+	public void addMember(ActionEvent e) throws IOException {
 		
 		removeErrorNotifications();
+		String newMember = memberTextField.getText();
 		
-		System.out.println("add - Not Working!");
+		if(newMember.isBlank())
+			return;
+	
+		memberTextField.clear();
+		
+		String errorNotification;
+		if((errorNotification = Account.checkValidEmail(newMember)) != null) {
+			showNotification(errorNotification);
+			memberTextField.getStyleClass().add("error");
+			return;
+		}
+		
+		for(String s : group.getMemberEmails()) {
+			if(s.equals(newMember)) {
+				showNotification("This member already belongs to this group!");
+				memberTextField.getStyleClass().add("error");
+				return;
+			}
+		}
+		
+		Account newMemberAccount;
+		try {
+			newMemberAccount = AccountsDatabase.getAccount(newMember);
+		} catch (SQLException exception) {
+			showNotification("Error! Please, check your connection");
+			return;
+		}
+		
+		if(newMemberAccount == null) {
+			showNotification("There is no account with this email!");
+			memberTextField.getStyleClass().add("error");
+			return;
+		}
+		
+		memberList.getItems().add(newMemberAccount.getName() + " (" + newMemberAccount.getEmail() + ")");
+		newMembers.add(newMemberAccount);
 		
 	}
 	
-	public void remove(ActionEvent e) throws IOException {
+	public void removeMember(ActionEvent e) throws IOException {
 		
 		removeErrorNotifications();
+		String memberToRemove = memberList.getSelectionModel().getSelectedItem();
 		
-		System.out.println("remove - Not Working!");
+		if(memberToRemove == null)
+			return;
+		
+		memberList.getItems().remove(memberToRemove);
+		memberToRemove = memberToRemove.substring(memberToRemove.indexOf("(")+1, 
+												  memberToRemove.indexOf(")"));
+		System.out.println(memberToRemove);
+		for(Account a : newMembers) {
+			String oldmember = a.getEmail();
+			if(oldmember.equals(memberToRemove)) {
+				newMembers.remove(a);
+				break;
+			}
+		}
 		
 	}
 	
@@ -138,6 +195,7 @@ public class ControllerEditGroupScene {
 	private void removeErrorNotifications() {
 		
 		groupNameField.getStyleClass().removeAll(Collections.singleton("error")); 
+		memberTextField.getStyleClass().removeAll(Collections.singleton("error")); 
 		notificationLabel.setVisible(false);
 		
 	}

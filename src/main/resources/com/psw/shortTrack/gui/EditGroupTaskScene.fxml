@@ -33,7 +33,7 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <ChoiceBox prefWidth="150.0" />
+            <ChoiceBox fx:id="assignedToBox" />
             <Label text="Task due date">
                <font>
                   <Font size="18.0" />

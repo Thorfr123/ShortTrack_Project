@@ -262,7 +262,7 @@ public class ControllerLogoutScene {
 		Pane newBox = (Pane)newGroupBox;
 		String notification;
 		
-		if(User.checkGroupName(groupName)) {
+		if(User.checkGroupName(groupName) != null) {
 			notification = "This Group already exist!";
 			showNotification(notification,newBox);
 			newGroupName.getStyleClass().add("error");

@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import com.psw.shortTrack.data.Account;
 import com.psw.shortTrack.data.Group;
 
 public class GroupsDatabase extends Database{
@@ -19,10 +20,11 @@ public class GroupsDatabase extends Database{
 	 * @throws SQLException If a database access error occurs
 	 */
 	public static int createGroup(Group group) throws SQLException {
+		
 		//TODO: change return
 		String query = 	"INSERT INTO projeto.groups (name, manager, members)\r\n"
 				   		+ "VALUES (" + toSQL((String)group.getName()) + "," + toSQL((String)group.getManager()) + "," 
-				   		+ toSQL((ArrayList<String>)group.getMembers()) + ")\r\n"
+				   		+ toSQL((ArrayList<String>)group.getMemberEmails()) + ")\r\n"
 				   		+ "RETURNING id;";
 		
 		group.setID(Integer.parseInt(executeQueryReturnSingleColumn(query)));
@@ -55,11 +57,19 @@ public class GroupsDatabase extends Database{
 					for (String member: (String[]) rs.getArray("members").getArray()) {
 						members.add(member);
 					}
+					
+					//TODO: Adding by Jorge :)
+					ArrayList<Account> memberAccounts = new ArrayList<Account>(0);
+					for(String s : members) {
+						Account memberAccount = AccountsDatabase.getAccount(s);
+						memberAccounts.add(memberAccount);
+					}
+					
 					Group group = new Group(rs.getString("name"), 
 											rs.getString("manager"), 
 											rs.getInt("id"), 
 											GroupTasksDatabase.getAllTasks(rs.getInt("id")), 
-											members);	
+											memberAccounts);	
 					all_groups.add(group);
 				}
 				return all_groups;
@@ -76,9 +86,16 @@ public class GroupsDatabase extends Database{
 	 * @return (True) Success; (False) Error
 	 * @throws SQLException If a database access error occurs
 	 */
-	public static boolean updateGroup(int id, String newGroupName, ArrayList<String> newMembers) throws SQLException {
+	public static boolean updateGroup(int id, String newGroupName, ArrayList<Account> newMembers) throws SQLException {
+		
+		//TODO: Adding by Jorge :)
+		ArrayList<String> members = new ArrayList<String>(0);
+		for(Account a : newMembers) {
+			members.add(a.getEmail());
+		}
+		
 		String query = 	"UPDATE projeto.groups SET name=" + toSQL((String)newGroupName) + ", members="
-						+ toSQL((ArrayList<String>)newMembers) + "\r\n"
+						+ toSQL((ArrayList<String>)members) + "\r\n"
 						+ "WHERE id=" + toSQL(id) + ";";
 		
 		return (executeUpdate(query) > 0);

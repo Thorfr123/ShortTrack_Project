@@ -27,12 +27,12 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <ListView prefHeight="200.0" prefWidth="200.0" />
+            <ListView fx:id="memberList" prefHeight="200.0" prefWidth="200.0" />
             <HBox spacing="10.0">
                <children>
-                  <TextField fx:id="memberTextField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="ex: member1@email.com" HBox.hgrow="ALWAYS" />
-                  <Button maxHeight="1.7976931348623157E308" maxWidth="100.0" mnemonicParsing="false" onAction="#add" text="Add" HBox.hgrow="ALWAYS" />
-                  <Button maxHeight="1.7976931348623157E308" maxWidth="100.0" mnemonicParsing="false" onAction="#remove" text="Remove" HBox.hgrow="ALWAYS" />
+                  <TextField fx:id="memberTextField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#addMember" promptText="ex: member1@email.com" HBox.hgrow="ALWAYS" />
+                  <Button maxHeight="1.7976931348623157E308" maxWidth="100.0" mnemonicParsing="false" onAction="#addMember" text="Add" HBox.hgrow="ALWAYS" />
+                  <Button maxHeight="1.7976931348623157E308" maxWidth="100.0" mnemonicParsing="false" onAction="#removeMember" text="Remove" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
             <Label fx:id="notificationLabel" visible="false">
