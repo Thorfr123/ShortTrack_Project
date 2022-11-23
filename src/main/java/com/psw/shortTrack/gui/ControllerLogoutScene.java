@@ -154,7 +154,11 @@ public class ControllerLogoutScene {
 		User.setGroups(null);
 		User.setLists(null);
 		User.setAccount(null);
-
+		lists = null;
+		groups = null;
+		loadList = null;
+		account = null;
+		
 		App.readLocalFiles();
 		
 		root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
@@ -177,12 +181,18 @@ public class ControllerLogoutScene {
 					return;
 				}
 			} catch (SQLException e1) {
-				//Temporario
 				System.out.println("Error! Please, check your conection");
 				return;
 			}	
 			
 			User.setLogedIn(false);
+			User.setGroups(null);
+			User.setLists(null);
+			User.setAccount(null);
+			lists = null;
+			groups = null;
+			loadList = null;
+			account = null;
 			
 			root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 			App.loadScene(root);
