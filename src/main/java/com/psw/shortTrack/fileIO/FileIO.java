@@ -22,6 +22,9 @@ public class FileIO {
 	 * @throws IOException If an error occurs while writing to the file
 	 */
 	public static void writePersonalListsToFile(ArrayList<List> arrayList) throws IOException{
+		if (arrayList == null)
+			return;
+		
 		File file = new File(personalListFileName);
 		file.createNewFile();
 		file.setWritable(true);

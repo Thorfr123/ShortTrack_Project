@@ -65,14 +65,17 @@ public class GroupsDatabase extends Database{
 				while (rs.next()) {
 					ArrayList<String> members = new ArrayList<String>();
 					for (String member: (String[]) rs.getArray("members").getArray()) {
-						members.add(member);
+						if (member != null) {
+							members.add(member);
+						}
 					}
 					
-					//TODO: Adding by Jorge :)
 					ArrayList<Account> memberAccounts = new ArrayList<Account>(0);
 					for(String s : members) {
 						Account memberAccount = AccountsDatabase.getAccount(s);
-						memberAccounts.add(memberAccount);
+						if (memberAccount != null) {
+							memberAccounts.add(memberAccount);
+						}
 					}
 					
 					Group group = new Group(rs.getString("name"),
@@ -92,22 +95,22 @@ public class GroupsDatabase extends Database{
 	/**
 	 * Updates, in the database, the name and members in a group
 	 * 
-	 * @param group Group to update in database (TODO: Alterar)
+	 * @param id Integer with group's id
+	 * @param newGroupName String with group's new name
+	 * @param newMembers ArrayList(Account) with members' accounts
 	 * @return (True) Success; (False) Error
 	 * @throws SQLException If a database access error occurs
 	 */
 	public static boolean updateGroup(int id, String newGroupName, ArrayList<Account> newMembers) throws SQLException {
 		
-		//TODO: Adding by Jorge :)
 		ArrayList<String> members = new ArrayList<String>(0);
 		for(Account a : newMembers) {
 			members.add(a.getEmail());
 		}
 		
-		String query = 	"UPDATE projeto.groups SET name=" + toSQL((String)newGroupName) + ", members="
-						+ toSQL((ArrayList<String>)members) + "\r\n"
-						+ "WHERE id=" + toSQL(id) + ";";
-		
-		return (executeUpdate(query) > 0);
+		return (executeUpdate(
+			"UPDATE projeto.groups SET name=" + toSQL((String)newGroupName) + ", members=" + toSQL((ArrayList<String>)members) + "\r\n"
+			+ "WHERE id=" + toSQL(id) + ";"
+		) > 0);
 	}
 }

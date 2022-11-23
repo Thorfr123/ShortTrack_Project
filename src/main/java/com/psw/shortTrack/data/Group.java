@@ -41,8 +41,11 @@ public class Group extends TaskOrganizer{
 	public ArrayList<String> getMemberEmails() {
 		
 		ArrayList<String> memberEmails = new ArrayList<String>(0);
-		for(Account a : members)
-			memberEmails.add(a.getEmail());
+		
+		for(Account a : members) {
+			if (a != null)
+				memberEmails.add(a.getEmail());
+		}
 		
 		return memberEmails;
 	}
