@@ -22,12 +22,9 @@ public class PersonalListsDatabase extends Database{
 	 * @throws SQLException If there was an error in the database connection
 	 */
 	public static int createList(List lst) throws SQLException {
-		String email = User.getAccount().getEmail();
-		if (email == null)
-			return -1;
-		
-		String query = "INSERT INTO projeto.personal_lists (name, email)\r\n"
-					 + "VALUES ('" + lst.getName() + "','" + email +"') RETURNING id;";
+		String query = 	"INSERT INTO projeto.personal_lists (name, email)\r\n"
+					 	+ "VALUES (" + toSQL((String)lst.getName()) + "," + toSQL((String)User.getAccount().getEmail()) +")\r\n"
+					 	+ "RETURNING id;";
 		
 		lst.setID(Integer.parseInt(executeQueryReturnSingleColumn(query)));
 		
@@ -43,7 +40,7 @@ public class PersonalListsDatabase extends Database{
 	 * @throws SQLException If there was an error in the database connection
 	 */
 	public static boolean deleteList(int id) throws SQLException {
-		return (executeUpdate("DELETE FROM projeto.personal_lists WHERE id='" + id + "';") > 0);
+		return (executeUpdate("DELETE FROM projeto.personal_lists WHERE id=" + toSQL(id) + ";") > 0);
 	}
 	
 	/**
@@ -55,7 +52,7 @@ public class PersonalListsDatabase extends Database{
 	 * @throws SQLException If there was an error in the database connection
 	 */
 	public static ArrayList<List> getAllLists (String email) throws SQLException {
-		String query = "SELECT * FROM projeto.personal_lists WHERE email='" + email + "';";
+		String query = "SELECT * FROM projeto.personal_lists WHERE email=" + toSQL((String)email) + ";";
 		
 		try (Connection connection = getConnection()){
 			if (connection != null) {
@@ -83,8 +80,11 @@ public class PersonalListsDatabase extends Database{
 	 * @return (True) Success; (False) Nothing was deleted
 	 * @throws SQLException If there was an error in the database connection
 	 */
-	public static boolean update(List lst) throws SQLException {		
-		return (executeUpdate("UPDATE projeto.personal_lists SET name='" + lst.getName() + "' WHERE id='" + lst.getID() + "';") > 0);
+	public static boolean update(List lst) throws SQLException {
+		String query = 	"UPDATE projeto.personal_lists SET name=" + toSQL((String)lst.getName()) + " "
+						+ "WHERE id=" + toSQL(lst.getID()) + ";";
+		
+		return (executeUpdate(query) > 0);
 	}
 	
 }

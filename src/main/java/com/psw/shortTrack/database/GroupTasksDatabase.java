@@ -22,23 +22,13 @@ public class GroupTasksDatabase extends Database {
 	 * @throws SQLException If there was an error to connect to the database
 	 */
 	public static int createTask(GroupTask tsk) throws SQLException {
-		String  description 	= null,
-				assigned_to 	= null,
-				deadlineString 	= null;
-		
-		if (tsk.getDescription() != null) {
-			description = "'" + tsk.getDescription() + "'";
-		}
-		if (tsk.getDeadlineDate() != null) {
-			deadlineString = "'" + tsk.getDeadlineDate() + "'";
-		}
-		if (tsk.getAssignedTo() != null) {
-			assigned_to = "'" + tsk.getAssignedTo() + "'";
-		}
-		
-		String query = "INSERT INTO projeto.group_tasks (group_id, assigned_to, name, description, created_date, deadline_date, state)\r\n"
-				+ "VALUES ('" + tsk.getParentID() + "'," + assigned_to + ",'" + tsk.getName() + "'," 
-				+ description + ",'" + tsk.getCreatedDate() + "'," + deadlineString + ",'" + tsk.chekCompleted() + "') RETURNING id;";
+		//TODO: change return
+		String query = 	"INSERT INTO projeto.group_tasks (group_id, assigned_to, name, description, created_date, deadline_date, state)\r\n"
+						+ "VALUES (" + toSQL(tsk.getParentID()) + "," + toSQL((String)tsk.getAssignedTo()) + "," 
+						+ toSQL((String)tsk.getName()) + "," + toSQL((String)tsk.getDescription()) + "," 
+						+ toSQL((LocalDate)tsk.getCreatedDate()) + "," + toSQL((LocalDate)tsk.getDeadlineDate()) + "," 
+						+ toSQL(tsk.chekCompleted()) + ")\r\n"
+						+ "RETURNING id;";
 		
 
 		tsk.setID(Integer.parseInt(executeQueryReturnSingleColumn(query)));
@@ -55,7 +45,7 @@ public class GroupTasksDatabase extends Database {
 	 * @throws SQLException If there was an error in the connection to the database
 	 */
 	public static ArrayList<Task> getAllTasks(int group_id) throws SQLException {
-		String query = "SELECT * FROM projeto.group_tasks WHERE group_id = '" + group_id + "';";
+		String query = "SELECT * FROM projeto.group_tasks WHERE group_id=" + toSQL(group_id) + ";";
 		
 		try (Connection connection = getConnection()){
 			if (connection != null) {
@@ -89,20 +79,10 @@ public class GroupTasksDatabase extends Database {
 	}
 	
 	public static boolean updateTask(GroupTask task) throws SQLException {
-		String description = task.getDescription(),
-			   deadlineDateString = null,
-			   assigned_to = task.getAssignedTo();
-		LocalDate deadlineDate = task.getDeadlineDate();
-			
-		if (description != null)
-			description = "'" + description + "'";
-		if (deadlineDate != null)
-			deadlineDateString = "'" + deadlineDate + "'";
-		if (assigned_to != null)
-			assigned_to = "'" + assigned_to + "'";
-			
-		String query = "UPDATE projeto.personal_tasks SET name='" + task.getName() + "', description=" + description + ", deadline_date=" + deadlineDateString + ", state='" + task.chekCompleted() + "', assigned_to='" + assigned_to + "'\r\n"
-					+ "WHERE id='" + task.getID() + "';";
+		String query = 	"UPDATE projeto.personal_tasks SET name=" + toSQL((String)task.getName()) + ",description=" 
+						+ toSQL((String)task.getDescription()) + ",deadline_date=" + toSQL((LocalDate)task.getDeadlineDate()) 
+						+ ",state=" + toSQL(task.chekCompleted()) + ",assigned_to=" + toSQL((String)task.getAssignedTo()) + "\r\n"
+						+ "WHERE id=" + toSQL(task.getID()) + ";";
 		
 		return (executeUpdate(query) > 0);
 	}

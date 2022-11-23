@@ -25,7 +25,8 @@ public class AccountsDatabase extends Database{
 			}
 		}
 		
-		String query = "SELECT EXISTS (SELECT 1 FROM projeto.account WHERE email='" + email + "' AND password='" + password + "');";
+		String query = 	"SELECT EXISTS (SELECT 1 FROM projeto.account WHERE email=" + toSQL((String)email) + " AND password=" 
+						+ toSQL((String)password) + ");";
 		
 		return executeQueryReturnBoolean(query);
 	}
@@ -39,7 +40,7 @@ public class AccountsDatabase extends Database{
 	 * 
 	 */
 	public static boolean checkEmail(String email) throws SQLException{
-		String query = "SELECT EXISTS(SELECT 1 FROM projeto.account WHERE email = '" + email + "');";
+		String query = "SELECT EXISTS(SELECT 1 FROM projeto.account WHERE email=" + toSQL((String)email) + ");";
 		
 		return !executeQueryReturnBoolean(query);
 	}
@@ -53,7 +54,8 @@ public class AccountsDatabase extends Database{
 	 */
 	public static boolean createAccount(Account account) throws SQLException {
 		String query = "INSERT INTO projeto.account (email, password, name)\r\n"
-					   + "VALUES ('" + account.getEmail() + "', '" + account.getPassword() + "','" + account.getName() + "');";
+					   + "VALUES (" + toSQL((String)account.getEmail()) + "," + toSQL((String)account.getPassword()) + "," 
+					   + toSQL((String)account.getName()) + ");";
 		
 		return (executeUpdate(query) > 0);
 	}
@@ -66,22 +68,26 @@ public class AccountsDatabase extends Database{
 	 * @throws SQLException If there is a network error
 	 */
 	public static boolean deleteAccount(String email) throws SQLException{
-		String query = "DELETE FROM projeto.account WHERE email='" + email + "'";
+		String query = "DELETE FROM projeto.account WHERE email=" + toSQL((String)email) + ";";
 		
 		return (executeUpdate(query) > 0);
+	}
+	
+	// TODO: Delete this method
+	public static Account getAccount (String email, String password) throws SQLException{
+		return getAccount(email);
 	}
 	
 	/**
 	 * Gets account data from the database
 	 * 
 	 * @param email String with user's email
-	 * @param password String with user's password
 	 * @return Desired account or null if it fails
 	 * @throws SQLException If there is a network error
 	 */
-	public static Account getAccount (String email, String password) throws SQLException{
+	public static Account getAccount (String email) throws SQLException{
 		String query =	"SELECT email, name FROM projeto.account\r\n"
-						+ "WHERE email='" + email + "' AND password='" + password + "';";
+						+ "WHERE email=" + toSQL((String)email) + ";";
 		
 		try (Connection connection = getConnection()){
 			if (connection != null) {
@@ -107,8 +113,8 @@ public class AccountsDatabase extends Database{
 	 * @throws SQLException If there is a network error
 	 */
 	public static boolean changePassword(String email, String old_password, String new_password) throws SQLException{
-		String query = "UPDATE projeto.account SET password='" + new_password + "'\r\n"
-						+"WHERE email='"+ email + "' AND password='" + old_password +"';";
+		String query = "UPDATE projeto.account SET password=" + toSQL((String)new_password) + "\r\n"
+						+"WHERE email="+ toSQL((String)email) + " AND password=" + toSQL((String)old_password) + ";";
 		
 		return (executeUpdate(query) > 0);
 	}
@@ -122,8 +128,8 @@ public class AccountsDatabase extends Database{
 	 * @throws SQLException If there is a network error
 	 */
 	public static boolean changeName(String email, String new_name) throws SQLException {		
-		String query = "UPDATE projeto.account SET name='" + new_name + "'\r\n"
-						+"WHERE email='" + email + "';";
+		String query = "UPDATE projeto.account SET name=" + toSQL((String)new_name) + "\r\n"
+						+"WHERE email=" + toSQL((String)email) + ";";
 		
 		return (executeUpdate(query) > 0);
 	}

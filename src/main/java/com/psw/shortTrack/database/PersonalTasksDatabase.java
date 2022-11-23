@@ -23,27 +23,11 @@ public class PersonalTasksDatabase extends Database {
 	 * @throws SQLException If there was an error in the database connection
 	 */
 	public static int createTask(Task task) throws SQLException{
-		String		name			= task.getName(),
-					description 	= task.getDescription(),
-					createdDateString = null,
-					deadlineDateString = null;
-		LocalDate 	createdDate 	= task.getCreatedDate(),
-					deadlineDate 	= task.getDeadlineDate();
-		Boolean 	state			= task.chekCompleted();
-		
-		if (name != null)
-			name = "'" + name + "'";
-		if (description != null)
-			description = "'" + description + "'";
-		if (createdDate != null)
-			createdDateString = "'" + createdDate + "'";
-		if (deadlineDate != null)
-			deadlineDateString = "'" + deadlineDate + "'";
-		
 		String query = "INSERT INTO projeto.personal_tasks (list_id, name, description, created_date, deadline_date, state)\r\n"
-				+ "VALUES ('" + task.getParentID() + "'," + name + "," + description + "," 
-				+ createdDateString + "," + deadlineDateString + ",'" + state + "')"
-				+ " RETURNING id;";
+				+ "VALUES (" + toSQL(task.getParentID()) + "," + toSQL((String)task.getName()) + "," 
+				+ toSQL((String)task.getDescription()) + "," + toSQL((LocalDate)task.getCreatedDate()) + "," 
+				+ toSQL((LocalDate)task.getDeadlineDate()) + "," + toSQL(task.chekCompleted()) + ")\r\n"
+				+ "RETURNING id;";
 		
 		task.setID(Integer.parseInt(executeQueryReturnSingleColumn(query)));
 		
@@ -143,17 +127,11 @@ public class PersonalTasksDatabase extends Database {
 	}
 	
 	public static boolean updateTask(Task task) throws SQLException {
-		String description = task.getDescription(),
-			   deadlineDateString = null;
-		LocalDate deadlineDate = task.getDeadlineDate();
+		String query = "UPDATE projeto.personal_tasks SET name=" + toSQL((String)task.getName()) + ", description=" 
+						+ toSQL((String)task.getDescription()) + ", deadline_date=" + toSQL((LocalDate)task.getDeadlineDate()) 
+						+ ", state=" + toSQL(task.chekCompleted()) + "\r\n"
+						+ "WHERE id=" + toSQL(task.getID()) + ";";
 		
-		if (description != null)
-			description = "'" + description + "'";
-		if (deadlineDate != null)
-			deadlineDateString = "'" + deadlineDate + "'";
-		
-		String query = "UPDATE projeto.personal_tasks SET name='" + task.getName() + "', description=" + description + ", deadline_date=" + deadlineDateString + ", state='" + task.chekCompleted() + "'\r\n"
-				+ "WHERE id='" + task.getID() + "';";
 		return (executeUpdate(query) > 0);
 	}
 
