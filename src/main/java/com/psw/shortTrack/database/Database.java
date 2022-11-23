@@ -130,7 +130,7 @@ public class Database {
 	 * 
 	 * @throws SQLException If a database access error occurs
 	 */
-	private static void setup() throws SQLException {		
+	private static void setup() throws SQLException {
 		String query =    "CREATE SCHEMA IF NOT EXISTS projeto;"
 				
 						+ "CREATE TABLE IF NOT EXISTS projeto.account ();"						
