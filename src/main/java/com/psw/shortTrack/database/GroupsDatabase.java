@@ -19,8 +19,10 @@ public class GroupsDatabase extends Database{
 	 * @throws SQLException If a database access error occurs
 	 */
 	public static int createGroup(Group group) throws SQLException {
+		//TODO: change return
 		String query = 	"INSERT INTO projeto.groups (name, manager, members)\r\n"
-				   		+ "VALUES ('" + group.getName() + "', '" + group.getManager() + "\', '" + returnSQL_Array(group.getMembers()) + "')\r\n"
+				   		+ "VALUES (" + toSQL((String)group.getName()) + "," + toSQL((String)group.getManager()) + "," 
+				   		+ toSQL((ArrayList<String>)group.getMembers()) + ")\r\n"
 				   		+ "RETURNING id;";
 		
 		group.setID(Integer.parseInt(executeQueryReturnSingleColumn(query)));
@@ -36,7 +38,8 @@ public class GroupsDatabase extends Database{
 	 * @throws SQLException If a database access error occurs
 	 */
 	public static ArrayList<Group> getAllGroups(String email) throws SQLException {
-		String query = "SELECT * FROM projeto.groups WHERE manager='" + email + "' OR '" + email + "'=ANY(members);";
+		String query = 	"SELECT * FROM projeto.groups WHERE manager=" + toSQL((String)email) + " OR " + toSQL((String)email) 
+						+ "=ANY(members);";
 		
 		try (Connection connection = getConnection()){
 			if (connection != null) {
@@ -44,12 +47,10 @@ public class GroupsDatabase extends Database{
 				ResultSet rs = stmt.executeQuery(query);
 				ArrayList<Group> all_groups = new ArrayList<Group>();
 				while (rs.next()) {
-					
 					ArrayList<String> members = new ArrayList<String>();
 					for (String member: (String[]) rs.getArray("members").getArray()) {
 						members.add(member);
 					}
-					
 					Group group = new Group(rs.getString("name"), 
 											rs.getString("manager"), 
 											rs.getInt("id"), 
@@ -72,31 +73,10 @@ public class GroupsDatabase extends Database{
 	 * @throws SQLException If a database access error occurs
 	 */
 	public static boolean updateGroup(Group group) throws SQLException {
-		String query = "UPDATE projeto.groups SET name='" + group.getName() + "', members='" + returnSQL_Array(group.getMembers()) + "'\r\n"
-				+ "WHERE id='" + group.getID() + "';";
+		String query = 	"UPDATE projeto.groups SET name=" + toSQL((String)group.getName()) + ", members="
+						+ toSQL((ArrayList<String>)group.getMembers()) + "\r\n"
+						+ "WHERE id=" + toSQL(group.getID()) + ";";
 		
 		return (executeUpdate(query) > 0);
-	}
-	
-	/**
-	 * Parses an ArrayList(String) to SQL Array
-	 * 
-	 * @param array - ArrayList to parse
-	 * @return SQL Array
-	 */
-	private static String returnSQL_Array(ArrayList<String> array) {
-		String str = "{";
-		
-		for (int i = 0; i < array.size(); i++) {
-			if (i == array.size() - 1) {
-				str += "\"" + array.get(i) + "\"";
-			} else {
-			str += "\"" + array.get(i) + "\",";
-			}
-		}
-		
-		str += "}";
-		
-		return str;
 	}
 }

@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.util.ArrayList;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
@@ -195,7 +197,7 @@ public class Database {
 						+ "CREATE TABLE IF NOT EXISTS projeto.group_tasks ();"
 						+ "ALTER TABLE projeto.group_tasks ADD COLUMN IF NOT EXISTS id integer NOT NULL;"
 						//+ "ALTER TABLE projeto.group_tasks ADD COLUMN IF NOT EXISTS group_id integer NOT NULL REFERENCES projeto.groups (id) ON DELETE CASCADE;"
-						+ "ALTER TABLE projeto.group_tasks ADD COLUMN IF NOT EXISTS assigned_to character varying(64) REFERENCES projeto.account (email) ON DELETE SET NULL;"
+						//+ "ALTER TABLE projeto.group_tasks ADD COLUMN IF NOT EXISTS assigned_to character varying(64) REFERENCES projeto.account (email) ON DELETE SET NULL;"
 						+ "ALTER TABLE projeto.group_tasks ADD COLUMN IF NOT EXISTS name character varying(32) NOT NULL;"
 						+ "ALTER TABLE projeto.group_tasks ADD COLUMN IF NOT EXISTS description character varying(128);"
 						+ "ALTER TABLE projeto.group_tasks ADD COLUMN IF NOT EXISTS created_date date;"
@@ -207,5 +209,50 @@ public class Database {
 						//+ "ALTER TABLE ONLY projeto.group_tasks ADD CONSTRAINT group_tasks_pkey PRIMARY KEY (id);";
 		
 		executeUpdate(query);
+	}
+	
+	protected static String toSQL(String str) {
+		if (str != null) {
+			str.replace("'", "\'");
+			str = "'" + str + "'";
+		}
+			
+		return str;
+	}
+	
+	protected static String toSQL(int i) {
+		return "'" + i + "'";
+	}
+	
+	protected static String toSQL(LocalDate date) {
+		String str = null;
+		if (date != null) {
+			str = "'" + date.toString() + "'";
+		}
+		return str;
+	}
+	
+	protected static String toSQL(boolean bool) {
+		return "'" + bool + "'";
+	}
+	
+	/**
+	 * Parses an ArrayList(String) to SQL Array
+	 * 
+	 * @param array - ArrayList to parse
+	 * @return SQL Array
+	 */
+	protected static String toSQL(ArrayList<String> array) {
+		String str = "'{";
+		
+		for (int i = 0; i < array.size(); i++) {
+			if (i == array.size() - 1) {
+				str += "\"" + array.get(i) + "\"";
+			} else {
+			str += "\"" + array.get(i) + "\",";
+			}
+		}
+		
+		return str + "}'";
 	}
 }
