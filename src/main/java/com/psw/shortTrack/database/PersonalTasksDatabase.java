@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 import com.psw.shortTrack.data.PersonalTask;
 import com.psw.shortTrack.data.Task;
-import com.psw.shortTrack.data.User;
 
 public class PersonalTasksDatabase extends Database {
 	
@@ -24,8 +23,7 @@ public class PersonalTasksDatabase extends Database {
 	 * @throws SQLException If there was an error in the database connection
 	 */
 	public static int createTask(Task task) throws SQLException{
-		String 		email			= User.getAccount().getEmail(),
-					name			= task.getName(),
+		String		name			= task.getName(),
 					description 	= task.getDescription(),
 					createdDateString = null,
 					deadlineDateString = null;
@@ -33,8 +31,6 @@ public class PersonalTasksDatabase extends Database {
 					deadlineDate 	= task.getDeadlineDate();
 		Boolean 	state			= task.chekCompleted();
 		
-		if (email != null)
-			email = "'" + email + "'";
 		if (name != null)
 			name = "'" + name + "'";
 		if (description != null)
@@ -44,8 +40,8 @@ public class PersonalTasksDatabase extends Database {
 		if (deadlineDate != null)
 			deadlineDateString = "'" + deadlineDate + "'";
 		
-		String query = "INSERT INTO projeto.personal_tasks (list_id, email, name, description, created_date, deadline_date, state)\r\n"
-				+ "VALUES ('" + task.getParentID() + "'," + email + "," + name + "," + description + "," 
+		String query = "INSERT INTO projeto.personal_tasks (list_id, name, description, created_date, deadline_date, state)\r\n"
+				+ "VALUES ('" + task.getParentID() + "," + name + "," + description + "," 
 				+ createdDateString + "," + deadlineDateString + ",'" + state + "')"
 				+ " RETURNING id;";
 		
