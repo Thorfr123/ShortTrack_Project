@@ -1,8 +1,6 @@
 package com.psw.shortTrack.data;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
-import com.psw.shortTrack.database.PersonalTasksDatabase;
 
 public class List extends TaskOrganizer {
 	
@@ -18,28 +16,6 @@ public class List extends TaskOrganizer {
 	
 	public List(String name, int id, ArrayList<Task> taskList) {
 		super(name,id,taskList);
-	}
-	
-	public PersonalTask addTask(String taskName) throws Exception {
-		
-		if(checkName(taskName))
-			throw new IllegalArgumentException("This task already exist!");	
-		
-		PersonalTask newTask = new PersonalTask(taskName,id);
-		
-		try {
-			if(User.isLogedIn())
-				PersonalTasksDatabase.createTask(newTask);
-		}
-		catch (SQLException e) {
-			System.out.println(e);
-			e.printStackTrace();
-			throw e;
-		}
-		
-		taskList.add(newTask);
-		
-		return newTask;
 	}
 
 }

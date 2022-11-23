@@ -83,8 +83,8 @@ public class PersonalListsDatabase extends Database{
 	 * @return (True) Success; (False) Nothing was deleted
 	 * @throws SQLException If there was an error in the database connection
 	 */
-	public static boolean update(List lst) throws SQLException {		
-		return (executeUpdate("UPDATE projeto.personal_lists SET name='" + lst.getName() + "' WHERE id='" + lst.getID() + "';") > 0);
+	public static boolean update(int id, String newListName) throws SQLException {		
+		return (executeUpdate("UPDATE projeto.personal_lists SET name='" + newListName + "' WHERE id='" + id + "';") > 0);
 	}
 	
 }

@@ -1,17 +1,20 @@
 package com.psw.shortTrack.gui;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.Collections;
 
 import com.psw.shortTrack.data.Group;
 import com.psw.shortTrack.data.User;
+import com.psw.shortTrack.database.GroupsDatabase;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
 import javafx.scene.control.Alert.AlertType;
 
 public class ControllerEditGroupScene {
@@ -23,12 +26,10 @@ public class ControllerEditGroupScene {
 	@FXML
 	private Label notificationLabel;
 	
-	private ArrayList<Group> arrayGroup;
 	private Group group;
 	
 	public void initData(Group group) {
 
-		this.arrayGroup = User.getGroups();
 		this.group = group;
 		
 		groupNameField.setText(group.getName());
@@ -46,7 +47,14 @@ public class ControllerEditGroupScene {
 
 		if(alert.showAndWait().get() == ButtonType.OK){
 			
-			arrayGroup.remove(group);
+			/*try {
+				GroupsDatabase.deleteGroup(group.getID());
+			} catch (SQLException exception) {
+				showNotification("Error! Please, check your connection");
+				return;
+			}*/
+			
+			User.getGroups().remove(group);
 			group = null;
 			
 			App.loadMainScene();
@@ -91,13 +99,13 @@ public class ControllerEditGroupScene {
 		
 	}
 	
-	/*private void showNotification(String notification) {
+	private void showNotification(String notification) {
 		
 		notificationLabel.setText(notification);
 		notificationLabel.setTextFill(Color.RED);
 		notificationLabel.setVisible(true);
 		
-	}*/
+	}
 	
 	private void removeErrorNotifications() {
 		

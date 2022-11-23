@@ -173,7 +173,7 @@ public class ControllerLoginScene {
 	
 	public void addList(ActionEvent e) {
 		
-		removeErrorNotifications();
+removeErrorNotifications();
 		
 		String listName = newListName.getText();
 		
@@ -182,17 +182,20 @@ public class ControllerLoginScene {
 		
 		newListName.clear();
 		
-		List newList;
-		try {
-			newList = User.addList(listName);
-		} catch (Exception exception) {
-			Pane newBox = (Pane)newListBox;
-			String notification = "This List already exist!";
+		Pane newBox = (Pane)newListBox;
+		String notification;
+		
+		if(User.checkListName(listName)) {
+			notification = "This List already exist!";
 			showNotification(notification,newBox);
 			newListName.getStyleClass().add("error");
 			return;
 		}
-
+		
+		List newList = new List(listName);
+		
+		lists.add(newList);
+		
 		ListButton listButton = new ListButton(newList);
 		listButton.setOnAction(event -> {
 	        changeList(event);
@@ -212,16 +215,17 @@ public class ControllerLoginScene {
 		
 		newTaskName.clear();
 		
-		Task newTask;
-		try {
-			newTask = ((List)loadList).addTask(taskName);
-		} catch (Exception exception) {
+		if(loadList.checkName(taskName)) {
 			Pane newBox = (Pane)newTaskBox;
 			String notification = "This Task already exist!";
 			showNotification(notification,newBox);
 			newTaskName.getStyleClass().add("error");
 			return;
 		}
+		
+		PersonalTask newTask = new PersonalTask(taskName,loadList.getID());
+		
+		loadList.getTaskList().add(newTask);
 		
 		TaskBar taskBar = new TaskBar(newTask);
 		CheckBox taskCheckBox = taskBar.getCheckBox();
@@ -246,16 +250,17 @@ public class ControllerLoginScene {
 
 		newTaskName.clear();
 		
-		Task newTask;
-		try {
-			newTask = ((List)loadList).addTask(taskName);
-		} catch (Exception exception) {
+		if(loadList.checkName(taskName)) {
 			Pane newBox = (Pane)newTaskBox;
-			String notification = "This List already exist!";
+			String notification = "This Task already exist!";
 			showNotification(notification,newBox);
 			newTaskName.getStyleClass().add("error");
 			return;
 		}
+		
+		PersonalTask newTask = new PersonalTask(taskName,loadList.getID());
+		
+		loadList.getTaskList().add(newTask);
 		
 		TaskBar taskBar = new TaskBar(newTask);
 		CheckBox taskCheckBox = taskBar.getCheckBox();

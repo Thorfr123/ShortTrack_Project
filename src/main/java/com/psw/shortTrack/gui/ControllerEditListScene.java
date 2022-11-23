@@ -76,15 +76,23 @@ public class ControllerEditListScene {
 			return;
 		}
 		
-		if (!newListName.equals(list.getName())) {
-			for (List l : arrayList) {
-				if (l.getName().equals(newListName)) {
-					showNotification("Already exist a task with that name!");
-					return;
-				}
+		if (newListName.equals(list.getName()))
+			return;
+		
+		if (User.checkListName(newListName)) {
+			showNotification("Already exist a task with that name!");
+			return;
+		}
+		
+		if(User.isLogedIn()) {
+			try {
+				PersonalListsDatabase.update(list.getID(),newListName);
+			} catch (SQLException exception) {
+				showNotification("Error! Please, check your connection");
+				return;
 			}
 		}
-				
+
 		list.setName(newListName);
 		
 		App.loadMainScene();
