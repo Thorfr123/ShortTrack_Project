@@ -29,20 +29,6 @@ public class GroupsDatabase extends Database{
 	}
 	
 	/**
-	 * Updates, in the database, the name and members in a group
-	 * 
-	 * @param group Group to update in database
-	 * @return (True) Success; (False) Error
-	 * @throws SQLException If a database access error occurs
-	 */
-	public static boolean updateGroup(Group group) throws SQLException {
-		String query = "UPDATE projeto.groups SET name='" + group.getName() + "', members='" + returnSQL_Array(group.getMembers()) + "'\r\n"
-				+ "WHERE id='" + group.getID() + "';";
-		
-		return (executeUpdate(query) > 0);
-	}
-	
-	/**
 	 * Returns every groups with the user's email, as a manager or as a member.
 	 * It also assembles the group's tasks
 	 * @param email String with user's email
@@ -76,6 +62,20 @@ public class GroupsDatabase extends Database{
 				throw new SQLException("There was a connection error");
 			}
 		}
+	}
+	
+	/**
+	 * Updates, in the database, the name and members in a group
+	 * 
+	 * @param group Group to update in database
+	 * @return (True) Success; (False) Error
+	 * @throws SQLException If a database access error occurs
+	 */
+	public static boolean updateGroup(Group group) throws SQLException {
+		String query = "UPDATE projeto.groups SET name='" + group.getName() + "', members='" + returnSQL_Array(group.getMembers()) + "'\r\n"
+				+ "WHERE id='" + group.getID() + "';";
+		
+		return (executeUpdate(query) > 0);
 	}
 	
 	/**

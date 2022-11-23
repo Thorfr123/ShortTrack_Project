@@ -146,8 +146,19 @@ public class PersonalTasksDatabase extends Database {
 		}
 	}
 	
-	public static boolean changeName() throws SQLException {
-		return (executeUpdate("") > 0);
+	public static boolean updateTask(Task task) throws SQLException {
+		String description = task.getDescription(),
+			   deadlineDateString = null;
+		LocalDate deadlineDate = task.getDeadlineDate();
+		
+		if (description != null)
+			description = "'" + description + "'";
+		if (deadlineDate != null)
+			deadlineDateString = "'" + deadlineDate + "'";
+		
+		String query = "UPDATE projeto.personal_tasks SET name='" + task.getName() + "', description=" + description + ", deadline_date=" + deadlineDateString + ", state='" + task.chekCompleted() + "'\r\n"
+				+ "WHERE id='" + task.getID() + "';";
+		return (executeUpdate(query) > 0);
 	}
 
 }

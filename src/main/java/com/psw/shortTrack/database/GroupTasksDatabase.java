@@ -87,5 +87,24 @@ public class GroupTasksDatabase extends Database {
 			}
 		}
 	}
+	
+	public static boolean updateTask(GroupTask task) throws SQLException {
+		String description = task.getDescription(),
+			   deadlineDateString = null,
+			   assigned_to = task.getAssignedTo();
+		LocalDate deadlineDate = task.getDeadlineDate();
+			
+		if (description != null)
+			description = "'" + description + "'";
+		if (deadlineDate != null)
+			deadlineDateString = "'" + deadlineDate + "'";
+		if (assigned_to != null)
+			assigned_to = "'" + assigned_to + "'";
+			
+		String query = "UPDATE projeto.personal_tasks SET name='" + task.getName() + "', description=" + description + ", deadline_date=" + deadlineDateString + ", state='" + task.chekCompleted() + "', assigned_to='" + assigned_to + "'\r\n"
+					+ "WHERE id='" + task.getID() + "';";
+		
+		return (executeUpdate(query) > 0);
+	}
 
 }
