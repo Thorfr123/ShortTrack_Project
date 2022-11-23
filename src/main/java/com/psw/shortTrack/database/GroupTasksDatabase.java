@@ -15,33 +15,39 @@ public class GroupTasksDatabase extends Database {
 	/**
 	 * Creates a new task in the database
 	 * 
-	 * @param tsk Group task to add to the database
+	 * @param task Group task to add to the database
 	 * @return Task's new id
-	 *  
-	 * @throws NumberFormatException If it returns a no integer (unreachable)
 	 * @throws SQLException If there was an error to connect to the database
 	 */
-	public static int createTask(GroupTask tsk) throws SQLException {
+	public static int createTask(GroupTask task) throws SQLException {
 		//TODO: change return
 		String query = 	"INSERT INTO projeto.group_tasks (group_id, assigned_to, name, description, created_date, deadline_date, state)\r\n"
-						+ "VALUES (" + toSQL(tsk.getParentID()) + "," + toSQL((String)tsk.getAssignedTo()) + "," 
-						+ toSQL((String)tsk.getName()) + "," + toSQL((String)tsk.getDescription()) + "," 
-						+ toSQL((LocalDate)tsk.getCreatedDate()) + "," + toSQL((LocalDate)tsk.getDeadlineDate()) + "," 
-						+ toSQL(tsk.chekCompleted()) + ")\r\n"
+						+ "VALUES (" + toSQL(task.getParentID()) + "," + toSQL((String)task.getAssignedTo()) + "," 
+						+ toSQL((String)task.getName()) + "," + toSQL((String)task.getDescription()) + "," 
+						+ toSQL((LocalDate)task.getCreatedDate()) + "," + toSQL((LocalDate)task.getDeadlineDate()) + "," 
+						+ toSQL(task.chekCompleted()) + ")\r\n"
 						+ "RETURNING id;";
-		
 
-		tsk.setID(Integer.parseInt(executeQueryReturnSingleColumn(query)));
+		task.setID(Integer.parseInt(executeQueryReturnSingleColumn(query)));
 		
 		return 1;
 	}
 	
-	public static int deleteTask(int id) throws SQLException {
-		return (executeUpdate("DELETE FROM projeto.group_tasks WHERE id=" + toSQL(id) + ";"));
+	/**
+	 * Deletes a group task from database
+	 * 
+	 * @param id Task's id
+	 * @return (True) If it succeeds; (False) The task didn't exist
+	 * @throws SQLException If there was an error in the connection to the database
+	 */
+	public static boolean deleteTask(int id) throws SQLException {
+		return (executeUpdate(
+			"DELETE FROM projeto.group_tasks WHERE id=" + toSQL(id) + ";"
+		) > 0);
 	}
 	
 	/**
-	 * Returns all the tasks form one group
+	 * Returns all the tasks form the group identified with this id
 	 * 
 	 * @param group_id Desired Group's id
 	 * @return ArrayList with all the group's tasks
@@ -49,12 +55,13 @@ public class GroupTasksDatabase extends Database {
 	 * @throws SQLException If there was an error in the connection to the database
 	 */
 	public static ArrayList<Task> getAllTasks(int group_id) throws SQLException {
-		String query = "SELECT * FROM projeto.group_tasks WHERE group_id=" + toSQL(group_id) + ";";
-		
+
 		try (Connection connection = getConnection()){
 			if (connection != null) {
 				Statement stmt = connection.createStatement();
-				ResultSet rs = stmt.executeQuery(query);
+				ResultSet rs = stmt.executeQuery(
+						"SELECT * FROM projeto.group_tasks WHERE group_id=" + toSQL(group_id) + ";"
+				);
 				ArrayList<Task> arrayTask = new ArrayList<Task>();
 				while (rs.next()) {
 					String deadline_str = rs.getString("deadline_date");
@@ -82,13 +89,20 @@ public class GroupTasksDatabase extends Database {
 		}
 	}
 	
+	/**
+	 * Updates groupTask data in the database
+	 * 
+	 * @param task//TODO: edit
+	 * @return (True) Success; (False) Otherwise
+	 * @throws SQLException
+	 */
 	public static boolean updateTask(int id, String newName, String newDescription, LocalDate newDeadline, Boolean newState, String newAssignTo) throws SQLException {
-		String query = 	"UPDATE projeto.group_tasks SET name=" + toSQL((String)newName) + ",description=" 
-						+ toSQL((String)newDescription) + ",deadline_date=" + toSQL((LocalDate)newDeadline) 
-						+ ",state=" + toSQL(newState) + ",assigned_to=" + toSQL((String)newAssignTo) + "\r\n"
-						+ "WHERE id=" + toSQL(id) + ";";
-		
-		return (executeUpdate(query) > 0);
+		return (executeUpdate(
+				"UPDATE projeto.group_tasks SET name=" + toSQL((String)newName) + ",description=" 
+				+ toSQL((String)newDescription) + ",deadline_date=" + toSQL((LocalDate)newDeadline) 
+				+ ",state=" + toSQL(newState) + ",assigned_to=" + toSQL((String)newAssignTo) + "\r\n"
+				+ "WHERE id=" + toSQL(id) + ";"
+		) > 0);
 	}
 
 }

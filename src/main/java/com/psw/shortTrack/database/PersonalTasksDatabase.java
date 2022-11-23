@@ -22,16 +22,16 @@ public class PersonalTasksDatabase extends Database {
 	 * 
 	 * @throws SQLException If there was an error in the database connection
 	 */
-	public static int createTask(Task task) throws SQLException{
-		String query = "INSERT INTO projeto.personal_tasks (list_id, name, description, created_date, deadline_date, state)\r\n"
-				+ "VALUES (" + toSQL(task.getParentID()) + "," + toSQL((String)task.getName()) + "," 
-				+ toSQL((String)task.getDescription()) + "," + toSQL((LocalDate)task.getCreatedDate()) + "," 
-				+ toSQL((LocalDate)task.getDeadlineDate()) + "," + toSQL(task.chekCompleted()) + ")\r\n"
-				+ "RETURNING id;";
-		
-		task.setID(Integer.parseInt(executeQueryReturnSingleColumn(query)));
-		
-		return 1;
+	public static void createTask(Task task) throws SQLException{
+		task.setID(Integer.parseInt(executeQueryReturnSingleColumn(
+					"INSERT INTO projeto.personal_tasks (list_id, name, description, created_date, deadline_date, state)\r\n"
+					+ "VALUES (" + toSQL(task.getParentID()) + "," + toSQL((String)task.getName()) + "," 
+					+ toSQL((String)task.getDescription()) + "," + toSQL((LocalDate)task.getCreatedDate()) + "," 
+					+ toSQL((LocalDate)task.getDeadlineDate()) + "," + toSQL(task.chekCompleted()) + ")\r\n"
+					+ "RETURNING id;"
+				)
+			)
+		);
 	}
 
 	/**
@@ -42,7 +42,9 @@ public class PersonalTasksDatabase extends Database {
 	 * @throws SQLException If there was an error in the database connection
 	 */
 	public static boolean deleteTask(int id) throws SQLException {		
-		return (executeUpdate("DELETE FROM projeto.personal_tasks WHERE id='" + id + "';") > 0);
+		return (
+			executeUpdate("DELETE FROM projeto.personal_tasks WHERE id='" + id + "';"
+		) > 0);
 	}
 	
 	/**
@@ -54,12 +56,13 @@ public class PersonalTasksDatabase extends Database {
 	 * @throws SQLException If there was an error in the database connection
 	 */
 	public static Task getTask(int id) throws SQLException{
-		String query = "SELECT * FROM projeto.personal_tasks WHERE id='" + id + "';";
 		
 		try (Connection connection = getConnection()){
 			if (connection != null) {
 				Statement stmt = connection.createStatement();
-				ResultSet rs = stmt.executeQuery(query);
+				ResultSet rs = stmt.executeQuery(
+					"SELECT * FROM projeto.personal_tasks WHERE id='" + id + "';"
+				);
 				if (rs.next()) {
 					String deadline_str = rs.getString("deadline_date");
 					LocalDate deadline = null;
@@ -94,12 +97,13 @@ public class PersonalTasksDatabase extends Database {
 	 * @throws SQLException If there was an error in the database connection
 	 */
 	public static ArrayList<Task> getAllTasks (int id_list) throws SQLException {
-		String query = "SELECT * FROM projeto.personal_tasks WHERE list_id = '" + id_list + "';";
 		
 		try (Connection connection = getConnection()){
 			if (connection != null) {
 				Statement stmt = connection.createStatement();
-				ResultSet rs = stmt.executeQuery(query);
+				ResultSet rs = stmt.executeQuery(
+					"SELECT * FROM projeto.personal_tasks WHERE list_id = '" + id_list + "';"
+				);
 				ArrayList<Task> arrayTask = new ArrayList<Task>();
 				while (rs.next()) {
 					String deadline_str = rs.getString("deadline_date");
@@ -127,12 +131,12 @@ public class PersonalTasksDatabase extends Database {
 	}
 	
 	public static boolean updateTask(int id, String newName, String newDescription, LocalDate newDeadline, Boolean newState) throws SQLException {
-		String query = "UPDATE projeto.personal_tasks SET name=" + toSQL((String)newName) + ", description=" 
-						+ toSQL((String)newDescription) + ", deadline_date=" + toSQL((LocalDate)newDeadline) 
-						+ ", state=" + toSQL(newState) + "\r\n"
-						+ "WHERE id=" + toSQL(id) + ";";
-		
-		return (executeUpdate(query) > 0);
+		return (executeUpdate(
+			"UPDATE projeto.personal_tasks SET name=" + toSQL((String)newName) + ", description=" 
+			+ toSQL((String)newDescription) + ", deadline_date=" + toSQL((LocalDate)newDeadline) 
+			+ ", state=" + toSQL(newState) + "\r\n"
+			+ "WHERE id=" + toSQL(id) + ";"
+		) > 0);
 	}
 
 }

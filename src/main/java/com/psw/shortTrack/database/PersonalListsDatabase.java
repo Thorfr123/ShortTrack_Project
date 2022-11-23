@@ -17,18 +17,16 @@ public class PersonalListsDatabase extends Database{
 	 * to add that task to the database
 	 * 
 	 * @param lst List to add in the database
-	 * @return New id of the list
-	 * 
 	 * @throws SQLException If there was an error in the database connection
 	 */
-	public static int createList(List lst) throws SQLException {
-		String query = 	"INSERT INTO projeto.personal_lists (name, email)\r\n"
-					 	+ "VALUES (" + toSQL((String)lst.getName()) + "," + toSQL((String)User.getAccount().getEmail()) +")\r\n"
-					 	+ "RETURNING id;";
-		
-		lst.setID(Integer.parseInt(executeQueryReturnSingleColumn(query)));
-		
-		return 1;
+	public static void createList(List lst) throws SQLException {
+		lst.setID(Integer.parseInt(executeQueryReturnSingleColumn(
+					"INSERT INTO projeto.personal_lists (name, email)\r\n"
+					+ "VALUES (" + toSQL((String)lst.getName()) + "," + toSQL((String)User.getAccount().getEmail()) +")\r\n"
+					+ "RETURNING id;"
+				)
+			)
+		);
 	}
 	
 	/**
@@ -36,7 +34,7 @@ public class PersonalListsDatabase extends Database{
 	 * It does not delete the tasks inside the list
 	 * 
 	 * @param id ID of the list to delete
-	 * @return (True) Success; (False) Nothing was deleted
+	 * @return (True) Success; (False) The list didn't exist in the database
 	 * @throws SQLException If there was an error in the database connection
 	 */
 	public static boolean deleteList(int id) throws SQLException {
@@ -52,12 +50,13 @@ public class PersonalListsDatabase extends Database{
 	 * @throws SQLException If there was an error in the database connection
 	 */
 	public static ArrayList<List> getAllLists (String email) throws SQLException {
-		String query = "SELECT * FROM projeto.personal_lists WHERE email=" + toSQL((String)email) + ";";
 		
 		try (Connection connection = getConnection()){
 			if (connection != null) {
 				Statement stmt = connection.createStatement();
-				ResultSet rs = stmt.executeQuery(query);
+				ResultSet rs = stmt.executeQuery(
+					"SELECT * FROM projeto.personal_lists WHERE email=" + toSQL((String)email) + ";"
+				);
 				ArrayList<List> arrayList = new ArrayList<List>();
 				while (rs.next()) {
 					int lst_id = rs.getInt("id");
@@ -81,8 +80,9 @@ public class PersonalListsDatabase extends Database{
 	 * @throws SQLException If there was an error in the database connection
 	 */
 	public static boolean updateList(int id, String newListName) throws SQLException {		
-		return (executeUpdate("UPDATE projeto.personal_lists SET name=" + toSQL((String)newListName) + " WHERE id=" + toSQL(id) + ";") > 0);
-
+		return (executeUpdate(
+			"UPDATE projeto.personal_lists SET name=" + toSQL((String)newListName) + " WHERE id=" + toSQL(id) + ";"
+		) > 0);
 	}
 	
 }
