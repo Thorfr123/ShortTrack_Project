@@ -425,7 +425,7 @@ public class ControllerLogoutScene {
 				root = loader.load();
 				
 				ControllerEditGroupTaskScene controller = loader.getController();
-				controller.initData(newTask, loadList);	
+				controller.initData((GroupTask)newTask, loadList);	
 				App.loadScene(root);
 				
 			} catch (IOException exeption) {
@@ -516,7 +516,7 @@ public class ControllerLogoutScene {
 		
 		Button taskButton = (Button)e.getSource();
 		GroupTaskBar taskBar = (GroupTaskBar)taskButton.getParent();
-		Task task = taskBar.getTask();
+		GroupTask task = taskBar.getTask();
 		
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditGroupTaskScene.fxml"));

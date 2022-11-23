@@ -2,6 +2,7 @@ package com.psw.shortTrack.gui;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 
 import com.psw.shortTrack.data.Group;
@@ -47,12 +48,12 @@ public class ControllerEditGroupScene {
 
 		if(alert.showAndWait().get() == ButtonType.OK){
 			
-			/*try {
+			try {
 				GroupsDatabase.deleteGroup(group.getID());
 			} catch (SQLException exception) {
 				showNotification("Error! Please, check your connection");
 				return;
-			}*/
+			}
 			
 			User.getGroups().remove(group);
 			group = null;
@@ -67,7 +68,34 @@ public class ControllerEditGroupScene {
 		
 		removeErrorNotifications();
 		
-		System.out.println("save - Not Working!");
+		String newGroupName = groupNameField.getText();
+		//TODO: Add members
+		ArrayList<String> newMembers = group.getMembers();
+		
+		if(newGroupName.isBlank()) {
+			showNotification("The Group needs a name!");
+			groupNameField.getStyleClass().add("error");
+			return;
+		}
+		
+		if (newGroupName.equals(group.getName()))
+			return;
+		
+		if (User.checkGroupName(newGroupName)) {
+			showNotification("Already exist a task with that name!");
+			return;
+		}
+		
+		if(User.isLogedIn()) {
+			try {
+				GroupsDatabase.updateGroup(group.getID(),newGroupName,newMembers);
+			} catch (SQLException exception) {
+				showNotification("Error! Please, check your connection");
+				return;
+			}
+		}
+
+		group.setName(newGroupName);
 		
 		App.loadMainScene();
 		

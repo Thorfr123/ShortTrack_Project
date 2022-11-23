@@ -1,13 +1,16 @@
 package com.psw.shortTrack.gui;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Collections;
 import com.psw.shortTrack.data.Group;
+import com.psw.shortTrack.data.GroupTask;
 import com.psw.shortTrack.data.SearchList;
-import com.psw.shortTrack.data.Task;
 import com.psw.shortTrack.data.TaskOrganizer;
 import com.psw.shortTrack.data.User;
+import com.psw.shortTrack.database.GroupTasksDatabase;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -33,11 +36,11 @@ public class ControllerEditGroupTaskScene {
 	@FXML
 	private Label notificationLabel;
 
-	private Task task;
+	private GroupTask task;
 	private Group group;
 	private TaskOrganizer loadList;
 	
-	public void initData(Task task, TaskOrganizer loadList) {
+	public void initData(GroupTask task, TaskOrganizer loadList) {
 		this.task = task;
 		this.loadList = loadList;
 		
@@ -68,6 +71,15 @@ public class ControllerEditGroupTaskScene {
 		alert.setContentText("Are you sure you really want to delete the task?");
 
 		if(alert.showAndWait().get() == ButtonType.OK){
+			
+			if(User.isLogedIn()) {
+				try {
+					GroupTasksDatabase.deleteTask(task.getID());
+				} catch (SQLException exception) {
+					showNotification("Error! Please, check your connection");
+					return;
+				}
+			}
 			
 			group.removeTask(task);
 			
@@ -101,7 +113,19 @@ public class ControllerEditGroupTaskScene {
 		
 		String newDescription = descriptionField.getText();
 		LocalDate newDeadline = dueDateField.getValue();
-				
+		//TODO: Add members
+		String newAssignTo = task.getAssignedTo();
+		
+		if(User.isLogedIn()) {
+			try {
+				GroupTasksDatabase.updateTask(task.getID(), newTaskName, newDescription, newDeadline, checkButton.isSelected(), newAssignTo);
+			} catch (SQLException exception) {
+				System.out.println(exception);
+				showNotification("Error! Please, check your connection");
+				return;
+			}
+		}
+		
 		task.setName(newTaskName);
 		task.setDescription(newDescription);
 		task.setDeadline(newDeadline);

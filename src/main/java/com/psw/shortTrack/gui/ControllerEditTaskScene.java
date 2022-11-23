@@ -104,7 +104,7 @@ public class ControllerEditTaskScene {
 			taskNameField.getStyleClass().add("error");
 			return;
 		}
-			
+		
 		if(!newTaskName.equals(task.getName()) && list.checkName(newTaskName)) {
 			showNotification("Already exist a task with that name!");
 			taskNameField.getStyleClass().add("error");
@@ -113,6 +113,15 @@ public class ControllerEditTaskScene {
 		
 		String newDescription = descriptionField.getText();
 		LocalDate newDeadline = dueDateField.getValue();
+		
+		if(User.isLogedIn()) {
+			try {
+				PersonalTasksDatabase.updateTask(task.getID(), newTaskName, newDescription, newDeadline, checkButton.isSelected());
+			} catch (SQLException exception) {
+				showNotification("Error! Please, check your connection");
+				return;
+			}
+		}
 				
 		task.setName(newTaskName);
 		task.setDescription(newDescription);

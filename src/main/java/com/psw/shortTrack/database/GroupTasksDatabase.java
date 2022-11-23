@@ -82,11 +82,11 @@ public class GroupTasksDatabase extends Database {
 		}
 	}
 	
-	public static boolean updateTask(GroupTask task) throws SQLException {
-		String query = 	"UPDATE projeto.personal_tasks SET name=" + toSQL((String)task.getName()) + ",description=" 
-						+ toSQL((String)task.getDescription()) + ",deadline_date=" + toSQL((LocalDate)task.getDeadlineDate()) 
-						+ ",state=" + toSQL(task.chekCompleted()) + ",assigned_to=" + toSQL((String)task.getAssignedTo()) + "\r\n"
-						+ "WHERE id=" + toSQL(task.getID()) + ";";
+	public static boolean updateTask(int id, String newName, String newDescription, LocalDate newDeadline, Boolean newState, String newAssignTo) throws SQLException {
+		String query = 	"UPDATE projeto.group_tasks SET name=" + toSQL((String)newName) + ",description=" 
+						+ toSQL((String)newDescription) + ",deadline_date=" + toSQL((LocalDate)newDeadline) 
+						+ ",state=" + toSQL(newState) + ",assigned_to=" + toSQL((String)newAssignTo) + "\r\n"
+						+ "WHERE id=" + toSQL(id) + ";";
 		
 		return (executeUpdate(query) > 0);
 	}

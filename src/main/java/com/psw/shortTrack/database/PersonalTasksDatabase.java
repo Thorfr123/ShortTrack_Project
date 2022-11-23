@@ -126,11 +126,11 @@ public class PersonalTasksDatabase extends Database {
 		}
 	}
 	
-	public static boolean updateTask(Task task) throws SQLException {
-		String query = "UPDATE projeto.personal_tasks SET name=" + toSQL((String)task.getName()) + ", description=" 
-						+ toSQL((String)task.getDescription()) + ", deadline_date=" + toSQL((LocalDate)task.getDeadlineDate()) 
-						+ ", state=" + toSQL(task.chekCompleted()) + "\r\n"
-						+ "WHERE id=" + toSQL(task.getID()) + ";";
+	public static boolean updateTask(int id, String newName, String newDescription, LocalDate newDeadline, Boolean newState) throws SQLException {
+		String query = "UPDATE projeto.personal_tasks SET name=" + toSQL((String)newName) + ", description=" 
+						+ toSQL((String)newDescription) + ", deadline_date=" + toSQL((LocalDate)newDeadline) 
+						+ ", state=" + toSQL(newState) + "\r\n"
+						+ "WHERE id=" + toSQL(id) + ";";
 		
 		return (executeUpdate(query) > 0);
 	}

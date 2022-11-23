@@ -72,14 +72,14 @@ public class GroupsDatabase extends Database{
 	/**
 	 * Updates, in the database, the name and members in a group
 	 * 
-	 * @param group Group to update in database
+	 * @param group Group to update in database (TODO: Alterar)
 	 * @return (True) Success; (False) Error
 	 * @throws SQLException If a database access error occurs
 	 */
-	public static boolean updateGroup(Group group) throws SQLException {
-		String query = 	"UPDATE projeto.groups SET name=" + toSQL((String)group.getName()) + ", members="
-						+ toSQL((ArrayList<String>)group.getMembers()) + "\r\n"
-						+ "WHERE id=" + toSQL(group.getID()) + ";";
+	public static boolean updateGroup(int id, String newGroupName, ArrayList<String> newMembers) throws SQLException {
+		String query = 	"UPDATE projeto.groups SET name=" + toSQL((String)newGroupName) + ", members="
+						+ toSQL((ArrayList<String>)newMembers) + "\r\n"
+						+ "WHERE id=" + toSQL(id) + ";";
 		
 		return (executeUpdate(query) > 0);
 	}

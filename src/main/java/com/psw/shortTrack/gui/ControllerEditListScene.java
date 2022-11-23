@@ -80,13 +80,13 @@ public class ControllerEditListScene {
 			return;
 		
 		if (User.checkListName(newListName)) {
-			showNotification("Already exist a task with that name!");
+			showNotification("Already exist a list with that name!");
 			return;
 		}
 		
 		if(User.isLogedIn()) {
 			try {
-				PersonalListsDatabase.update(list.getID(),newListName);
+				PersonalListsDatabase.updateList(list.getID(),newListName);
 			} catch (SQLException exception) {
 				showNotification("Error! Please, check your connection");
 				return;
