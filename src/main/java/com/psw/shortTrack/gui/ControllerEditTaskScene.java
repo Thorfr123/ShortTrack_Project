@@ -1,6 +1,7 @@
 package com.psw.shortTrack.gui;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Collections;
 import com.psw.shortTrack.data.List;
@@ -8,6 +9,8 @@ import com.psw.shortTrack.data.SearchList;
 import com.psw.shortTrack.data.Task;
 import com.psw.shortTrack.data.TaskOrganizer;
 import com.psw.shortTrack.data.User;
+import com.psw.shortTrack.database.PersonalTasksDatabase;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -68,6 +71,15 @@ public class ControllerEditTaskScene {
 		alert.setContentText("Are you sure you really want to delete the task?");
 
 		if(alert.showAndWait().get() == ButtonType.OK){
+			
+			if(User.isLogedIn()) {
+				try {
+					PersonalTasksDatabase.deleteTask(task.getID());
+				} catch (SQLException exception) {
+					showNotification("Error! Please, check your connection");
+					return;
+				}
+			}
 			
 			list.removeTask(task);
 			
