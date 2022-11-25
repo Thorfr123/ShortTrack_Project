@@ -397,6 +397,10 @@ public class ControllerLogoutScene {
 		
 		newTaskName.clear();
 		
+		//TODO: Not Working
+		if(taskName.isBlank())
+			return;
+		
 		Task newTask = null;
 		if(loadList instanceof List)
 			newTask = addTaskToList(taskName);

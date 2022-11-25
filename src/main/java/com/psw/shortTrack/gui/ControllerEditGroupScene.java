@@ -173,7 +173,7 @@ public class ControllerEditGroupScene {
 		memberList.getItems().remove(memberToRemove);
 		memberToRemove = memberToRemove.substring(memberToRemove.indexOf("(")+1, 
 												  memberToRemove.indexOf(")"));
-		System.out.println(memberToRemove);
+		
 		for(Account a : newMembers) {
 			String oldmember = a.getEmail();
 			if(oldmember.equals(memberToRemove)) {
