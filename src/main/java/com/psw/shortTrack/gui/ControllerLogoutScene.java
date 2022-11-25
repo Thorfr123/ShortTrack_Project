@@ -99,7 +99,7 @@ public class ControllerLogoutScene {
 		
 		User.setLogedIn(true);
 		
-		if(account == null)
+		//if(account == null)
 			account = User.getAccount();
 		
 		printNameLabel.setText(account.getName());
@@ -112,10 +112,10 @@ public class ControllerLogoutScene {
 		choiceBox.getItems().addAll(searchOptions);
 		choiceBox.setOnAction(this::searchOption);
 		
-		if(lists == null)
+		//if(lists == null)
 			lists = User.getLists();
 		
-		if(groups == null)
+		//if(groups == null)
 			groups = User.getGroups();
 		
 		for(List l : lists) {
@@ -158,10 +158,10 @@ public class ControllerLogoutScene {
 		User.setGroups(null);
 		User.setLists(null);
 		User.setAccount(null);
-		lists = null;
-		groups = null;
+		//lists = null;
+		//groups = null;
 		loadList = null;
-		account = null;
+		//account = null;
 		
 		App.readLocalFiles();
 		
@@ -193,10 +193,10 @@ public class ControllerLogoutScene {
 			User.setGroups(null);
 			User.setLists(null);
 			User.setAccount(null);
-			lists = null;
-			groups = null;
+			//lists = null;
+			//groups = null;
 			loadList = null;
-			account = null;
+			//account = null;
 			
 			root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 			App.loadScene(root);

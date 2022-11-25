@@ -76,7 +76,7 @@ public class ControllerLoginScene {
 	
 	@FXML
     public void initialize() {
-		
+				
 		notificationLabel = new Label();
 		notificationLabel.setTextFill(Color.RED);
 		
@@ -84,9 +84,9 @@ public class ControllerLoginScene {
 		choiceBox.getItems().addAll(searchOptions);
 		choiceBox.setOnAction(this::searchOption);
 		
-		if(lists == null) {
+		//if(lists == null) {
 			lists = User.getLists();
-		}
+		//}
 		
 		for(List l : lists) {
 			ListButton listButton = new ListButton(l);
@@ -173,7 +173,7 @@ public class ControllerLoginScene {
 	
 	public void addList(ActionEvent e) {
 		
-removeErrorNotifications();
+		removeErrorNotifications();
 		
 		String listName = newListName.getText();
 		
