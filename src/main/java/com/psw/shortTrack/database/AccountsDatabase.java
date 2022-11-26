@@ -123,5 +123,10 @@ public class AccountsDatabase extends Database{
 			"UPDATE projeto.account SET name=" + toSQL((String)new_name) + " WHERE email=" + toSQL((String)email) + ";"
 		) > 0);
 	}
+
+	public static boolean changeEmail(String email, String newEmail) throws SQLException{
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 }
