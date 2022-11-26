@@ -1,4 +1,4 @@
-package tests;
+package com.psw.shortTrack;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -14,7 +14,7 @@ public class DatabaseTest {
 	@Test
 	void Given_UserHasValidCredentials_When_ClickLoginButton_Then_SuccessfullLogin() {
 		try {
-			assertEquals(true, AccountsDatabase.checkLogin("teste4", "12345"));
+			assertEquals(true, AccountsDatabase.checkLogin("teste", "12345"));
 			
 		} catch (SQLException e) {
 			fail("Network problems");

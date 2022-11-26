@@ -89,7 +89,7 @@ public abstract class Task implements Serializable {
 		completed = state;
 	}
 	
-	public void setParentID(int newParentID) {		// Maybe useless
+	public void setParentID(int newParentID) {
 		parent_id = newParentID;
 	}
 	

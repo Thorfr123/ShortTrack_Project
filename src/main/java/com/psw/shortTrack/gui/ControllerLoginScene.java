@@ -76,7 +76,7 @@ public class ControllerLoginScene {
 	
 	@FXML
     public void initialize() {
-		
+				
 		notificationLabel = new Label();
 		notificationLabel.setTextFill(Color.RED);
 		
@@ -84,9 +84,7 @@ public class ControllerLoginScene {
 		choiceBox.getItems().addAll(searchOptions);
 		choiceBox.setOnAction(this::searchOption);
 		
-		if(lists == null) {
-			lists = User.getLists();
-		}
+		lists = User.getLists();
 		
 		for(List l : lists) {
 			ListButton listButton = new ListButton(l);
@@ -173,7 +171,7 @@ public class ControllerLoginScene {
 	
 	public void addList(ActionEvent e) {
 		
-removeErrorNotifications();
+		removeErrorNotifications();
 		
 		String listName = newListName.getText();
 		
@@ -225,7 +223,7 @@ removeErrorNotifications();
 		
 		PersonalTask newTask = new PersonalTask(taskName,loadList.getID());
 		
-		loadList.getTaskList().add(newTask);
+		((List)loadList).addTask(newTask);
 		
 		TaskBar taskBar = new TaskBar(newTask);
 		CheckBox taskCheckBox = taskBar.getCheckBox();
@@ -260,7 +258,7 @@ removeErrorNotifications();
 		
 		PersonalTask newTask = new PersonalTask(taskName,loadList.getID());
 		
-		loadList.getTaskList().add(newTask);
+		((List)loadList).addTask(newTask);
 		
 		TaskBar taskBar = new TaskBar(newTask);
 		CheckBox taskCheckBox = taskBar.getCheckBox();

@@ -38,6 +38,10 @@ public class Group extends TaskOrganizer{
 		return members;
 	}
 	
+	public void addTask(GroupTask task) {
+		taskList.add(task);
+	}
+	
 	public ArrayList<String> getMemberEmails() {
 		
 		ArrayList<String> memberEmails = new ArrayList<String>(0);

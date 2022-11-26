@@ -80,7 +80,6 @@ public class ControllerEditGroupScene {
 		removeErrorNotifications();
 		
 		String newGroupName = groupNameField.getText();
-		//ArrayList<String> newMembers = group.getMembers();
 		
 		if(newGroupName.isBlank()) {
 			showNotification("The Group needs a name!");

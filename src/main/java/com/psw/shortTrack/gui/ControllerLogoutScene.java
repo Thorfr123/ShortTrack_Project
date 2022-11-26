@@ -99,8 +99,9 @@ public class ControllerLogoutScene {
 		
 		User.setLogedIn(true);
 		
-		if(account == null)
-			account = User.getAccount();
+		account = User.getAccount();
+		lists = User.getLists();
+		groups = User.getGroups();
 		
 		printNameLabel.setText(account.getName());
 		printEmailLabel.setText(account.getEmail());
@@ -111,12 +112,6 @@ public class ControllerLogoutScene {
 		choiceBox.setValue("Search by");
 		choiceBox.getItems().addAll(searchOptions);
 		choiceBox.setOnAction(this::searchOption);
-		
-		if(lists == null)
-			lists = User.getLists();
-		
-		if(groups == null)
-			groups = User.getGroups();
 		
 		for(List l : lists) {
 			ListButton listButton = new ListButton(l);
@@ -158,10 +153,7 @@ public class ControllerLogoutScene {
 		User.setGroups(null);
 		User.setLists(null);
 		User.setAccount(null);
-		lists = null;
-		groups = null;
 		loadList = null;
-		account = null;
 		
 		App.readLocalFiles();
 		
@@ -193,10 +185,7 @@ public class ControllerLogoutScene {
 			User.setGroups(null);
 			User.setLists(null);
 			User.setAccount(null);
-			lists = null;
-			groups = null;
 			loadList = null;
-			account = null;
 			
 			root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
 			App.loadScene(root);
@@ -331,7 +320,7 @@ public class ControllerLogoutScene {
 			return null;
 		}	
 
-		loadList.getTaskList().add(newTask);
+		((List)loadList).addTask(newTask);
 		
 		TaskBar taskBar = new TaskBar(newTask);
 		CheckBox taskCheckBox = taskBar.getCheckBox();
@@ -371,7 +360,7 @@ public class ControllerLogoutScene {
 			return null;
 		}
 		
-		loadList.getTaskList().add(newTask);
+		((Group)loadList).addTask(newTask);
 		
 		GroupTaskBar taskBar = new GroupTaskBar(newTask);
 		CheckBox taskCheckBox = taskBar.getCheckBox();

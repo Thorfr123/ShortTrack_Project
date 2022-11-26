@@ -8,5 +8,12 @@ public class SearchList extends TaskOrganizer {
 		super(name,0);
 	}
 	
+	public void addTask(PersonalTask task) {
+		taskList.add(task);
+	}
+	
+	public void addTask(GroupTask task) {
+		taskList.add(task);
+	}
 
 }
