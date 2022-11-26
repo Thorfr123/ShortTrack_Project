@@ -1,4 +1,4 @@
-package com.psw.shortTrack;
+package com.psw.shortTrack.database;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.sql.SQLException;
 
 import org.junit.jupiter.api.Test;
-
-import com.psw.shortTrack.database.AccountsDatabase;
 
 public class DatabaseTest {
 

@@ -1,4 +1,4 @@
-package com.psw.shortTrack;
+package com.psw.shortTrack.data;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -6,9 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
-
-import com.psw.shortTrack.data.List;
-import com.psw.shortTrack.data.PersonalTask;
 
 public class ListTest {
 	
