@@ -114,4 +114,20 @@ public class GroupsDatabase extends Database{
 			+ "WHERE id=" + toSQL(id) + ";"
 		) > 0);
 	}
+	
+	/**
+	 * Removes a member from one group
+	 * 
+	 * @param id Group's id
+	 * @param member Account of the member to remove
+	 *  
+	 * @return (True) Success; (False) Otherwise
+	 * @throws SQLException If a database access error occurs
+	 */
+	public static boolean removeMember(int id, Account member) throws SQLException {
+		return (executeUpdate(
+			"UPDATE projeto.groups SET member=("
+			+ "SELECT array_remove(members,'" + member.getEmail() + "') FROM projeto.groups WHERE id='" + id + "');"
+		) > 0);
+	}
 }
