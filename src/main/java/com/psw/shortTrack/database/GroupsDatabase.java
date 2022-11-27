@@ -116,7 +116,7 @@ public class GroupsDatabase extends Database{
 	}
 	
 	/**
-	 * Removes a member from one group
+	 * Removes a member from one group and assigns his tasks to NULL
 	 * 
 	 * @param id Group's id
 	 * @param member Account of the member to remove
@@ -125,9 +125,10 @@ public class GroupsDatabase extends Database{
 	 * @throws SQLException If a database access error occurs
 	 */
 	public static boolean removeMember(int id, Account member) throws SQLException {
-		return (executeUpdate(
-			"UPDATE projeto.groups SET member=("
-			+ "SELECT array_remove(members,'" + member.getEmail() + "') FROM projeto.groups WHERE id='" + id + "');"
+		return(executeUpdate(
+			"UPDATE projeto.groups SET members=("
+			+ "SELECT array_remove(members,'" + member.getEmail() + "') FROM projeto.groups WHERE id='" + id + "') WHERE id='"+id+"';\r\n"
+			+ "UPDATE projeto.group_tasks SET assigned_to=NULL WHERE group_id='" + id + "' AND assigned_to='" + member.getEmail() + "';"
 		) > 0);
 	}
 }
