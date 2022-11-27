@@ -22,7 +22,7 @@ public class GroupButton extends Button{
 		
 		VBox groupBox = new VBox();
 		Label label1 = new Label(group.getName());
-		Label label2 = new Label("Manager: " + group.getManager());
+		Label label2 = new Label("Manager: " + group.getManagerAccount().toString());
 		label1.setFont(Font.font(14.0));
 		label2.getStyleClass().add("manager");
 

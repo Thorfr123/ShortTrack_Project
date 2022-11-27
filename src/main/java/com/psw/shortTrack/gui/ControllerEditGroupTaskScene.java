@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Collections;
+
+import com.psw.shortTrack.data.Account;
 import com.psw.shortTrack.data.Group;
 import com.psw.shortTrack.data.GroupTask;
 import com.psw.shortTrack.data.SearchList;
@@ -21,7 +23,9 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 
 public class ControllerEditGroupTaskScene {
@@ -35,13 +39,23 @@ public class ControllerEditGroupTaskScene {
 	@FXML 
 	private DatePicker dueDateField;
 	@FXML
-	private ChoiceBox<String> assignedToBox;
+	private ChoiceBox<Account> assignedToBox;
 	@FXML
 	private Label notificationLabel;
+	@FXML
+	private Button clearButton;
+	@FXML
+	private	HBox editGroupTaskBox;
+	@FXML
+	private Button deleteButton;
+	@FXML
+	private	HBox buttonsBox;
 
 	private GroupTask task;
 	private Group group;
 	private TaskOrganizer loadList;
+	
+	private Account nobody = new Account(null,"Nobody");
 	
 	public void initData(GroupTask task, TaskOrganizer loadList) {
 		this.task = task;
@@ -62,14 +76,29 @@ public class ControllerEditGroupTaskScene {
 			checkButton.setText("To be started");
 		}
 		
-		assignedToBox.getItems().add("Nobody");
-		assignedToBox.getItems().addAll(group.getMemberEmails());
-		assignedToBox.getItems().add(group.getManager());
+		assignedToBox.getItems().add(nobody);
+		assignedToBox.getItems().addAll(group.getMemberAccounts());
+		assignedToBox.getItems().add(group.getManagerAccount());
 		
-		if(task.getAssignedTo() == null)
-			assignedToBox.setValue("Nobody");
+		if(task.getAssignedToAccount() == null)
+			assignedToBox.setValue(nobody);
 		else
-			assignedToBox.setValue(task.getAssignedTo());
+			assignedToBox.setValue(task.getAssignedToAccount());
+		
+		
+		if(!group.getManagerEmail().equals(User.getAccount().getEmail())) {
+			taskNameField.setDisable(true);
+			taskNameField.setOpacity(1);
+			
+			// TODO: Deixar estes elementos mais visíveis para o utilizador
+			assignedToBox.setDisable(true);
+			assignedToBox.setOpacity(1);
+			dueDateField.setDisable(true);
+			dueDateField.setOpacity(1);
+
+			editGroupTaskBox.getChildren().remove(clearButton);
+			buttonsBox.getChildren().remove(deleteButton);
+		}
 		
     }
 	
@@ -125,14 +154,11 @@ public class ControllerEditGroupTaskScene {
 		
 		String newDescription = descriptionField.getText();
 		LocalDate newDeadline = dueDateField.getValue();
-		String newAssignedTo = assignedToBox.getValue();
-		
-		if(newAssignedTo.equals("Nobody"))
-			newAssignedTo = null;
+		Account newAssignedTo = assignedToBox.getValue();
 		
 		if(User.isLogedIn()) {
 			try {
-				GroupTasksDatabase.updateTask(task.getID(), newTaskName, newDescription, newDeadline, checkButton.isSelected(), newAssignedTo);
+				GroupTasksDatabase.updateTask(task.getID(), newTaskName, newDescription, newDeadline, checkButton.isSelected(), newAssignedTo.getEmail());
 			} catch (SQLException exception) {
 				System.out.println(exception);
 				showNotification("Error! Please, check your connection");

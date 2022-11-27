@@ -18,6 +18,8 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.control.Alert.AlertType;
 
@@ -28,9 +30,17 @@ public class ControllerEditGroupScene {
 	@FXML
 	private TextField memberTextField;
 	@FXML
-	private ListView<String> memberList;
+	private ListView<Account> memberList;
 	@FXML
 	private Label notificationLabel;
+	@FXML
+	private VBox editGroupBox;
+	@FXML
+	private HBox addMembersBox;
+	@FXML
+	private HBox managerButtonsBox;
+	@FXML
+	private HBox memberButtonsBox;
 	
 	private Group group;
 	private ArrayList<Account> newMembers = new ArrayList<Account>(0);
@@ -39,13 +49,22 @@ public class ControllerEditGroupScene {
 
 		this.group = group;
 		
-		for(Account a : group.getMemberAccounts()) {
-			newMembers.add(a);
-			memberList.getItems().add(a.getName() + " (" + a.getEmail() + ")");
-		}
-		
 		groupNameField.setText(group.getName());
 		
+		newMembers.addAll(group.getMemberAccounts());
+		memberList.getItems().addAll(group.getMemberAccounts());
+		
+		if(!group.getManagerEmail().equals(User.getAccount().getEmail())) {
+			groupNameField.setDisable(true);
+			groupNameField.setOpacity(1);
+			memberList.setDisable(true);
+			memberList.setOpacity(1);
+			editGroupBox.getChildren().remove(addMembersBox);
+			editGroupBox.getChildren().remove(managerButtonsBox);
+		}
+		else {
+			editGroupBox.getChildren().remove(memberButtonsBox);
+		}
     }
 	
 	public void delete(ActionEvent e) throws IOException {
@@ -117,6 +136,15 @@ public class ControllerEditGroupScene {
 		
 	}
 	
+	// TODO: Implement this method
+	public void leave(ActionEvent e) throws IOException {
+		
+		removeErrorNotifications();
+		
+		System.out.println("leave - Not Working!");
+		
+	}
+	
 	public void addMember(ActionEvent e) throws IOException {
 		
 		removeErrorNotifications();
@@ -134,12 +162,10 @@ public class ControllerEditGroupScene {
 			return;
 		}
 		
-		for(String s : group.getMemberEmails()) {
-			if(s.equals(newMember)) {
-				showNotification("This member already belongs to this group!");
-				memberTextField.getStyleClass().add("error");
-				return;
-			}
+		if(group.getMemberEmails().contains(newMember)) {
+			showNotification("This member already belongs to this group!");
+			memberTextField.getStyleClass().add("error");
+			return;
 		}
 		
 		Account newMemberAccount;
@@ -155,8 +181,8 @@ public class ControllerEditGroupScene {
 			memberTextField.getStyleClass().add("error");
 			return;
 		}
-		
-		memberList.getItems().add(newMemberAccount.getName() + " (" + newMemberAccount.getEmail() + ")");
+
+		memberList.getItems().add(newMemberAccount);
 		newMembers.add(newMemberAccount);
 		
 	}
@@ -164,22 +190,13 @@ public class ControllerEditGroupScene {
 	public void removeMember(ActionEvent e) throws IOException {
 		
 		removeErrorNotifications();
-		String memberToRemove = memberList.getSelectionModel().getSelectedItem();
+		Account memberToRemove = memberList.getSelectionModel().getSelectedItem();
 		
 		if(memberToRemove == null)
 			return;
 		
 		memberList.getItems().remove(memberToRemove);
-		memberToRemove = memberToRemove.substring(memberToRemove.indexOf("(")+1, 
-												  memberToRemove.indexOf(")"));
-		
-		for(Account a : newMembers) {
-			String oldmember = a.getEmail();
-			if(oldmember.equals(memberToRemove)) {
-				newMembers.remove(a);
-				break;
-			}
-		}
+		newMembers.remove(memberToRemove);
 		
 	}
 	

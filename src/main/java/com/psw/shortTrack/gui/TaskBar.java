@@ -52,7 +52,7 @@ public class TaskBar extends HBox{
 		
 		if(searchMode) {
 			List list = User.getList(task.getParentID());		
-			Label label3 = new Label(list.getName());
+			Label label3 = new Label("List: " + list.getName());
 			label3.getStyleClass().add("taskFooter");
 			taskBox3.getChildren().add(label3);
 			label3.setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);

@@ -1,5 +1,6 @@
 package com.psw.shortTrack.gui;
 
+import com.psw.shortTrack.data.Account;
 import com.psw.shortTrack.data.Group;
 import com.psw.shortTrack.data.GroupTask;
 import com.psw.shortTrack.data.User;
@@ -28,7 +29,7 @@ public class GroupTaskBar extends HBox{
 		
 		String taskName = task.getName();
 		String taskDeadlineDate;
-		String assignedTo = task.getAssignedTo();
+		Account assignedTo = task.getAssignedToAccount();
 		
 		if(task.getDeadlineDate() == null)
 			taskDeadlineDate = "";
@@ -51,10 +52,11 @@ public class GroupTaskBar extends HBox{
 		taskBox3.getChildren().add(label2);
 		HBox.setHgrow(label2,Priority.ALWAYS);
 		label2.setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
+		label2.setMinSize(100.0,Double.MIN_VALUE);
 		
 		Label label3 = new Label();
 		if(assignedTo != null) {
-			label3.setText("Assign to: " + assignedTo);
+			label3.setText("Assign to: " + assignedTo.toString());
 			label3.getStyleClass().add("taskFooter");
 			taskBox3.getChildren().add(label3);
 			label3.setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
@@ -62,7 +64,7 @@ public class GroupTaskBar extends HBox{
 		
 		if(searchMode) {
 			HBox.setHgrow(label3,Priority.ALWAYS);
-			Label label4 = new Label(group.getName());
+			Label label4 = new Label("Group: " + group.getName());
 			label4.getStyleClass().add("taskFooter");
 			taskBox3.getChildren().add(label4);
 			label4.setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);

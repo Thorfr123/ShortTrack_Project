@@ -22,7 +22,7 @@ public class GroupsDatabase extends Database{
 	public static void createGroup(Group group) throws SQLException {
 		group.setID(Integer.parseInt(executeQueryReturnSingleColumn(
 					"INSERT INTO projeto.groups (name, manager, members)\r\n"
-			   		+ "VALUES (" + toSQL((String)group.getName()) + "," + toSQL((String)group.getManager()) + "," 
+			   		+ "VALUES (" + toSQL((String)group.getName()) + "," + toSQL((String)group.getManagerEmail()) + "," 
 			   		+ toSQL((ArrayList<String>)group.getMemberEmails()) + ")\r\n"
 			   		+ "RETURNING id;"
 		   		)
@@ -77,9 +77,10 @@ public class GroupsDatabase extends Database{
 							memberAccounts.add(memberAccount);
 						}
 					}
+					Account managerAccount = AccountsDatabase.getAccount(rs.getString("manager"));
 					
 					Group group = new Group(rs.getString("name"),
-											rs.getString("manager"),
+											managerAccount,
 											rs.getInt("id"),
 											GroupTasksDatabase.getAllTasks(rs.getInt("id")),
 											memberAccounts);

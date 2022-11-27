@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+import com.psw.shortTrack.data.Account;
 import com.psw.shortTrack.data.GroupTask;
 import com.psw.shortTrack.data.Task;
 
@@ -22,7 +23,7 @@ public class GroupTasksDatabase extends Database {
 	public static int createTask(GroupTask task) throws SQLException {
 		//TODO: change return
 		String query = 	"INSERT INTO projeto.group_tasks (group_id, assigned_to, name, description, created_date, deadline_date, state)\r\n"
-						+ "VALUES (" + toSQL(task.getParentID()) + "," + toSQL((String)task.getAssignedTo()) + "," 
+						+ "VALUES (" + toSQL(task.getParentID()) + "," + toSQL((String)task.getAssignedToEmail()) + "," 
 						+ toSQL((String)task.getName()) + "," + toSQL((String)task.getDescription()) + "," 
 						+ toSQL((LocalDate)task.getCreatedDate()) + "," + toSQL((LocalDate)task.getDeadlineDate()) + "," 
 						+ toSQL(task.chekCompleted()) + ")\r\n"
@@ -73,6 +74,8 @@ public class GroupTasksDatabase extends Database {
 					if (created_str != null)
 						createdDate = LocalDate.parse(created_str);
 					
+					Account assignTo = AccountsDatabase.getAccount(rs.getString("assigned_to"));
+					
 					arrayTask.add(new GroupTask(rs.getString("name"),
 												rs.getInt("id"),
 												rs.getString("description"),
@@ -80,7 +83,8 @@ public class GroupTasksDatabase extends Database {
 												deadline,
 												rs.getBoolean("state"),
 												rs.getInt("group_id"),
-												rs.getString("assigned_to")));
+												assignTo
+												));
 				}
 				return arrayTask;
 			} else {

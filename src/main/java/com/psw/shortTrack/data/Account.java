@@ -43,6 +43,14 @@ public class Account {
 		this.email = email;
 	}
 	
+	@Override 
+	public String toString() {
+		if(email != null)
+			return name + " (" + email + ")";
+		else
+			return name;
+	}
+	
 	public static String checkValidName(String name) {				//Just Scratch
 		
 		String errorDescription;

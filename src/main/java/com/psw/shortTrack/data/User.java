@@ -45,7 +45,7 @@ public class User {
 	public static Group checkGroupName(String groupName) {
 		
 		for(Group g : groups) {
-			if(g.getName().equals(groupName) && g.getManager().equals(account.getEmail()))
+			if(g.getName().equals(groupName) && g.getManagerEmail().equals(account.getEmail()))
 				return g;
 		}
 		

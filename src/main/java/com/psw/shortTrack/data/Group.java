@@ -7,31 +7,39 @@ public class Group extends TaskOrganizer{
 	private static final long serialVersionUID = 8490848681679284579L;
 	
 	private ArrayList<Account> members = new ArrayList<Account>(0);
-	private String manager;
+	private Account manager;
 	
-	public Group(String name, String manager) {
+	public Group(String name, Account manager) {
 		super(name);
 		this.manager = manager;
 	}
 	
-	public Group(String name, String manager, int id) {
+	public Group(String name, Account manager, int id) {
 		super(name,id);
 		this.manager = manager;
 	}
 	
-	public Group(String name, String manager, int id, ArrayList<Task> taskList) {
+	public Group(String name, Account manager, int id, ArrayList<Task> taskList) {
 		super(name,id,taskList);
 		this.manager = manager;
 	}
 	
-	public Group(String name, String manager, int id, ArrayList<Task> taskList, ArrayList<Account> members) {
+	public Group(String name, Account manager, int id, ArrayList<Task> taskList, ArrayList<Account> members) {
 		super(name,id,taskList);
 		this.manager = manager;
 		this.members = members;
 	}
 	
-	public String getManager() {
+	public Account getManagerAccount() {
 		return manager;
+	}
+	
+	public String getManagerEmail() {
+		return manager.getEmail();
+	}
+	
+	public String getManagerName() {
+		return manager.getName();
 	}
 	
 	public ArrayList<Account> getMemberAccounts() {

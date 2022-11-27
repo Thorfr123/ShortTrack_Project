@@ -139,8 +139,14 @@ public class ControllerLogoutScene {
 			listNameLabel.setText("Choose one List or Group!");
 			return;
 		}
-		else if(loadList instanceof Group)
-			editListButton.setText("Edit Group");
+		else if(loadList instanceof Group) {
+			if(((Group)loadList).getManagerAccount().equals(User.getAccount())) {
+				editListButton.setText("Edit Group");
+			}
+			else {
+				editListButton.setText("Group Members");
+			}
+		}
 		else
 			editListButton.setText("Edit List");
 		
@@ -258,7 +264,7 @@ public class ControllerLogoutScene {
 			return;
 		}
 		
-		Group newGroup = new Group(groupName,account.getEmail());
+		Group newGroup = new Group(groupName,account);
 		
 		try {
 			GroupsDatabase.createGroup(newGroup);
@@ -445,9 +451,15 @@ public class ControllerLogoutScene {
 		
 		removeErrorNotifications();
 		
-		editListButton.setText("Edit Group");
 		GroupButton groupButton = (GroupButton)e.getSource();
 		loadList = groupButton.getGroup();
+		
+		if(((Group)loadList).getManagerEmail().equals(User.getAccount().getEmail())) {
+			editListButton.setText("Edit Group");
+		}
+		else {
+			editListButton.setText("Group Members");
+		}
 		
 		tasksBox.getChildren().clear();
 		loadTasks();
@@ -650,10 +662,12 @@ public class ControllerLogoutScene {
 	}
 	
 	private void loadTasks() {
-
-		boolean searchMode = (loadList instanceof SearchList);
 		
-		if(searchMode)
+		boolean searchMode = (loadList instanceof SearchList);
+		boolean isMemberOfTheGroup = (loadList instanceof Group) 
+						&& !((Group)loadList).getManagerEmail().equals(User.getAccount().getEmail());
+		
+		if(searchMode || isMemberOfTheGroup)
 			newTaskBox.getChildren().remove(addTaskBox);
 		else if(!newTaskBox.getChildren().contains(addTaskBox))
 			newTaskBox.getChildren().add(addTaskBox);
