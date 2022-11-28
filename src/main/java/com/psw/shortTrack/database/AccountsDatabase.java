@@ -124,10 +124,19 @@ public class AccountsDatabase extends Database{
 		) > 0);
 	}
 
+	/**
+	 * Changes the email of the user in the database.
+	 * 
+	 * @param email String with user's current email
+	 * @param newEmail String with user's new email
+	 * @return Either (True) Success; (False) Something failed
+	 * @throws SQLException If there is a network error
+	 */
 	public static boolean changeEmail(String email, String newEmail) throws SQLException{
-		// TODO Auto-generated method stub
-		System.out.println("Database changeEmail not working");
-		return false;
+		return (executeUpdate(
+			"UPDATE projeto.account SET email=" + toSQL((String)newEmail) + " WHERE email=" + toSQL((String)email) + ";"
+			+ "UPDATE projeto.groups SET members=(SELECT array_replace(members," + toSQL((String)email) + "," + toSQL((String)newEmail) + "));"
+		) > 0);
 	}
 	
 }

@@ -226,6 +226,7 @@ public class GroupsDatabase extends Database{
 	 * @throws SQLException If a database access error occurs
 	 */
 	public static boolean removeMember(int id, Account member) throws SQLException {
+		//TODO: verificar se este codigo é todo necessário
 		return(executeUpdate(
 			"UPDATE projeto.groups SET members=("
 			+ "SELECT array_remove(members,'" + member.getEmail() + "') FROM projeto.groups WHERE id='" + id + "') WHERE id='"+id+"';\r\n"

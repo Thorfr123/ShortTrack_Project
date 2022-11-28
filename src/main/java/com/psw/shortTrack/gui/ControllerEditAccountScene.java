@@ -259,7 +259,6 @@ public class ControllerEditAccountScene {
     
     void saveEmail(ActionEvent e) {
     	
-    	System.out.println("Falta parte da database");
     	removeErrorNotifications();
     	
     	String newEmail = newEmailField.getText();
@@ -290,7 +289,6 @@ public class ControllerEditAccountScene {
 			if (AccountsDatabase.checkLogin(account.getEmail(), currentPassword)) {
 				if (AccountsDatabase.checkEmail(newEmail)) {
 					if (!AccountsDatabase.changeEmail(account.getEmail(), newEmail)) {
-						System.out.println("FUNCAO DA DATABASE NAO IMPLEMENTADA");
 						showNotification("Unknown error!");
 						return;
 					}
@@ -477,5 +475,4 @@ public class ControllerEditAccountScene {
     	confirmNewPasswordField.setText("");
     	
 	}
-	
 }
