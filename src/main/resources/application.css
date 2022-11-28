@@ -18,3 +18,23 @@
 .date-picker {
 	-fx-font: 14px "System";
 }
+
+/* For date-picker */
+.date-picker:disabled {
+     -fx-opacity: 1.0;
+}
+
+/* For date-picker textfield */
+.date-picker > .date-picker-display-node:disabled {
+    -fx-opacity: 1.0;
+}
+
+/* For choice-box */
+.choice-box:disabled {
+     -fx-opacity: 1.0;
+}
+
+/* For choice-box label */
+.choice-box:disabled .label {
+     -fx-opacity: 1.0;
+}
