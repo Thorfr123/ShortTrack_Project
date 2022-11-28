@@ -89,12 +89,8 @@ public class ControllerEditGroupTaskScene {
 		if(!group.getManagerEmail().equals(User.getAccount().getEmail())) {
 			taskNameField.setDisable(true);
 			taskNameField.setOpacity(1);
-			
-			// TODO: Deixar estes elementos mais visíveis para o utilizador
-			assignedToBox.setDisable(true);
-			assignedToBox.setOpacity(1);
 			dueDateField.setDisable(true);
-			dueDateField.setOpacity(1);
+			assignedToBox.setDisable(true);
 
 			editGroupTaskBox.getChildren().remove(clearButton);
 			buttonsBox.getChildren().remove(deleteButton);

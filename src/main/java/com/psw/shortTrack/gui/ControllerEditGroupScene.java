@@ -9,7 +9,6 @@ import com.psw.shortTrack.data.Account;
 import com.psw.shortTrack.data.Group;
 import com.psw.shortTrack.data.User;
 import com.psw.shortTrack.database.AccountsDatabase;
-import com.psw.shortTrack.database.GroupTasksDatabase;
 import com.psw.shortTrack.database.GroupsDatabase;
 
 import javafx.event.ActionEvent;
