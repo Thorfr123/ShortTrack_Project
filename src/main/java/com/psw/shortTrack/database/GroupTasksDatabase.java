@@ -94,6 +94,46 @@ public class GroupTasksDatabase extends Database {
 	}
 	
 	/**
+	 * TODO: Refactoring this code plys :)
+	 */
+	public static ArrayList<Task> getAllMemberTasks(int group_id, String member) throws SQLException {
+		try (Connection connection = getConnection()){
+			if (connection != null) {
+				Statement stmt = connection.createStatement();
+				ResultSet rs = stmt.executeQuery(
+						"SELECT * FROM projeto.group_tasks WHERE group_id=" + toSQL(group_id) + " AND assigned_to=" + toSQL((String)member) + ";"
+				);
+				ArrayList<Task> arrayTask = new ArrayList<Task>();
+				while (rs.next()) {
+					String deadline_str = rs.getString("deadline_date");
+					LocalDate deadline = null;
+					if (deadline_str != null)
+						deadline = LocalDate.parse(deadline_str);
+					String created_str = rs.getString("created_date");
+					LocalDate createdDate = null;
+					if (created_str != null)
+						createdDate = LocalDate.parse(created_str);
+					
+					Account assignTo = AccountsDatabase.getAccount(rs.getString("assigned_to"));
+					
+					arrayTask.add(new GroupTask(rs.getString("name"),
+												rs.getInt("id"),
+												rs.getString("description"),
+												createdDate,
+												deadline,
+												rs.getBoolean("state"),
+												rs.getInt("group_id"),
+												assignTo
+												));
+				}
+				return arrayTask;
+			} else {
+				throw new SQLException("Failed to connect");
+			}
+		}
+	}
+	
+	/**
 	 * Updates groupTask data in the database
 	 * 
 	 * @param task//TODO: edit

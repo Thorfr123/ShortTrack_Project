@@ -146,7 +146,7 @@ public class ControllerLoginScene {
 			account = AccountsDatabase.getAccount(email, password);
 			groups = GroupsDatabase.getAllGroups(account.getEmail());
 			lists = PersonalListsDatabase.getAllLists(account.getEmail());
-		} catch (SQLException exeption) {
+		} catch (SQLException exception) {
 			Pane newBox = (Pane)loginBox;
 			String notification = "Error! Please, check your connection";
 			showNotification(notification,newBox);

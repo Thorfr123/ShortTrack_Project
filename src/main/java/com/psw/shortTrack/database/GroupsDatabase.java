@@ -44,6 +44,8 @@ public class GroupsDatabase extends Database{
 		) > 0);
 	}
 	
+	
+	// TODO : Delete the old version and refactoring the new :)
 	/**
 	 * Returns every groups with the user's email, as a manager or as a member.
 	 * It also assembles the group's tasks
@@ -52,7 +54,7 @@ public class GroupsDatabase extends Database{
 	 * @return ArrayList every group with the user's email
 	 * @throws SQLException If a database access error occurs
 	 */
-	public static ArrayList<Group> getAllGroups(String email) throws SQLException {
+	public static ArrayList<Group> getAllGroupsOld(String email) throws SQLException {
 
 		try (Connection connection = getConnection()){
 			if (connection != null) {
@@ -86,6 +88,105 @@ public class GroupsDatabase extends Database{
 											memberAccounts);
 					all_groups.add(group);
 				}
+				return all_groups;
+			} else {
+				throw new SQLException("There was a connection error");
+			}
+		}
+	}
+	
+	/**
+	 * TODO: Refactoring this code plys :)
+	 */
+	public static ArrayList<Group> getAllGroups(String email) throws SQLException {
+
+		ArrayList<Group> all_groups = getAllManagerGroups(email);
+		all_groups.addAll(getAllMemberGroups(email));
+		
+		return all_groups;
+	}
+	
+	/**
+	 * TODO: Refactoring this code plys :)
+	 */
+	public static ArrayList<Group> getAllManagerGroups(String email) throws SQLException {
+
+		try (Connection connection = getConnection()){
+			if (connection != null) {
+				Statement stmt = connection.createStatement();	
+				ResultSet rs = stmt.executeQuery(
+					"SELECT * FROM projeto.groups WHERE manager=" + toSQL((String)email) + ";"
+				);
+				ArrayList<Group> all_groups = new ArrayList<Group>();
+				while (rs.next()) {
+					ArrayList<String> members = new ArrayList<String>();
+					for (String member: (String[]) rs.getArray("members").getArray()) {
+						if (member != null) {
+							members.add(member);
+						}
+					}
+					
+					ArrayList<Account> memberAccounts = new ArrayList<Account>(0);
+					for(String s : members) {
+						Account memberAccount = AccountsDatabase.getAccount(s);
+						if (memberAccount != null) {
+							memberAccounts.add(memberAccount);
+						}
+					}
+					Account managerAccount = AccountsDatabase.getAccount(rs.getString("manager"));
+					
+					Group group = new Group(rs.getString("name"),
+											managerAccount,
+											rs.getInt("id"),
+											GroupTasksDatabase.getAllTasks(rs.getInt("id")),
+											memberAccounts);
+					all_groups.add(group);
+				}
+				
+				return all_groups;
+			} else {
+				throw new SQLException("There was a connection error");
+			}
+		}
+	}
+	
+	/**
+	 * TODO: Refactoring this code plys :)
+	 */
+	public static ArrayList<Group> getAllMemberGroups(String email) throws SQLException {
+
+		try (Connection connection = getConnection()){
+			if (connection != null) {
+				Statement stmt = connection.createStatement();
+				ResultSet rs = stmt.executeQuery(
+					"SELECT * FROM projeto.groups WHERE " + toSQL((String)email) + "=ANY(members);"
+				);
+				ArrayList<Group> all_groups = new ArrayList<Group>();
+				while (rs.next()) {
+					ArrayList<String> members = new ArrayList<String>();
+					for (String member: (String[]) rs.getArray("members").getArray()) {
+						if (member != null) {
+							members.add(member);
+						}
+					}
+					
+					ArrayList<Account> memberAccounts = new ArrayList<Account>(0);
+					for(String s : members) {
+						Account memberAccount = AccountsDatabase.getAccount(s);
+						if (memberAccount != null) {
+							memberAccounts.add(memberAccount);
+						}
+					}
+					Account managerAccount = AccountsDatabase.getAccount(rs.getString("manager"));
+					
+					Group group = new Group(rs.getString("name"),
+											managerAccount,
+											rs.getInt("id"),
+											GroupTasksDatabase.getAllMemberTasks(rs.getInt("id"),email),
+											memberAccounts);
+					all_groups.add(group);
+				}
+				
 				return all_groups;
 			} else {
 				throw new SQLException("There was a connection error");
