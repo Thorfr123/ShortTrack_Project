@@ -51,17 +51,13 @@ public class Account {
 			return name;
 	}
 	
-	public static String checkValidName(String name) {				//Just Scratch
-		
-		String errorDescription;
+	public static String checkValidName(String name) {
+				
 		if(name.contains(" ")) {
-			errorDescription = "Invalid name!";
-			return errorDescription;
+			return "Name cannot contain white spaces!";
 		}
-			
-		if(name.length() > 15 || name.length() < 1) {
-			errorDescription = "Invalid name!";
-			return errorDescription;
+		else if(name.length() > 30) {
+			return "Name length exceeds maximum character length alowed!";
 		}
 		
 		return null;
@@ -75,35 +71,33 @@ public class Account {
         
         Matcher matcher = pattern.matcher(email);
         
-        String errorDescription;
         if(!matcher.matches()) {
-        	errorDescription = "Invalid email!";
-			return errorDescription;
+        	return "Invalid email!";
 		}
         	
 		return null;
 	}
 	
 	public static String checkValidPassword(String password) {
-		String errorDescription;
+
 		if(password.length() < 5) {
-			errorDescription = "Password to short!";
-			return errorDescription;
+			return "Password needs to be at least 5 characters length!";
 		}
+		
 		return null;
 	}
 	
 	public static String checkValidPassword(String password, String repeatPassword) {
 		
 		String errorDescription = checkValidPassword(password);
+		if (errorDescription != null)
+			return errorDescription;
 		
-		if (errorDescription == null) {
-			if(!password.equals(repeatPassword)) {
-				errorDescription = "The passwords don't match!";
-			}
+		if(!password.equals(repeatPassword)) {
+			return "The passwords don't match!";
 		}
 		
-		return errorDescription;
+		return null;
 	}
 	
 }
