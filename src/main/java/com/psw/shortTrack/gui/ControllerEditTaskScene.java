@@ -136,9 +136,19 @@ public class ControllerEditTaskScene {
 		
 		removeErrorNotifications();
 		
-		// Cancel the complete task creation
-		if(task.getName().isBlank())
+		// Cancel the complete task creation		
+		if(task.getName().isBlank()) {
+			if(User.isLogedIn()) {
+				try {
+					PersonalTasksDatabase.deleteTask(task.getID());
+				} catch (SQLException exception) {
+					showNotification("Error! Please, check your connection");
+					return;
+				}
+			}
 			list.removeTask(task);
+			task = null;
+		}	
 		
 		App.loadMainScene();
 		

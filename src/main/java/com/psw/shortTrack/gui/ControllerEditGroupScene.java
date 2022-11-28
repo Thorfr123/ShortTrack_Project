@@ -9,6 +9,7 @@ import com.psw.shortTrack.data.Account;
 import com.psw.shortTrack.data.Group;
 import com.psw.shortTrack.data.User;
 import com.psw.shortTrack.database.AccountsDatabase;
+import com.psw.shortTrack.database.GroupTasksDatabase;
 import com.psw.shortTrack.database.GroupsDatabase;
 
 import javafx.event.ActionEvent;
@@ -43,7 +44,9 @@ public class ControllerEditGroupScene {
 	private HBox memberButtonsBox;
 	
 	private Group group;
-	private ArrayList<Account> newMembers = new ArrayList<Account>(0);
+	private ArrayList<Account> membersToAdd = new ArrayList<Account>(0);
+	private ArrayList<Account> membersToRemove = new ArrayList<Account>(0);
+	private ArrayList<Account> newMembersList = new ArrayList<Account>(0);
 	
 	public void initData(Group group) {
 
@@ -51,7 +54,7 @@ public class ControllerEditGroupScene {
 		
 		groupNameField.setText(group.getName());
 		
-		newMembers.addAll(group.getMemberAccounts());
+		newMembersList.addAll(group.getMemberAccounts());
 		memberList.getItems().addAll(group.getMemberAccounts());
 		
 		if(!group.getManagerEmail().equals(User.getAccount().getEmail())) {
@@ -113,8 +116,13 @@ public class ControllerEditGroupScene {
 		}
 		
 		if(User.isLogedIn()) {
-			try {
-				GroupsDatabase.updateGroup(group.getID(),newGroupName,newMembers);
+			try {			
+				for(Account a : membersToRemove)
+					GroupsDatabase.removeMember(group.getID(), a);
+				
+				GroupsDatabase.updateGroup(group.getID(),newGroupName,newMembersList);
+				User.setGroups(GroupsDatabase.getAllGroups(User.getAccount().getEmail()));
+				
 			} catch (SQLException exception) {
 				showNotification("Error! Please, check your connection");
 				return;
@@ -122,7 +130,7 @@ public class ControllerEditGroupScene {
 		}
 
 		group.setName(newGroupName);
-		group.setMembers(newMembers);
+		group.setMembers(newMembersList);
 		
 		App.loadMainScene();
 		
@@ -132,16 +140,36 @@ public class ControllerEditGroupScene {
 		
 		removeErrorNotifications();
 		
+		// Cancel the complete task creation
+		if(group.getName().isBlank()) {
+			try {
+				GroupsDatabase.deleteGroup(group.getID());
+			} catch (SQLException exception) {
+				showNotification("Error! Please, check your connection");
+				return;
+			}
+			User.getGroups().remove(group);
+			group = null;
+		}
+		
 		App.loadMainScene();
 		
 	}
 	
-	// TODO: Implement this method
 	public void leave(ActionEvent e) throws IOException {
 		
 		removeErrorNotifications();
+		try {
+			GroupsDatabase.removeMember(group.getID(), User.getAccount());
+			
+			User.setGroups(GroupsDatabase.getAllGroups(User.getAccount().getEmail()));
+			
+		} catch (SQLException exception) {
+			showNotification("Error! Please, check your connection");
+			return;
+		}
 		
-		System.out.println("leave - Not Working!");
+		App.loadMainScene();
 		
 	}
 	
@@ -162,7 +190,15 @@ public class ControllerEditGroupScene {
 			return;
 		}
 		
-		if(group.getMemberEmails().contains(newMember)) {
+		boolean sameMember = false;
+		for(Account a: membersToAdd) {
+			if(a.getEmail().equals(newMember)) {
+				sameMember = true;
+				break;
+			}	
+		}
+		
+		if(group.getMemberEmails().contains(newMember) || sameMember) {
 			showNotification("This member already belongs to this group!");
 			memberTextField.getStyleClass().add("error");
 			return;
@@ -183,7 +219,9 @@ public class ControllerEditGroupScene {
 		}
 
 		memberList.getItems().add(newMemberAccount);
-		newMembers.add(newMemberAccount);
+		membersToAdd.add(newMemberAccount);
+		
+		newMembersList.add(newMemberAccount);
 		
 	}
 	
@@ -196,8 +234,13 @@ public class ControllerEditGroupScene {
 			return;
 		
 		memberList.getItems().remove(memberToRemove);
-		newMembers.remove(memberToRemove);
 		
+		if(membersToAdd.contains(memberToRemove))
+			membersToAdd.remove(memberToRemove);
+		else
+			membersToRemove.add(memberToRemove);
+		
+		newMembersList.remove(memberToRemove);
 	}
 	
 	private void showNotification(String notification) {

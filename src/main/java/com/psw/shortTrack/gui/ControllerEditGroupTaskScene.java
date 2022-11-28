@@ -113,13 +113,11 @@ public class ControllerEditGroupTaskScene {
 
 		if(alert.showAndWait().get() == ButtonType.OK){
 			
-			if(User.isLogedIn()) {
-				try {
-					GroupTasksDatabase.deleteTask(task.getID());
-				} catch (SQLException exception) {
-					showNotification("Error! Please, check your connection");
-					return;
-				}
+			try {
+				GroupTasksDatabase.deleteTask(task.getID());
+			} catch (SQLException exception) {
+				showNotification("Error! Please, check your connection");
+				return;
 			}
 			
 			group.removeTask(task);
@@ -156,14 +154,12 @@ public class ControllerEditGroupTaskScene {
 		LocalDate newDeadline = dueDateField.getValue();
 		Account newAssignedTo = assignedToBox.getValue();
 		
-		if(User.isLogedIn()) {
-			try {
-				GroupTasksDatabase.updateTask(task.getID(), newTaskName, newDescription, newDeadline, checkButton.isSelected(), newAssignedTo.getEmail());
-			} catch (SQLException exception) {
-				System.out.println(exception);
-				showNotification("Error! Please, check your connection");
-				return;
-			}
+		try {
+			GroupTasksDatabase.updateTask(task.getID(), newTaskName, newDescription, newDeadline, checkButton.isSelected(), newAssignedTo.getEmail());
+		} catch (SQLException exception) {
+			System.out.println(exception);
+			showNotification("Error! Please, check your connection");
+			return;
 		}
 		
 		task.setName(newTaskName);
@@ -181,8 +177,16 @@ public class ControllerEditGroupTaskScene {
 		removeErrorNotifications();
 		
 		// Cancel the complete task creation
-		if(task.getName().isBlank())
+		if(task.getName().isBlank()) {
+			try {
+				GroupTasksDatabase.deleteTask(task.getID());
+			} catch (SQLException exception) {
+				showNotification("Error! Please, check your connection");
+				return;
+			}
 			group.removeTask(task);
+			task = null;
+		}
 		
 		App.loadMainScene();
 		

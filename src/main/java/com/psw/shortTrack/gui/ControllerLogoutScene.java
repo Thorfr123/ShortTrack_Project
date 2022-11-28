@@ -132,15 +132,23 @@ public class ControllerLogoutScene {
 		if ((loadList instanceof List) && !lists.contains(loadList))
 			loadList = null;
 		
-		if ((loadList instanceof Group) && !groups.contains(loadList))
-			loadList = null;
+		if ((loadList instanceof Group) && !groups.contains(loadList)) {
+			for(Group g : groups) {
+				if(g.getName().equals(loadList.getName())) {
+					loadList = g;
+					break;
+				}
+			}
+			if(!groups.contains(loadList))
+				loadList = null;
+		}
 		
 		if(loadList == null) {
 			listNameLabel.setText("Choose one List or Group!");
 			return;
 		}
 		else if(loadList instanceof Group) {
-			if(((Group)loadList).getManagerAccount().equals(User.getAccount())) {
+			if(((Group)loadList).getManagerEmail().equals(User.getAccount().getEmail())){
 				editListButton.setText("Edit Group");
 			}
 			else {
@@ -285,6 +293,57 @@ public class ControllerLogoutScene {
 		
 	}
 	
+	public void addGroupComplete(ActionEvent e) {
+		
+		removeErrorNotifications();
+		
+		String groupName = newGroupName.getText();
+		
+		newGroupName.clear();
+		
+		Pane newBox = (Pane)newGroupBox;
+		String notification;
+		
+		if(User.checkGroupName(groupName) != null) {
+			notification = "This Group already exist!";
+			showNotification(notification,newBox);
+			newGroupName.getStyleClass().add("error");
+			return;
+		}
+		
+		Group newGroup = new Group(groupName,account);
+		
+		try {
+			GroupsDatabase.createGroup(newGroup);
+		}
+		catch (SQLException exception) {
+			notification = "Error! Please, check your connection";
+			showNotification(notification,newBox);
+			return;
+		}
+		
+		groups.add(newGroup);
+		
+		GroupButton groupButton = new GroupButton(newGroup);
+		groupButton.setOnAction(event -> {
+	        changeGroup(event);
+	    });
+		groupsBox.getChildren().add(groupButton);
+		
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditGroupScene.fxml"));
+			root = loader.load();
+			
+			ControllerEditGroupScene controller = loader.getController();
+			controller.initData(newGroup);
+			App.loadScene(root);
+			
+		} catch (IOException exeption) {
+			exeption.printStackTrace();
+		}
+		
+	}
+	
 	public void addTask(ActionEvent e) {
 		
 		removeErrorNotifications();
@@ -391,10 +450,6 @@ public class ControllerLogoutScene {
 		String taskName = newTaskName.getText();
 		
 		newTaskName.clear();
-		
-		//TODO: Not Working
-		if(taskName.isBlank())
-			return;
 		
 		Task newTask = null;
 		if(loadList instanceof List)
