@@ -126,6 +126,7 @@ public class AccountsDatabase extends Database{
 
 	public static boolean changeEmail(String email, String newEmail) throws SQLException{
 		// TODO Auto-generated method stub
+		System.out.println("Database changeEmail not working");
 		return false;
 	}
 	

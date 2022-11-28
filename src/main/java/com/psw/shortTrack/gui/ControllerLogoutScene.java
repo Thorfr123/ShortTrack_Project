@@ -14,7 +14,6 @@ import com.psw.shortTrack.data.SearchList;
 import com.psw.shortTrack.data.Task;
 import com.psw.shortTrack.data.TaskOrganizer;
 import com.psw.shortTrack.data.User;
-import com.psw.shortTrack.database.AccountsDatabase;
 import com.psw.shortTrack.database.GroupTasksDatabase;
 import com.psw.shortTrack.database.GroupsDatabase;
 import com.psw.shortTrack.database.PersonalListsDatabase;
@@ -24,10 +23,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
@@ -168,36 +164,14 @@ public class ControllerLogoutScene {
 		
 	}
 	
-	public void delete(ActionEvent e) throws IOException {
+	public void editAccount(ActionEvent e) throws IOException {
 		
-		Alert alert = new Alert(AlertType.CONFIRMATION);
-		alert.setTitle("Delete account");
-		alert.setHeaderText("You're about to delete your account and all your data!");
-		alert.setContentText("Are you sure you really want to delete your account?");
-
-		if(alert.showAndWait().get() == ButtonType.OK){
-			
-			try {
-				if (!AccountsDatabase.deleteAccount(printEmailLabel.getText())) {
-					System.out.println("Error deleting account!");  				// Just to debug
-					return;
-				}
-			} catch (SQLException e1) {
-				System.out.println("Error! Please, check your conection");
-				return;
-			}	
-			
-			User.setLogedIn(false);
-			User.setGroups(null);
-			User.setLists(null);
-			User.setAccount(null);
-			loadList = null;
-			
-			root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
-			App.loadScene(root);
-			
-			System.out.println("Your account was successfully deleted!");  	    // Just to debug
-		}
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("EditAccountScene.fxml"));
+		root = loader.load();
+		
+		ControllerEditAccountScene controller = loader.getController();
+		controller.initData();
+		App.loadScene(root);
 		
 	}
 		

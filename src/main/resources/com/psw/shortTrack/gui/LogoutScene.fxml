@@ -31,13 +31,13 @@
 		                  <HBox alignment="CENTER_LEFT" prefHeight="20.0" prefWidth="228.0" spacing="20.0">
 		                     <children>
 		                        <Label fx:id="printNameLabel" prefHeight="18.0" prefWidth="180.0" style="-fx-font-size: 14;" text="COLOCAR AQUI O NOME" />
-		                        <Button mnemonicParsing="false" onAction="#logout" prefHeight="26.0" prefWidth="58.0" style="-fx-background-color: #4385F4; -fx-text-fill: white; -fx-font-size: 13;" text="Logout" />
+		                        <Button mnemonicParsing="false" onAction="#logout" prefHeight="30.0" prefWidth="70.0" style="-fx-background-color: #4385F4; -fx-text-fill: white; -fx-font-size: 13;" text="Logout" />
 		                     </children>
 		                  </HBox>
 		                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
 		                     <children>
 		                        <Label fx:id="printEmailLabel" prefHeight="80.0" prefWidth="180.0" style="-fx-font-size: 14;" text="COLOCAR AQUI O EMAIL" />
-		                        <Button mnemonicParsing="false" onAction="#delete" prefHeight="26.0" prefWidth="58.0" style="-fx-background-color: #4385F4; -fx-text-fill: white; -fx-font-size: 13;" text="Delete" />
+		                        <Button alignment="CENTER" mnemonicParsing="false" onAction="#editAccount" prefHeight="30.0" prefWidth="70.0" style="-fx-background-color: #4385F4; -fx-text-fill: white; -fx-font-size: 13;" text="Settings" textAlignment="CENTER" />
 		                     </children>
 		                  </HBox>
 		               </children>
