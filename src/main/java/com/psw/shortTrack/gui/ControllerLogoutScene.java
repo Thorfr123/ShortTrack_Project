@@ -97,7 +97,14 @@ public class ControllerLogoutScene {
 		
 		account = User.getAccount();
 		lists = User.getLists();
-		groups = User.getGroups();
+		
+		try {
+			User.setGroups(GroupsDatabase.getAllGroups(User.getAccount().getEmail()));
+			groups = User.getGroups();
+		} catch (SQLException exception) {
+			showNotification("Error! Please, check your connection",(Pane)newGroupBox);
+			return;
+		}
 		
 		printNameLabel.setText(account.getName());
 		printEmailLabel.setText(account.getEmail());
@@ -572,8 +579,22 @@ public class ControllerLogoutScene {
 		CheckBox taskCheckBox = (CheckBox)e.getSource();
 		TaskBar taskBar = (TaskBar)taskCheckBox.getParent();
 		Task task = taskBar.getTask();
+
+		try {
+			PersonalTasksDatabase.updateTask(task.getID(), task.getName(), task.getDescription(), task.getDeadlineDate(), taskCheckBox.isSelected());
+		} catch (SQLException exception) {
+			Pane newBox = (Pane)newTaskBox;
+			showNotification("Error! Please, check your connection",newBox);
+			taskCheckBox.setSelected(!taskCheckBox.isSelected());
+			return;
+		}
 		
 		task.setCompleted(taskCheckBox.isSelected());
+		
+		if(taskCheckBox.isSelected())
+			taskBar.setOpacity(0.5);
+		else
+			taskBar.setOpacity(1);
 		
 	}
 	
@@ -583,9 +604,23 @@ public class ControllerLogoutScene {
 		
 		CheckBox taskCheckBox = (CheckBox)e.getSource();
 		GroupTaskBar taskBar = (GroupTaskBar)taskCheckBox.getParent();
-		Task task = taskBar.getTask();
+		GroupTask task = taskBar.getTask();
+		
+		try {
+			GroupTasksDatabase.updateTask(task.getID(), task.getName(), task.getDescription(), task.getDeadlineDate(), taskCheckBox.isSelected(), task.getAssignedToEmail());
+		} catch (SQLException exception) {
+			Pane newBox = (Pane)newTaskBox;
+			showNotification("Error! Please, check your connection",newBox);
+			taskCheckBox.setSelected(!taskCheckBox.isSelected());
+			return;
+		}
 		
 		task.setCompleted(taskCheckBox.isSelected());
+		
+		if(taskCheckBox.isSelected())
+			taskBar.setOpacity(0.5);
+		else
+			taskBar.setOpacity(1);
 		
 	}
 	
@@ -720,8 +755,12 @@ public class ControllerLogoutScene {
 				CheckBox taskCheckBox = taskBar.getCheckBox();
 				Button taskButton = taskBar.getButton();
 				
-				if(t.chekCompleted())
+				if(t.chekCompleted()) {
 					taskCheckBox.setSelected(true);
+					taskBar.setOpacity(0.5);
+				}
+				else
+					taskBar.setOpacity(1);
 				
 				taskCheckBox.setOnAction(event -> {
 		            checkTask(event);
@@ -737,8 +776,12 @@ public class ControllerLogoutScene {
 				CheckBox taskCheckBox = taskBar.getCheckBox();
 				Button taskButton = taskBar.getButton();
 				
-				if(t.chekCompleted())
+				if(t.chekCompleted()) {
 					taskCheckBox.setSelected(true);
+					taskBar.setOpacity(0.5);
+				}
+				else
+					taskBar.setOpacity(1);
 				
 				taskCheckBox.setOnAction(event -> {
 					checkGroupTask(event);

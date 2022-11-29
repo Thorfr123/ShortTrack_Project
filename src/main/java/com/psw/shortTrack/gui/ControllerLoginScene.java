@@ -347,6 +347,13 @@ public class ControllerLoginScene {
 		
 		task.setCompleted(taskCheckBox.isSelected());
 		
+		if(task.chekCompleted()) {
+			taskCheckBox.setSelected(true);
+			taskBar.setOpacity(0.5);
+		}
+		else
+			taskBar.setOpacity(1);
+		
 	}
 	
 	public void sortTasks(ActionEvent e) {
@@ -471,8 +478,12 @@ public class ControllerLoginScene {
 			CheckBox taskCheckBox = taskBar.getCheckBox();
 			Button taskButton = taskBar.getButton();
 			
-			if(t.chekCompleted())
+			if(t.chekCompleted()) {
 				taskCheckBox.setSelected(true);
+				taskBar.setOpacity(0.5);
+			}
+			else
+				taskBar.setOpacity(1);
 			
 			taskCheckBox.setOnAction(event -> {
 	            checkTask(event);
