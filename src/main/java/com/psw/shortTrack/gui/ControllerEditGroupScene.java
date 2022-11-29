@@ -120,7 +120,6 @@ public class ControllerEditGroupScene {
 					GroupsDatabase.removeMember(group.getID(), a);
 				
 				GroupsDatabase.updateGroup(group.getID(),newGroupName,newMembersList);
-				User.setGroups(GroupsDatabase.getAllGroups(User.getAccount().getEmail()));
 				
 			} catch (SQLException exception) {
 				showNotification("Error! Please, check your connection");
@@ -161,8 +160,6 @@ public class ControllerEditGroupScene {
 		try {
 			GroupsDatabase.removeMember(group.getID(), User.getAccount());
 			
-			User.setGroups(GroupsDatabase.getAllGroups(User.getAccount().getEmail()));
-			
 		} catch (SQLException exception) {
 			showNotification("Error! Please, check your connection");
 			return;
@@ -185,6 +182,12 @@ public class ControllerEditGroupScene {
 		String errorNotification;
 		if((errorNotification = Account.checkValidEmail(newMember)) != null) {
 			showNotification(errorNotification);
+			memberTextField.getStyleClass().add("error");
+			return;
+		}
+		
+		if(newMember.equals(group.getManagerEmail())) {
+			showNotification("This account is the manager of this group!");
 			memberTextField.getStyleClass().add("error");
 			return;
 		}
