@@ -42,10 +42,15 @@ public class AccountsDatabase extends Database{
 	 * @return (True) - if the account is created; (False) - if the account isn't created (i.e. it's already in use)
 	 * @throws SQLException If there is a network error
 	 */
-	public static boolean createAccount(Account account) throws SQLException {		
-		return (executeUpdate(
+	public static boolean createAccount(Account account, String password) throws SQLException {		
+		/*return (executeUpdate(
 			"INSERT INTO projeto.account (email, password, name)\r\n"
 			+ "VALUES (" + toSQL((String)account.getEmail()) + "," + toSQL((String)account.getPassword()) + "," 
+			+ toSQL((String)account.getName()) + ");"
+		) > 0);*/
+		return (executeUpdate(
+			"INSERT INTO projeto.account (email, password, name)\r\n"
+			+ "VALUES (" + toSQL((String)account.getEmail()) + "," + toSQL((String)password) + "," 
 			+ toSQL((String)account.getName()) + ");"
 		) > 0);
 	}
@@ -61,11 +66,6 @@ public class AccountsDatabase extends Database{
 		return (executeUpdate(
 			"DELETE FROM projeto.account WHERE email=" + toSQL((String)email) + ";"
 		) > 0);
-	}
-	
-	// TODO: Delete this method
-	public static Account getAccount (String email, String password) throws SQLException{
-		return getAccount(email);
 	}
 	
 	/**

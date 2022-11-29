@@ -54,8 +54,8 @@ public class ControllerSignUpScene {
 		String name = firstName + " " +  lastName;
 		Account account;
 		try {
-			account = new Account(email,password,name);
-			if (!AccountsDatabase.createAccount(account)) {
+			account = new Account(email,name);
+			if (!AccountsDatabase.createAccount(account, password)) {
 				showNotification("There was an unknown error");
 				return;
 			}
