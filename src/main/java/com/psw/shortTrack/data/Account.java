@@ -44,6 +44,9 @@ public class Account {
 		else if(name.contains(" ")) {
 			return "Name cannot contain white spaces!";
 		}
+		else if (name.matches(".*\\d+.*")) {
+			return "Name cannot contain numbers!";
+		}
 		else if(name.length() > 30) {
 			return "Name length exceeds maximum character length allowed!";
 		}
@@ -69,15 +72,8 @@ public class Account {
 	
 	public static String checkValidPassword(String password) {
 
-		String regex = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$";
-		Pattern pattern = Pattern.compile(regex);
-		Matcher matcher = pattern.matcher(password);
-		
 		if(password.length() < 8) {
 			return "Password needs to be at least 8 characters length!";
-		}
-		else if (!matcher.matches()) {
-			return "Your password needs to have at least 8 characters length,\none uppercase letter, one lowercase letter and one number!";
 		}
 		
 		return null;
