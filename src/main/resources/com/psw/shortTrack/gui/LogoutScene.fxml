@@ -31,13 +31,13 @@
 		                  <HBox alignment="CENTER_LEFT" prefHeight="20.0" prefWidth="228.0" spacing="20.0">
 		                     <children>
 		                        <Label fx:id="printNameLabel" prefHeight="18.0" prefWidth="180.0" style="-fx-font-size: 14;" text="COLOCAR AQUI O NOME" />
-		                        <Button mnemonicParsing="false" onAction="#logout" prefHeight="30.0" prefWidth="70.0" style="-fx-background-color: #4385F4; -fx-text-fill: white; -fx-font-size: 13;" text="Logout" />
+		                        <Button focusTraversable="false" mnemonicParsing="false" onAction="#logout" prefHeight="30.0" prefWidth="70.0" style="-fx-background-color: #4385F4; -fx-text-fill: white; -fx-font-size: 13;" text="Logout" />
 		                     </children>
 		                  </HBox>
 		                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
 		                     <children>
 		                        <Label fx:id="printEmailLabel" prefHeight="80.0" prefWidth="180.0" style="-fx-font-size: 14;" text="COLOCAR AQUI O EMAIL" />
-		                        <Button alignment="CENTER" mnemonicParsing="false" onAction="#editAccount" prefHeight="30.0" prefWidth="70.0" style="-fx-background-color: #4385F4; -fx-text-fill: white; -fx-font-size: 13;" text="Settings" textAlignment="CENTER" />
+		                        <Button alignment="CENTER" focusTraversable="false" mnemonicParsing="false" onAction="#editAccount" prefHeight="30.0" prefWidth="70.0" style="-fx-background-color: #4385F4; -fx-text-fill: white; -fx-font-size: 13;" text="Settings" textAlignment="CENTER" />
 		                     </children>
 		                  </HBox>
 		               </children>
@@ -62,8 +62,8 @@
                   </Label>
                   <HBox alignment="BOTTOM_CENTER" spacing="20.0">
                      <children>
-                        <TextField fx:id="searchBarField" maxWidth="1.7976931348623157E308" onAction="#searchTask" promptText="Choose one search option" HBox.hgrow="ALWAYS" />
-                        <ChoiceBox fx:id="choiceBox" />
+                        <TextField fx:id="searchBarField" focusTraversable="false" maxWidth="1.7976931348623157E308" onAction="#searchTask" promptText="Choose one search option" HBox.hgrow="ALWAYS" />
+                        <ChoiceBox fx:id="choiceBox" focusTraversable="false" />
                      </children>
                   </HBox>
                </children>
@@ -120,12 +120,12 @@
                            <children>
                               <HBox spacing="10.0">
                                  <children>
-                                    <TextField fx:id="newListName" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#addList" promptText="New List Name" HBox.hgrow="ALWAYS">
+                                    <TextField fx:id="newListName" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#addList" promptText="New List Name" HBox.hgrow="ALWAYS">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
                                     </TextField>
-                                    <Button mnemonicParsing="false" onAction="#addList" text="+">
+                                    <Button focusTraversable="false" mnemonicParsing="false" onAction="#addList" text="+">
                                        <HBox.margin>
                                           <Insets right="5.0" />
                                        </HBox.margin>
@@ -175,12 +175,12 @@
                            <children>
                               <HBox spacing="10.0">
                                  <children>
-                                    <TextField fx:id="newGroupName" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#addGroup" promptText="New Group Name" HBox.hgrow="ALWAYS">
+                                    <TextField fx:id="newGroupName" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#addGroup" promptText="New Group Name" HBox.hgrow="ALWAYS">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
                                     </TextField>
-                                    <Button mnemonicParsing="false" onAction="#addGroupComplete" text="+">
+                                    <Button focusTraversable="false" mnemonicParsing="false" onAction="#addGroupComplete" text="+">
                                        <HBox.margin>
                                           <Insets right="5.0" />
                                        </HBox.margin>
@@ -214,7 +214,7 @@
                               <Font name="System Bold" size="24.0" />
                            </font>
                         </Label>
-                        <MenuButton fx:id="sortByMenu" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Sort by" visible="false">
+                        <MenuButton fx:id="sortByMenu" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Sort by" visible="false">
                           <items>
                             <MenuItem mnemonicParsing="false" onAction="#sortTasks" text="Name" />
                             <MenuItem mnemonicParsing="false" onAction="#sortTasks" text="Created Date" />
@@ -228,7 +228,7 @@
                               <Font size="14.0" />
                            </font>
                         </MenuButton>
-                        <Button fx:id="editListButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#editListOrGroup" text="Edit List" visible="false">
+                        <Button fx:id="editListButton" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#editListOrGroup" text="Edit List" visible="false">
                            <HBox.margin>
                               <Insets left="5.0" right="5.0" />
                            </HBox.margin>
@@ -250,11 +250,11 @@
                      <children>
                         <HBox fx:id="addTaskBox" alignment="CENTER_LEFT" spacing="10.0" visible="false">
                            <children>
-                              <TextField fx:id="newTaskName" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#addTask" promptText="New Task Name " HBox.hgrow="ALWAYS">
+                              <TextField fx:id="newTaskName" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#addTask" promptText="New Task Name " HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font size="14.0" />
                                  </font></TextField>
-                              <Button mnemonicParsing="false" onAction="#addTaskComplete" text="+">
+                              <Button focusTraversable="false" mnemonicParsing="false" onAction="#addTaskComplete" text="+">
                                  <HBox.margin>
                                     <Insets right="5.0" />
                                  </HBox.margin>
