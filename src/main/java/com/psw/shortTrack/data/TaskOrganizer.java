@@ -172,35 +172,30 @@ public abstract class TaskOrganizer implements Serializable {
 	public void findTaskByName(String searchName, ArrayList<Task> tasks) {
 		
 		for(Task t: taskList) {
-			if(t.getName().contains(searchName))
+			if(t.getName().toLowerCase().contains(searchName.toLowerCase()))
 				tasks.add(t);
 		}
 
 	}
 	
-	public void findTaskByCreatedDate(String searchCreatedDate, ArrayList<Task> tasks) {
+	public void findTaskByCreatedDate(LocalDate searchCreatedDate, ArrayList<Task> tasks) {
 		
 		for(Task t: taskList) {
-			
-			String createdDate = t.getCreatedDate().toString();
-			if(createdDate.contains(searchCreatedDate))
+			LocalDate createdDate = t.getCreatedDate();
+			if(createdDate.equals(searchCreatedDate))
 				tasks.add(t);
 		}
 
 	}
 	
-	public void findTaskByDeadline(String searchDeadline, ArrayList<Task> tasks) {
+	public void findTaskByDeadline(LocalDate searchDeadline, ArrayList<Task> tasks) {
 		
-		String deadline;
 		for(Task t: taskList) {
-			
 			LocalDate deadlineDate = t.getDeadlineDate();
 			if(deadlineDate == null)
-				deadline = "";
-			else
-				deadline = deadlineDate.toString();
+				continue;
 			
-			if(deadline.contains(searchDeadline))
+			if(deadlineDate.equals(searchDeadline))
 				tasks.add(t);
 		}
 

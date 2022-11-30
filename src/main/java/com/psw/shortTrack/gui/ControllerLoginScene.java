@@ -2,6 +2,7 @@ package com.psw.shortTrack.gui;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import com.psw.shortTrack.data.*;
@@ -19,7 +20,6 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -68,9 +68,6 @@ public class ControllerLoginScene {
 	private HBox addTaskBox;
 	@FXML
 	private VBox searchVerticalBox;
-	
-	@FXML
-	private BorderPane borderPane;
 
 	private Parent root;
 	
@@ -414,11 +411,11 @@ public class ControllerLoginScene {
 		
 		String searchOption = choiceBox.getValue();
 		Boolean isDateType = searchOption.equals("Created Date") || searchOption.equals("Deadline");
-		String errorNotification;
+		LocalDate date = null;
 		Pane newBox = (Pane)searchVerticalBox;
 		
-		if(isDateType && (errorNotification = Task.checkValidDate(text)) != null) {
-			showNotification(errorNotification,newBox);
+		if(isDateType && (date = Task.checkValidDate(text)) == null) {
+			showNotification("Invalid date format!",newBox);
 			searchBarField.getStyleClass().add("error");
 			return;
 		}
@@ -430,11 +427,11 @@ public class ControllerLoginScene {
 				break;
 			case "Created Date":
 				for(List l: lists)
-					l.findTaskByCreatedDate(text,searchList.getTaskList());			
+					l.findTaskByCreatedDate(date,searchList.getTaskList());			
 				break;
 			case "Deadline":
 				for(List l: lists)
-					l.findTaskByDeadline(text,searchList.getTaskList());			
+					l.findTaskByDeadline(date,searchList.getTaskList());			
 				break;	
 			default:
 				String notification = "Please select one option!";

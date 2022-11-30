@@ -11,6 +11,7 @@ import com.psw.shortTrack.data.User;
 import com.psw.shortTrack.fileIO.FileIO;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
@@ -52,6 +53,7 @@ public class App extends Application {
 			});
 			
 			primaryStage.show();
+			Platform.runLater(() -> scene.getFocusOwner().getParent().requestFocus());
 			
 		} catch(Exception e) {
 			System.out.println(e);
@@ -133,6 +135,7 @@ public class App extends Application {
 		stage.setScene(scene);
 		stage.show();
 		
+		Platform.runLater(() -> scene.getRoot().requestFocus());
 	}
 	
 	
