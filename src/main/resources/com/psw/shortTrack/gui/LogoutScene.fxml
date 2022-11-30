@@ -31,7 +31,7 @@
 		                  <HBox alignment="CENTER_LEFT" prefHeight="20.0" prefWidth="228.0" spacing="20.0">
 		                     <children>
 		                        <Label fx:id="printNameLabel" prefHeight="18.0" prefWidth="180.0" style="-fx-font-size: 14;" text="COLOCAR AQUI O NOME" />
-		                        <Button mnemonicParsing="false" onAction="#logout" prefHeight="30.0" prefWidth="70.0" style="-fx-background-color: #4385F4; -fx-text-fill: white; -fx-font-size: 13;" text="Logout" />
+		                        <Button alignment="CENTER" mnemonicParsing="false" onAction="#logout" prefHeight="30.0" prefWidth="70.0" style="-fx-background-color: #4385F4; -fx-text-fill: white; -fx-font-size: 13;" text="Logout" />
 		                     </children>
 		                  </HBox>
 		                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0">

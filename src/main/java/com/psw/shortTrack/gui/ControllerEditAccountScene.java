@@ -10,6 +10,7 @@ import com.psw.shortTrack.database.AccountsDatabase;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -112,6 +113,7 @@ public class ControllerEditAccountScene {
 	    saveEmail = new Button("Save");
 	    saveEmail.setFont(Font.font(14));
 	    saveEmail.setPrefSize(70, 30);
+	    saveEmail.setAlignment(Pos.CENTER);
 	    saveEmail.setOnAction(event -> {
 	    	saveEmail(event);
 		});
@@ -119,6 +121,7 @@ public class ControllerEditAccountScene {
 		emailCancel = new Button("Cancel");
 		emailCancel.setFont(Font.font(14));
 		emailCancel.setPrefSize(70, 30);
+		emailCancel.setAlignment(Pos.CENTER);
 		emailCancel.setOnAction(event -> {
 			resetEmailLayout();
 	    });
@@ -126,6 +129,7 @@ public class ControllerEditAccountScene {
 		passwordCancel = new Button("Cancel");
 		passwordCancel.setFont(Font.font(14));
 		passwordCancel.setPrefSize(70, 30);
+		passwordCancel.setAlignment(Pos.CENTER);
 		passwordCancel.setOnAction(event -> {
 			resetPasswordLayout();
 	    });
@@ -147,6 +151,7 @@ public class ControllerEditAccountScene {
 		savePassword = new Button("Save");
 		savePassword.setFont(Font.font(14));
 		savePassword.setPrefSize(70, 30);
+		savePassword.setAlignment(Pos.CENTER);
 		savePassword.setOnAction(event -> {
 			savePassword();
 	    });    	
