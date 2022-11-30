@@ -1,10 +1,12 @@
 package com.psw.shortTrack.fileIO;
 
+import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -12,8 +14,9 @@ import java.util.ArrayList;
 import com.psw.shortTrack.data.List;
 
 public class FileIO {
-	private static final String personalListFileName = "personalLists.dat";
-	private static final String idCountersFileName = "idCounters.dat";
+	private static final String personalListFileName 	= "personalLists.dat";
+	private static final String idCountersFileName 		= "idCounters.dat";
+	private static final String databaseSetupFileName 	= "databaseSetup.txt";
 	
 	/**
 	 * Writes all Personal Lists within the arrayList to a read-only local file
@@ -101,5 +104,24 @@ public class FileIO {
 		}
 
 		return idCounters;
+	}
+	
+	/**
+	 * Returns the database setup as a String
+	 */
+	public static String readDatabaseSetup() {
+		BufferedReader br = new BufferedReader(new InputStreamReader(FileIO.class.getResourceAsStream("/" + databaseSetupFileName)));
+		String setup = "";
+		
+		String line;
+		try {
+			while((line = br.readLine()) != null) {
+				setup += "\r\n" + line;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return setup;
 	}
 }
