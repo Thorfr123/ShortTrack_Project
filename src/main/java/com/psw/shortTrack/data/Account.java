@@ -4,23 +4,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Account {
-	private String password;
 	private String name;
 	private String email;
-	
-	public Account(String email, String password, String name) {
-		this.password = password;
-		this.name = name;
-		this.email = email;
-	}
 	
 	public Account(String email, String name) {
 		this.name = name;
 		this.email = email;
-	}
-	
-	public String getPassword() {
-		return password;
 	}
 	
 	public String getName() {
@@ -29,10 +18,6 @@ public class Account {
 	
 	public String getEmail() {
 		return email;
-	}
-	
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	public void setName(String name) {

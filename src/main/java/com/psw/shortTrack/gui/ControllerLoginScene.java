@@ -148,7 +148,7 @@ public class ControllerLoginScene {
 		ArrayList<Group> groups;
 		ArrayList<List> lists; 
 		try {
-			account = AccountsDatabase.getAccount(email, password);
+			account = AccountsDatabase.getAccount(email);
 			groups = GroupsDatabase.getAllGroups(account.getEmail());
 			lists = PersonalListsDatabase.getAllLists(account.getEmail());
 		} catch (SQLException exception) {
