@@ -1,10 +1,9 @@
 package com.psw.shortTrack.data;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 public abstract class Task implements Serializable {
 	
@@ -93,19 +92,16 @@ public abstract class Task implements Serializable {
 		parent_id = newParentID;
 	}
 	
-	public static String checkValidDate(String date) {
+	public static LocalDate checkValidDate(String date) {
 		
-		String DATE_FORMAT = "yyy-MM-dd";
-		String errorDescription;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
+		LocalDate localDate = null;
 		try {
-			DateFormat df = new SimpleDateFormat(DATE_FORMAT);
-	        df.setLenient(false);
-	        df.parse(date);
-	        return null;
-	    }
-		catch (ParseException e) {
-			errorDescription = "Invalid date format!";
-			return errorDescription;
+			localDate = LocalDate.parse(date, formatter);
+			return localDate;
+		}
+		catch (DateTimeParseException ex) {
+			return null;
 		}
 		
 	}

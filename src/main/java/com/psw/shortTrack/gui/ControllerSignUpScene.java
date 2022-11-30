@@ -83,7 +83,6 @@ public class ControllerSignUpScene {
 		
 		root = FXMLLoader.load(getClass().getResource("LogoutScene.fxml"));
 		App.loadScene(root);
-		
 	}
 	
 	public void cancel(ActionEvent e) throws IOException {

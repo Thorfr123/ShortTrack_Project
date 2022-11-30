@@ -2,6 +2,7 @@ package com.psw.shortTrack.gui;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -677,11 +678,11 @@ public class ControllerLogoutScene {
 		
 		String searchOption = choiceBox.getValue();
 		Boolean isDateType = searchOption.equals("Created Date") || searchOption.equals("Deadline");
-		String errorNotification;
+		LocalDate date = null;
 		Pane newBox = (Pane)searchVerticalBox;
 		
-		if(isDateType && (errorNotification = Task.checkValidDate(text)) != null) {
-			showNotification(errorNotification,newBox);
+		if(isDateType && (date = Task.checkValidDate(text)) == null) {
+			showNotification("Invalid date format!",newBox);
 			searchBarField.getStyleClass().add("error");
 			return;
 		}
@@ -695,13 +696,13 @@ public class ControllerLogoutScene {
 				break;
 			case "Created Date":
 				for(List l: lists)
-					l.findTaskByCreatedDate(text,searchList.getTaskList());			
+					l.findTaskByCreatedDate(date,searchList.getTaskList());			
 				for(Group g: groups)
 					g.findTaskByName(text,searchList.getTaskList());			
 				break;
 			case "Deadline":
 				for(List l: lists)
-					l.findTaskByDeadline(text,searchList.getTaskList());			
+					l.findTaskByDeadline(date,searchList.getTaskList());			
 				for(Group g: groups)
 					g.findTaskByName(text,searchList.getTaskList());			
 				break;	
