@@ -104,8 +104,7 @@ public class ControllerEditAccountScene {
 		newEmailField.setText(account.getEmail());
 		newEmailField.setFocusTraversable(false);
 		
-	    passwordLabel = new Label("Current password");
-	    passwordLabel.setFont(Font.font(18));
+	    passwordLabel = createLabel("Current password");
     	
 	    currentPasswordField = createPasswordField();
     	
@@ -124,37 +123,18 @@ public class ControllerEditAccountScene {
 			resetPasswordLayout();
 	    });
 		
-		newPasswordLabel = new Label("New password");
-		newPasswordLabel.setFont(Font.font(18));
+		newPasswordLabel = createLabel("New password");
 		
 		newPasswordField = createPasswordField();
     	
-		confirmNewPasswordLabel = new Label("Confirm new password");
-		confirmNewPasswordLabel.setFont(Font.font(18));
+		confirmNewPasswordLabel = createLabel("Confirm new password");
 		
 		confirmNewPasswordField = createPasswordField();
     	
 		savePassword = createButton("Save");
 		savePassword.setOnAction(event -> {
 			savePassword();
-	    });    	
-    }
-
-    private Button createButton(String name) {
-    	Button newButton = new Button(name);
-	    newButton.setFont(Font.font(14));
-	    newButton.setPrefSize(70, 30);
-	    newButton.setAlignment(Pos.CENTER);
-	    newButton.setFocusTraversable(false);
-    	return newButton;
-    }
-    
-    private PasswordField createPasswordField() {
-    	PasswordField field = new PasswordField();
-		field.setFont(Font.font(14));
-		field.setFocusTraversable(false);
-    	HBox.setHgrow(field, Priority.ALWAYS);
-    	return field;
+	    });	
     }
     
 	@FXML
@@ -191,6 +171,7 @@ public class ControllerEditAccountScene {
 			User.setLists(null);
 			User.setAccount(null);
 			
+			App.readLocalFiles();
 			App.loadMainScene();
 		}
     }
@@ -480,4 +461,27 @@ public class ControllerEditAccountScene {
     	confirmNewPasswordField.setText("");
     	
 	}
+    
+    private Label createLabel(String text) {
+    	Label label = new Label(text);
+    	label.setFont(Font.font(18));
+    	return label;
+    }
+    
+    private Button createButton(String name) {
+    	Button newButton = new Button(name);
+	    newButton.setFont(Font.font(14));
+	    newButton.setPrefSize(70, 30);
+	    newButton.setAlignment(Pos.CENTER);
+	    newButton.setFocusTraversable(false);
+    	return newButton;
+    }
+    
+    private PasswordField createPasswordField() {
+    	PasswordField field = new PasswordField();
+		field.setFont(Font.font(14));
+		field.setFocusTraversable(false);
+    	HBox.setHgrow(field, Priority.ALWAYS);
+    	return field;
+    }
 }

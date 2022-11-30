@@ -36,7 +36,7 @@
                         </Label>
                         <HBox prefHeight="18.0" prefWidth="800.0" spacing="20.0">
                            <children>
-                              <TextField fx:id="emailField" focusTraversable="false" promptText="example@gmail.com">
+                              <TextField fx:id="emailField" focusTraversable="false" promptText="example@email.com">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -55,7 +55,7 @@
                         </Label>
                         <HBox prefHeight="22.0" prefWidth="800.0" spacing="20.0">
                            <children>
-                              <PasswordField fx:id="passwordField" focusTraversable="false" promptText="*******">
+                              <PasswordField fx:id="passwordField" focusTraversable="false" promptText="********">
                                  <font>
                                     <Font size="14.0" />
                                  </font>

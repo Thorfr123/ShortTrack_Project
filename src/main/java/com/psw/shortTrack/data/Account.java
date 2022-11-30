@@ -37,36 +37,47 @@ public class Account {
 	}
 	
 	public static String checkValidName(String name) {
-				
-		if(name.contains(" ")) {
+		
+		if (name.isBlank()) {
+			return "Name cannot be empty!";
+		}
+		else if(name.contains(" ")) {
 			return "Name cannot contain white spaces!";
 		}
 		else if(name.length() > 30) {
-			return "Name length exceeds maximum character length alowed!";
+			return "Name length exceeds maximum character length allowed!";
 		}
 		
 		return null;
 	}
 	
 	public static String checkValidEmail(String email) {
-		//Regular Expression   
+		
         String regex = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}";  
-        //Compile regular expression to get the pattern  
         Pattern pattern = Pattern.compile(regex);
-        
         Matcher matcher = pattern.matcher(email);
         
-        if(!matcher.matches()) {
+        if (email.length() > 254) {
+        	return "Email length exceeds maximum character length allowed!";
+        }
+        else if(!matcher.matches()) {
         	return "Invalid email!";
 		}
-        	
+        
 		return null;
 	}
 	
 	public static String checkValidPassword(String password) {
 
-		if(password.length() < 5) {
-			return "Password needs to be at least 5 characters length!";
+		String regex = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$";
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(password);
+		
+		if(password.length() < 8) {
+			return "Password needs to be at least 8 characters length!";
+		}
+		else if (!matcher.matches()) {
+			return "Your password needs to have at least 8 characters length,\none uppercase letter, one lowercase letter and one number!";
 		}
 		
 		return null;
