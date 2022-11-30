@@ -39,6 +39,7 @@ public class TaskBar extends HBox{
 		taskCheckBox = new CheckBox();
 		taskCheckBox.setMnemonicParsing(false);
 		taskCheckBox.setFont(Font.font(14.0));
+		taskCheckBox.setFocusTraversable(false);
 		
 		VBox taskBox2 = new VBox();
 		HBox taskBox3 = new HBox();
@@ -67,6 +68,7 @@ public class TaskBar extends HBox{
 		taskButton.setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
 		taskButton.setGraphic(taskBox2);
 		taskButton.setFont(Font.font(14.0));
+		taskButton.setFocusTraversable(false);
 		
 		HBox.setHgrow(taskButton,Priority.ALWAYS);
 		

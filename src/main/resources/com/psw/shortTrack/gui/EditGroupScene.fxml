@@ -18,7 +18,7 @@
                <font>
                   <Font size="18.0" />
                </font></Label>
-            <TextField fx:id="groupNameField">
+            <TextField fx:id="groupNameField" focusTraversable="false">
                <font>
                   <Font size="14.0" />
                </font></TextField>
@@ -27,12 +27,12 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <ListView fx:id="memberList" prefHeight="200.0" prefWidth="200.0" />
+            <ListView fx:id="memberList" focusTraversable="false" prefHeight="200.0" prefWidth="200.0" />
             <HBox fx:id="addMembersBox" spacing="10.0">
                <children>
-                  <TextField fx:id="memberTextField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#addMember" promptText="ex: member1@email.com" HBox.hgrow="ALWAYS" />
-                  <Button maxHeight="1.7976931348623157E308" maxWidth="100.0" mnemonicParsing="false" onAction="#addMember" text="Add" HBox.hgrow="ALWAYS" />
-                  <Button maxHeight="1.7976931348623157E308" maxWidth="100.0" mnemonicParsing="false" onAction="#removeMember" text="Remove" HBox.hgrow="ALWAYS" />
+                  <TextField fx:id="memberTextField" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#addMember" promptText="ex: member1@email.com" HBox.hgrow="ALWAYS" />
+                  <Button focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="100.0" mnemonicParsing="false" onAction="#addMember" text="Add" HBox.hgrow="ALWAYS" />
+                  <Button focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="100.0" mnemonicParsing="false" onAction="#removeMember" text="Remove" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
             <Label fx:id="notificationLabel" visible="false">
@@ -41,15 +41,15 @@
                </font></Label>
             <HBox fx:id="managerButtonsBox" alignment="CENTER" spacing="40.0">
                <children>
-                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#delete" style="-fx-background-color: #ff5400; -fx-text-fill: white;" text="Delete" HBox.hgrow="ALWAYS">
+                  <Button focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#delete" style="-fx-background-color: #ff5400; -fx-text-fill: white;" text="Delete" HBox.hgrow="ALWAYS">
                      <font>
                         <Font size="14.0" />
                      </font></Button>
-                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cancel" style="-fx-background-color: #395cab; -fx-text-fill: white;" text="Cancel" HBox.hgrow="ALWAYS">
+                  <Button focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cancel" style="-fx-background-color: #395cab; -fx-text-fill: white;" text="Cancel" HBox.hgrow="ALWAYS">
                      <font>
                         <Font size="14.0" />
                      </font></Button>
-                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#save" style="-fx-background-color: #80c800; -fx-text-fill: white;" text="Save" HBox.hgrow="ALWAYS">
+                  <Button focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#save" style="-fx-background-color: #80c800; -fx-text-fill: white;" text="Save" HBox.hgrow="ALWAYS">
                      <font>
                         <Font size="14.0" />
                      </font></Button>
@@ -63,12 +63,12 @@
             </HBox>
             <HBox fx:id="memberButtonsBox" alignment="CENTER" spacing="40.0">
                <children>
-                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#leave" style="-fx-background-color: #ff5400; -fx-text-fill: white;" text="Leave" HBox.hgrow="ALWAYS">
+                  <Button focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#leave" style="-fx-background-color: #ff5400; -fx-text-fill: white;" text="Leave" HBox.hgrow="ALWAYS">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Button>
-                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cancel" style="-fx-background-color: #395cab; -fx-text-fill: white;" text="Close" HBox.hgrow="ALWAYS">
+                  <Button focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cancel" style="-fx-background-color: #395cab; -fx-text-fill: white;" text="Close" HBox.hgrow="ALWAYS">
                      <font>
                         <Font size="14.0" />
                      </font>

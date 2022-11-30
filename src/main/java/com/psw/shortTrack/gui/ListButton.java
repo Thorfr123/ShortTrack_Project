@@ -19,6 +19,7 @@ public class ListButton extends Button{
 		setMnemonicParsing(false);
 		setAlignment(Pos.TOP_LEFT);
 		setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
+		setFocusTraversable(false);
 		
 		this.list = list;
 		

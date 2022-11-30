@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import com.psw.shortTrack.data.*;
 import com.psw.shortTrack.database.*;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +19,7 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -66,6 +68,9 @@ public class ControllerLoginScene {
 	private HBox addTaskBox;
 	@FXML
 	private VBox searchVerticalBox;
+	
+	@FXML
+	private BorderPane borderPane;
 
 	private Parent root;
 	

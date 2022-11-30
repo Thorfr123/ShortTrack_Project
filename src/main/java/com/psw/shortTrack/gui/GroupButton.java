@@ -37,6 +37,7 @@ public class GroupButton extends Button{
 		
 		HBox.setHgrow(this,Priority.ALWAYS);
 		
+		setFocusTraversable(false);
 	}
 	
 	public Group getGroup() {

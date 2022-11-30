@@ -25,13 +25,11 @@ import javafx.scene.text.Font;
 
 public class ControllerEditAccountScene {
 
-	// Parte de change name
     @FXML
     private TextField newFirstNameField;
     @FXML
     private TextField newLastNameField;
 
-	// Parte de change email
     @FXML
     private TextField newEmailField;
     @FXML
@@ -43,7 +41,6 @@ public class ControllerEditAccountScene {
     @FXML
     private HBox mailChangeBox;
     
-    // Parte de changePassword
     @FXML
     private HBox changePasswordBox;
     @FXML
@@ -99,37 +96,30 @@ public class ControllerEditAccountScene {
 		lastName = name.substring(name.indexOf(' ') + 1);
 		
 		newFirstNameField.setText(firstName);
+		newFirstNameField.setFocusTraversable(false);
+		
 		newLastNameField.setText(lastName);
+		newLastNameField.setFocusTraversable(false);
 		
 		newEmailField.setText(account.getEmail());
+		newEmailField.setFocusTraversable(false);
 		
 	    passwordLabel = new Label("Current password");
 	    passwordLabel.setFont(Font.font(18));
     	
-	    currentPasswordField = new PasswordField();
-	    currentPasswordField.setFont(Font.font(14));
-	    HBox.setHgrow(currentPasswordField, Priority.ALWAYS);
+	    currentPasswordField = createPasswordField();
     	
-	    saveEmail = new Button("Save");
-	    saveEmail.setFont(Font.font(14));
-	    saveEmail.setPrefSize(70, 30);
-	    saveEmail.setAlignment(Pos.CENTER);
+	    saveEmail = createButton("Save");
 	    saveEmail.setOnAction(event -> {
 	    	saveEmail(event);
 		});
 	
-		emailCancel = new Button("Cancel");
-		emailCancel.setFont(Font.font(14));
-		emailCancel.setPrefSize(70, 30);
-		emailCancel.setAlignment(Pos.CENTER);
+		emailCancel = createButton("Cancel");
 		emailCancel.setOnAction(event -> {
 			resetEmailLayout();
 	    });
     	
-		passwordCancel = new Button("Cancel");
-		passwordCancel.setFont(Font.font(14));
-		passwordCancel.setPrefSize(70, 30);
-		passwordCancel.setAlignment(Pos.CENTER);
+		passwordCancel = createButton("Cancel");
 		passwordCancel.setOnAction(event -> {
 			resetPasswordLayout();
 	    });
@@ -137,26 +127,36 @@ public class ControllerEditAccountScene {
 		newPasswordLabel = new Label("New password");
 		newPasswordLabel.setFont(Font.font(18));
 		
-		newPasswordField = new PasswordField();
-		newPasswordField.setFont(Font.font(14));
-    	HBox.setHgrow(newPasswordField, Priority.ALWAYS);
+		newPasswordField = createPasswordField();
     	
 		confirmNewPasswordLabel = new Label("Confirm new password");
 		confirmNewPasswordLabel.setFont(Font.font(18));
 		
-		confirmNewPasswordField = new PasswordField();
-		confirmNewPasswordField.setFont(Font.font(14));
-    	HBox.setHgrow(confirmNewPasswordField, Priority.ALWAYS);
+		confirmNewPasswordField = createPasswordField();
     	
-		savePassword = new Button("Save");
-		savePassword.setFont(Font.font(14));
-		savePassword.setPrefSize(70, 30);
-		savePassword.setAlignment(Pos.CENTER);
+		savePassword = createButton("Save");
 		savePassword.setOnAction(event -> {
 			savePassword();
 	    });    	
     }
 
+    private Button createButton(String name) {
+    	Button newButton = new Button(name);
+	    newButton.setFont(Font.font(14));
+	    newButton.setPrefSize(70, 30);
+	    newButton.setAlignment(Pos.CENTER);
+	    newButton.setFocusTraversable(false);
+    	return newButton;
+    }
+    
+    private PasswordField createPasswordField() {
+    	PasswordField field = new PasswordField();
+		field.setFont(Font.font(14));
+		field.setFocusTraversable(false);
+    	HBox.setHgrow(field, Priority.ALWAYS);
+    	return field;
+    }
+    
 	@FXML
     void close(ActionEvent event) throws IOException {
     	
