@@ -11,6 +11,16 @@ import java.util.ArrayList;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.psw.shortTrack.fileIO.FileIO;
 
+
+/*
+ * Error codes uteis
+ * 
+ *  - 23502 - Not null violation
+ *  - 23503 - Foreign key violation
+ *  - 23505 - Unique violation
+ *
+ */
+
 public class Database {
 	private static final String driver 		= "org.postgresql.Driver";
 	private static final String url 		= "jdbc:postgresql://db.fe.up.pt:5432/pswa0502";
@@ -26,9 +36,10 @@ public class Database {
 			config();
 			setup();
 		} catch (PropertyVetoException pve) {
+			System.out.println("Unreachable!");
 			pve.printStackTrace();
 		} catch (SQLException sqle) {
-			sqle.printStackTrace();
+			System.out.println("Connection error in database setup");
 		}
 	}
 	
@@ -131,6 +142,7 @@ public class Database {
 				throw new SQLException("Connection failed!");
 			}
 		}
+		
 	}
 	
 	/**
@@ -160,7 +172,6 @@ public class Database {
 			str.replace("'", "\'");
 			str = "'" + str + "'";
 		}
-			
 		return str;
 	}
 	
@@ -207,15 +218,30 @@ public class Database {
 	protected static String toSQL(ArrayList<String> array) {
 		String str = "'{";
 		
-		for (int i = 0; i < array.size(); i++) {
-			if (i == array.size() - 1) {
+		if (array != null) {
+			for (int i = 0; i < array.size(); i++) {
 				str += "\"" + array.get(i) + "\"";
-			} else {
-			str += "\"" + array.get(i) + "\",";
+				if (i != array.size() - 1) {
+					str += ",";
+				}
 			}
 		}
 		
 		return str + "}'";
+	}
+	
+	/**
+	 * Returns true if all string are not null and not empty. False otherwise
+	 * 
+	 * @param AllParams
+	 * @return
+	 */
+	protected static boolean checkStringParams(String ...AllParams) {
+		for (String s : AllParams) {
+			if (s == null || s.isBlank())
+				return false;
+		}
+		return true;
 	}
 }
 

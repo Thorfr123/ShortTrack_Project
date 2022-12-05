@@ -119,7 +119,6 @@ public class FileIO {
 				setup += "\r\n" + line;
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
 			return null;
 		}
 		return setup;

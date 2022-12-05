@@ -158,8 +158,15 @@ public class ControllerEditAccountScene {
 			
 			try {
 				if (!AccountsDatabase.deleteAccount(account.getEmail())) {
-					showNotification("Unknown error");
-					return;
+					System.out.println("Couldn't delete account because it doesn't exist!");
+					//TODO: Choose verification
+					if (AccountsDatabase.checkEmail(account.getEmail())) {
+						System.out.println("Checked!");
+					}
+					else {
+						showNotification("Unknown error! Please, try again.");
+						return;
+					}
 				}
 			} catch (SQLException sqle) {
 				showNotification("Error! Please, check your connection");
