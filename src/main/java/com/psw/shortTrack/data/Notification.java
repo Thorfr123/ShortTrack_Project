@@ -1,6 +1,8 @@
 package com.psw.shortTrack.data;
 
 public class Notification {
+	// TODO: Talvez seja necessário
+	//private int id;
 	private int type;
 	private Account source, destination;
 	private String message;

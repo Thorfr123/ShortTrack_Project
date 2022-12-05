@@ -148,7 +148,8 @@ public class ControllerLoginScene {
 		ArrayList<Notification> notifications; 
 		try {
 			account = AccountsDatabase.getAccount(email);
-			groups = GroupsDatabase.getAllGroups(account.getEmail());
+			// XXX: Isto é executado novamente no initialize do logout
+			//groups = GroupsDatabase.getAllGroups(account.getEmail());
 			lists = PersonalListsDatabase.getAllLists(account.getEmail());
 			//notifications = NotificationDatabase.getAllNotifications(account.getEmail());
 			
@@ -160,7 +161,7 @@ public class ControllerLoginScene {
 		}
 		
 		User.setAccount(account);	
-		User.setGroups(groups);
+		//User.setGroups(groups);
 		User.setLists(lists);
 		//User.setNotifications(notifications);
 		
