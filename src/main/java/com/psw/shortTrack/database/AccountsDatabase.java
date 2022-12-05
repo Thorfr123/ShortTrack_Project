@@ -30,6 +30,9 @@ public class AccountsDatabase extends Database{
 	 * 
 	 */
 	public static boolean checkEmail(String email) throws SQLException{
+		if (email == null || email.isBlank())
+			return false;
+		
 		return executeQueryReturnBoolean(
 			"SELECT NOT EXISTS(SELECT 1 FROM projeto.account WHERE email=" + toSQL((String)email) + ");"
 		);
@@ -42,17 +45,19 @@ public class AccountsDatabase extends Database{
 	 * @return (True) - if the account is created; (False) - if the account isn't created (i.e. it's already in use)
 	 * @throws SQLException If there is a network error
 	 */
-	public static boolean createAccount(Account account, String password) throws SQLException {		
-		/*return (executeUpdate(
-			"INSERT INTO projeto.account (email, password, name)\r\n"
-			+ "VALUES (" + toSQL((String)account.getEmail()) + "," + toSQL((String)account.getPassword()) + "," 
-			+ toSQL((String)account.getName()) + ");"
-		) > 0);*/
-		return (executeUpdate(
-			"INSERT INTO projeto.account (email, password, name)\r\n"
-			+ "VALUES (" + toSQL((String)account.getEmail()) + "," + toSQL((String)password) + "," 
-			+ toSQL((String)account.getName()) + ");"
-		) > 0);
+	public static boolean createAccount(Account account, String password) throws SQLException {
+		try {
+			return (executeUpdate(
+				"INSERT INTO projeto.account (email, password, name)\r\n"
+				+ "VALUES (" + toSQL((String)account.getEmail()) + "," + toSQL((String)password) + "," 
+				+ toSQL((String)account.getName()) + ");"
+			) > 0);
+		} catch (SQLException sqle) {
+			if (sqle.getSQLState().startsWith("23")) {
+				return false;
+			}
+			throw sqle;
+		}
 	}
 	
 	/**
@@ -62,7 +67,7 @@ public class AccountsDatabase extends Database{
 	 * @return Either True if it succeeds or False if it fails
 	 * @throws SQLException If there is a network error
 	 */
-	public static boolean deleteAccount(String email) throws SQLException{		
+	public static boolean deleteAccount(String email) throws SQLException {		
 		return (executeUpdate(
 			"DELETE FROM projeto.account WHERE email=" + toSQL((String)email) + ";"
 		) > 0);
@@ -76,16 +81,15 @@ public class AccountsDatabase extends Database{
 	 * @throws SQLException If there is a network error
 	 */
 	public static Account getAccount (String email) throws SQLException{
-				
 		try (Connection connection = getConnection()){
 			if (connection != null) {
-				Statement stmt = connection.createStatement();
-				ResultSet rs = stmt.executeQuery(
-					"SELECT name FROM projeto.account WHERE email=" + toSQL((String)email) + ";"
-				);
-				if (rs.next()) {
-					return new Account( email, rs.getString("name"));
-				}
+					Statement stmt = connection.createStatement();
+					ResultSet rs = stmt.executeQuery(
+						"SELECT name FROM projeto.account WHERE email=" + toSQL((String)email) + ";"
+					);
+					if (rs.next()) {
+						return new Account( email, rs.getString("name"));
+					}
 			} else {
 				throw new SQLException("Connection failed");
 			}
