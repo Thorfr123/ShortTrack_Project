@@ -167,9 +167,6 @@ public class ControllerEditAccountScene {
 			}
 			
 			User.setLogedIn(false);
-			User.setGroups(null);
-			User.setLists(null);
-			User.setAccount(null);
 			
 			App.readLocalFiles();
 			App.loadMainScene();

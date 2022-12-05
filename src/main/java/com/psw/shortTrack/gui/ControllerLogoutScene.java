@@ -46,6 +46,8 @@ public class ControllerLogoutScene {
 	private Label notificationLabel;
 	@FXML
 	private Label listNameLabel;
+	@FXML
+	private Label notificationNumber;
 	
 	@FXML 
 	private TextField newListName;
@@ -58,6 +60,8 @@ public class ControllerLogoutScene {
 	
 	@FXML
 	private Button editListButton;
+	@FXML
+	private Button notificationButton;
 	@FXML
 	private MenuButton sortByMenu;
 	@FXML
@@ -168,9 +172,6 @@ public class ControllerLogoutScene {
 	public void logout(ActionEvent e) throws IOException {
 		
 		User.setLogedIn(false);
-		User.setGroups(null);
-		User.setLists(null);
-		User.setAccount(null);
 		loadList = null;
 		
 		App.readLocalFiles();
@@ -724,6 +725,15 @@ public class ControllerLogoutScene {
 		tasksBox.getChildren().clear();
 		loadTasks();
 
+	}
+	
+	public void notifications(ActionEvent e) throws IOException {
+		
+		removeErrorNotifications();
+		
+		root = FXMLLoader.load(getClass().getResource("NotificationScene.fxml"));
+		App.loadScene(root);
+		
 	}
 	
 	private void loadTasks() {

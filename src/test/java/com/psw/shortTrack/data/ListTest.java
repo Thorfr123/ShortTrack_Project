@@ -46,13 +46,13 @@ public class ListTest {
 		
 		listToTest.sortByName();
 		
-		List ordeorderedList = new List("Ordered list",11);
-		ordeorderedList.addTask(task1);
-		ordeorderedList.addTask(task2);
-		ordeorderedList.addTask(task3);
-		ordeorderedList.addTask(task4);
+		List orderedList = new List("Ordered list",11);
+		orderedList.addTask(task1);
+		orderedList.addTask(task2);
+		orderedList.addTask(task3);
+		orderedList.addTask(task4);
 		
-		assertArrayEquals(ordeorderedList.getTaskList().toArray(),listToTest.getTaskList().toArray());
+		assertArrayEquals(orderedList.getTaskList().toArray(),listToTest.getTaskList().toArray());
 	}
 	
 	@Test
@@ -70,13 +70,13 @@ public class ListTest {
 		
 		listToTest.sortByName();
 		
-		List ordeorderedList = new List("Ordered list",11);
-		ordeorderedList.addTask(task1);
-		ordeorderedList.addTask(task4);
-		ordeorderedList.addTask(task2);
-		ordeorderedList.addTask(task3);
+		List orderedList = new List("Ordered list",11);
+		orderedList.addTask(task1);
+		orderedList.addTask(task4);
+		orderedList.addTask(task2);
+		orderedList.addTask(task3);
 		
-		assertArrayEquals(ordeorderedList.getTaskList().toArray(),listToTest.getTaskList().toArray());
+		assertArrayEquals(orderedList.getTaskList().toArray(),listToTest.getTaskList().toArray());
 	}
 	
 	@Test
@@ -98,13 +98,13 @@ public class ListTest {
 		
 		listToTest.sortByDeadline();
 		
-		List ordeorderedList = new List("Ordered list",11);
-		ordeorderedList.addTask(task1);
-		ordeorderedList.addTask(task2);
-		ordeorderedList.addTask(task3);
-		ordeorderedList.addTask(task4);
+		List orderedList = new List("Ordered list",11);
+		orderedList.addTask(task1);
+		orderedList.addTask(task2);
+		orderedList.addTask(task3);
+		orderedList.addTask(task4);
 		
-		assertArrayEquals(ordeorderedList.getTaskList().toArray(),listToTest.getTaskList().toArray());
+		assertArrayEquals(orderedList.getTaskList().toArray(),listToTest.getTaskList().toArray());
 	}
 	
 	@Test
@@ -124,13 +124,13 @@ public class ListTest {
 		
 		listToTest.sortByDeadline();
 		
-		List ordeorderedList = new List("Ordered list",11);
-		ordeorderedList.addTask(task1);
-		ordeorderedList.addTask(task2);
-		ordeorderedList.addTask(task3);
-		ordeorderedList.addTask(task4);
+		List orderedList = new List("Ordered list",11);
+		orderedList.addTask(task1);
+		orderedList.addTask(task2);
+		orderedList.addTask(task3);
+		orderedList.addTask(task4);
 		
-		assertArrayEquals(ordeorderedList.getTaskList().toArray(),listToTest.getTaskList().toArray());
+		assertArrayEquals(orderedList.getTaskList().toArray(),listToTest.getTaskList().toArray());
 	}
 	
 	@Test
@@ -152,13 +152,13 @@ public class ListTest {
 		
 		listToTest.sortByCompleted();
 		
-		List ordeorderedList = new List("Ordered list",11);
-		ordeorderedList.addTask(task1);
-		ordeorderedList.addTask(task2);
-		ordeorderedList.addTask(task3);
-		ordeorderedList.addTask(task4);
+		List orderedList = new List("Ordered list",11);
+		orderedList.addTask(task1);
+		orderedList.addTask(task2);
+		orderedList.addTask(task3);
+		orderedList.addTask(task4);
 		
-		assertArrayEquals(ordeorderedList.getTaskList().toArray(),listToTest.getTaskList().toArray());
+		assertArrayEquals(orderedList.getTaskList().toArray(),listToTest.getTaskList().toArray());
 	}
 	
 	@Test

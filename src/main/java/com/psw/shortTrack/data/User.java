@@ -8,6 +8,7 @@ public class User {
 	private static ArrayList<Group> groups = new ArrayList<Group>(0);
 	private static Account account;
 	private static Boolean logedIn = false;
+	private static ArrayList<Notification> notifications = new ArrayList<Notification>(0);
 	
 	public static ArrayList<List> getLists() {
 		return lists;
@@ -78,5 +79,21 @@ public class User {
 	
 	public static void setLogedIn(Boolean newState) {
 		logedIn = newState;
+		
+		if(!logedIn) {
+			setGroups(null);
+			setLists(null);
+			setAccount(null);
+		}
+			
 	}
+	
+	public static ArrayList<Notification> getNotifications() {
+		return notifications;
+	}
+	
+	public static void setNotifications(ArrayList<Notification> notifications) {
+		User.notifications = notifications;
+	}
+	
 }
