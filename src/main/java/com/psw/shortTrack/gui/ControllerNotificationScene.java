@@ -33,7 +33,7 @@ public class ControllerNotificationScene {
 					accept(event);
 		        });
 				refuseButton.setOnAction(event -> {
-					refuse(event);
+					decline(event);
 		        });
 				
 				notificationList.getChildren().add(notificationBar);
@@ -69,9 +69,9 @@ public class ControllerNotificationScene {
 		
 	}
 
-	public void refuse(ActionEvent e) {
+	public void decline(ActionEvent e) {
 		
-		System.out.println("refuse - Not Working!");
+		System.out.println("decline - Not Working!");
 		
 	}
 	

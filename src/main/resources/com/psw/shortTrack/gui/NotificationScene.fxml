@@ -27,8 +27,8 @@
                               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="The User YYYYYY invite you for the group XXXXXX" HBox.hgrow="ALWAYS" />
                               <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="150.0" spacing="10.0">
                                  <children>
-                                    <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="26.0" prefWidth="60.0" text="Accept" />
-                                    <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="26.0" prefWidth="60.0" text="Refuse" />
+                                    <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#accept" prefHeight="26.0" prefWidth="60.0" text="Accept" />
+                                    <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#decline" prefHeight="26.0" prefWidth="60.0" text="Decline" />
                                  </children>
                               </HBox>
                            </children>
@@ -41,8 +41,8 @@
                               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="The User YYYYYY invite you for the group XXXXXX" HBox.hgrow="ALWAYS" />
                               <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="150.0" spacing="10.0">
                                  <children>
-                                    <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="26.0" prefWidth="60.0" text="Accept" />
-                                    <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="26.0" prefWidth="60.0" text="Refuse" />
+                                    <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#accept" prefHeight="26.0" prefWidth="60.0" text="Accept" />
+                                    <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#decline" prefHeight="26.0" prefWidth="60.0" text="Decline" />
                                  </children>
                               </HBox>
                            </children>
