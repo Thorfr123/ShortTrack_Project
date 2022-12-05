@@ -159,7 +159,7 @@ public class AccountsDatabaseTest {
 	}
 	
 	@Test
-	void Given_ThatParamsAreInValid_When_ChangePassword_ReturnTrue() {
+	void Given_ThatParamsAreInValid_When_ChangePassword_ReturnFalse() {
 		try {
 			assertFalse(AccountsDatabase.changePassword("ggg@gmail.com", "123456", "1234567"));
 		} catch (SQLException e) {
@@ -200,6 +200,22 @@ public class AccountsDatabaseTest {
 			// Return to original
 			AccountsDatabase.changeEmail("gggAlterado@gmail.com", "ggg@gmail.com");
 		} catch (SQLException e) {
+			fail("Network problems");
+		}
+	}
+	
+	@Test
+	void Given_ThatUserChangesToInvalidEmail_When_ChangeEmail_ReturnFalse() {
+		try {
+			// Return da funcao
+			assertFalse(AccountsDatabase.changeEmail("notInUse@gmail.com", "teste@gmail.com"));
+			// Email alterado na tabela de accounts
+			assertNotNull(AccountsDatabase.getAccount("ggg@gmail.com"));
+			// Email alterado nos members
+			assertNotEquals(0 , GroupsDatabase.getAllGroups("ggg@gmail.com").size());
+			assertNotEquals(0 , GroupsDatabase.getAllGroups("teste@gmail.com").size());
+		} catch (SQLException e) {
+			System.out.println(e.getSQLState());
 			fail("Network problems");
 		}
 	}
