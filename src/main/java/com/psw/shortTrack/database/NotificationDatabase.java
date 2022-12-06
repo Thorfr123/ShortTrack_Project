@@ -28,7 +28,7 @@ public class NotificationDatabase extends Database{
 			
 			notif.setId(Integer.parseInt(executeQueryReturnSingleColumn(
 					"INSERT INTO projeto.notifications (type, source, destination, message)\r\n"
-					+ "VALUES (" + toSQL((int)notif.getType()) + "," + toSQL((String)notif.getSource().getEmail()) + "," 
+					+ "VALUES (" + toSQL((int)notif.getTypeAsInt()) + "," + toSQL((String)notif.getSource().getEmail()) + "," 
 					+ toSQL((String)notif.getDestination().getEmail()) + "," + toSQL((String)notif.getMessage()) + ")\r\n"
 					+ "RETURNING id;")));
 			

@@ -2,7 +2,7 @@ package com.psw.shortTrack.data;
 
 public class Notification {
 	private int id;
-	private int type;
+	private NotificationType type;
 	private Account source, destination;
 	private String message;
 	
@@ -13,9 +13,30 @@ public class Notification {
 	 * Message = Conta Teste invited you to the group Group 1 (Accept) (Decline)
 	 */
 	
-	// TODO: Maybe we could add a enum to the notification types
+	public enum NotificationType {
+		invitateToGroup(1),
+		removedFromGroup(2);
+
+		private final int type;
+		NotificationType(final int newType) {
+			type = newType;
+		}
+		
+		public int toInt() {
+			return type;
+		}
+		
+		public static NotificationType getType(int id) {
+			for (NotificationType t : values()) {
+				if (t.toInt() == id) {
+					return t;
+				}
+			}
+			return null;
+		}
+	}
 	
-	public Notification(int id, int type, Account source, Account destination, String message) {
+	public Notification(int id, NotificationType type, Account source, Account destination, String message) {
 		this.id = id;
 		this.type = type;
 		this.source = source;
@@ -23,10 +44,18 @@ public class Notification {
 		this.message = message;
 	}
 	
-	public Notification(int type, Account source, Account destination, String message) {
+	public Notification(NotificationType type, Account source, Account destination, String message) {
 		this.type = type;
 		this.source = source;
-		this.destination = destination;		
+		this.destination = destination;
+		this.message = message;
+	}
+	
+	public Notification(int id, int type, Account source, Account destination, String message) {
+		this.id = id;
+		this.type = NotificationType.getType(id);
+		this.source = source;
+		this.destination = destination;
 		this.message = message;
 	}
 	
@@ -34,7 +63,11 @@ public class Notification {
 		return message;
 	}
 	
-	public int getType() {
+	public int getTypeAsInt() {
+		return type.toInt();
+	}
+	
+	public NotificationType getType() {
 		return type;
 	}
 	

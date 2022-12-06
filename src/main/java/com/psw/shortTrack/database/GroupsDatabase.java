@@ -137,8 +137,19 @@ public class GroupsDatabase extends Database{
 		//TODO: verificar se este codigo é todo necessário
 		return(executeUpdate(
 			"UPDATE projeto.groups SET members=("
-			+ "SELECT array_remove(members,'" + member.getEmail() + "') FROM projeto.groups WHERE id='" + id + "') WHERE id='"+id+"';\r\n"
+			+ "SELECT array_remove(members,'" + member.getEmail() + "') FROM projeto.groups WHERE id='" + id + "') "
+			+ "WHERE id='"+id+"';\r\n"
 			+ "UPDATE projeto.group_tasks SET assigned_to=NULL WHERE group_id='" + id + "' AND assigned_to='" + member.getEmail() + "';"
 		) > 0);
+	}
+
+	public static boolean addMember(int id, Account member) throws SQLException {
+		
+		return (executeUpdate(
+			"UPDATE projeto.groups SET members=("
+			+ "SELECT array_append(members,'" + member.getEmail() + "') FROM projeto.groups WHERE id='" + id + "') "
+			+ "WHERE id='" + id + "';\r\n"
+		) > 0);
+		
 	}
 }

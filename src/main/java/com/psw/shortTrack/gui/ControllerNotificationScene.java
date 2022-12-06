@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import com.psw.shortTrack.data.Notification;
+import com.psw.shortTrack.data.Notification.NotificationType;
 import com.psw.shortTrack.data.User;
 
 import javafx.event.ActionEvent;
@@ -24,7 +25,7 @@ public class ControllerNotificationScene {
 		notifications = User.getNotifications();
 		
 		for(Notification n : notifications) {
-			if(n.getType() == 1) {
+			if(n.getType() == NotificationType.invitateToGroup) {
 				InviteNotificationBox notificationBar = new InviteNotificationBox(n);
 				Button acceptButton = notificationBar.getAcceptButton();
 				Button refuseButton = notificationBar.getRefuseButton();
@@ -38,7 +39,7 @@ public class ControllerNotificationScene {
 				
 				notificationList.getChildren().add(notificationBar);
 			}
-			else if(n.getType() == 2) {
+			else if(n.getType() == NotificationType.removedFromGroup) {
 				SimpleNotificationBox notificationBar = new SimpleNotificationBox(n);
 				Button okButton = notificationBar.getOkButton();
 				
