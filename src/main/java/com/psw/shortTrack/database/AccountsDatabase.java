@@ -8,7 +8,7 @@ import org.postgresql.util.PSQLState;
 import com.psw.shortTrack.data.Account;
 
 public class AccountsDatabase extends Database{
-	
+
 	/**
 	 * Verifies if the user can login. Meaning email and password matches.
 	 * If email doesn't exist in database, it returns false same way.

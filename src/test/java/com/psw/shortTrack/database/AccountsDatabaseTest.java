@@ -195,8 +195,8 @@ public class AccountsDatabaseTest {
 			assertNull(AccountsDatabase.getAccount("ggg@gmail.com"));
 			assertNotNull(AccountsDatabase.getAccount("gggAlterado@gmail.com"));
 			// Email alterado nos members
-			assertEquals(0 , GroupsDatabase.getAllGroups("ggg@gmail.com").size());
-			assertNotEquals(0 , GroupsDatabase.getAllGroups("gggAlterado@gmail.com").size());
+			assertEquals(0 , GroupsDatabase.getAllGroups(AccountsDatabase.getAccount("ggg@gmail.com")).size());
+			assertNotEquals(0 , GroupsDatabase.getAllGroups(AccountsDatabase.getAccount("gggAlterado@gmail.com")).size());
 			// Return to original
 			AccountsDatabase.changeEmail("gggAlterado@gmail.com", "ggg@gmail.com");
 		} catch (SQLException e) {
@@ -212,8 +212,8 @@ public class AccountsDatabaseTest {
 			// Email alterado na tabela de accounts
 			assertNotNull(AccountsDatabase.getAccount("ggg@gmail.com"));
 			// Email alterado nos members
-			assertNotEquals(0 , GroupsDatabase.getAllGroups("ggg@gmail.com").size());
-			assertNotEquals(0 , GroupsDatabase.getAllGroups("teste@gmail.com").size());
+			assertNotEquals(0 , GroupsDatabase.getAllGroups(AccountsDatabase.getAccount("ggg@gmail.com")).size());
+			assertNotEquals(0 , GroupsDatabase.getAllGroups(AccountsDatabase.getAccount("teste@gmail.com")).size());
 		} catch (SQLException e) {
 			System.out.println(e.getSQLState());
 			fail("Network problems");

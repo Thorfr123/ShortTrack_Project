@@ -104,7 +104,7 @@ public class ControllerLogoutScene {
 		lists = User.getLists();
 		
 		try {
-			User.setGroups(GroupsDatabase.getAllGroups(User.getAccount().getEmail()));
+			User.setGroups(GroupsDatabase.getAllGroups(User.getAccount()));
 			groups = User.getGroups();
 		} catch (SQLException exception) {
 			showNotification("Error! Please, check your connection",(Pane)newGroupBox);

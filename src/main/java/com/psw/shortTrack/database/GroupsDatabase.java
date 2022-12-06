@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import com.psw.shortTrack.data.Account;
 import com.psw.shortTrack.data.Group;
+import com.psw.shortTrack.data.Task;
 
 public class GroupsDatabase extends Database{
 
@@ -55,51 +56,60 @@ public class GroupsDatabase extends Database{
 	 * @return ArrayList every group with the user's email
 	 * @throws SQLException If a database access error occurs
 	 */
-	public static ArrayList<Group> getAllGroups(String email) throws SQLException {
+	public static ArrayList<Group> getAllGroups(Account user) throws SQLException {
 		
 		try (Connection connection = getConnection()) {
-			if (connection != null) {
-				Statement stmt = connection.createStatement();
-				ResultSet rs = stmt.executeQuery(
-					"SELECT * FROM projeto.groups WHERE manager=" + toSQL((String)email) + " OR " + toSQL((String)email) 
-					+ "=ANY(members);"
-				);
+			if (connection == null) {
+				throw new SQLException("Connection error");
+			}
+			Statement stmt = connection.createStatement();
+			ResultSet rs = stmt.executeQuery(
+					"SELECT id, groups.name, members, account.email AS manager_email, account.name AS manager_name\r\n"
+					+ "FROM projeto.groups JOIN projeto.account ON manager=email\r\n"
+				    + "WHERE manager=" + toSQL((String)user.getEmail()) + " OR " + toSQL((String)user.getEmail()) + "=ANY(members);"
+					);
+			
+			
+			/*
+			 * 	SELECT id, groups.name, members, account.email AS manager_email, account.name AS manager_name
+   					FROM projeto.groups, projeto.account
+      					WHERE manager=email AND (manager='ggg@gmail.com' OR 'ggg@gmail.com'=ANY(members));
+			 */
+			
+			ArrayList<Group> all_groups = new ArrayList<Group>();
+			while (rs.next()) {
+				Account managerAccount = null;
+				ArrayList<Task> tasks = null;
+				ArrayList<Account> memberAccounts = new ArrayList<Account>();
 				
-				ArrayList<Group> all_groups = new ArrayList<Group>();
-				while (rs.next()) {
-					
-					ArrayList<Account> memberAccounts = new ArrayList<Account>();
-					for (String member: (String[]) rs.getArray("members").getArray()) {
-						if (member != null) {
-							Account memberAccount = AccountsDatabase.getAccount(member);
-							if (memberAccount != null) {
-								memberAccounts.add(memberAccount);
-							}
+				for (String member: (String[]) rs.getArray("members").getArray()) {
+					if (member != null) {
+						Account memberAccount = AccountsDatabase.getAccount(member);
+						if (memberAccount != null) {
+							memberAccounts.add(memberAccount);
 						}
 					}
-					Account managerAccount = AccountsDatabase.getAccount(rs.getString("manager"));
-					
-					if (email.equals(managerAccount.getEmail())) {
-						// User is a manager
-						all_groups.add(new Group(rs.getString("name"),
-								managerAccount,
-								rs.getInt("id"),
-								GroupTasksDatabase.getAllTasks(rs.getInt("id")),
-								memberAccounts));
-					}
-					else {
-						// User is a member
-						all_groups.add(new Group(rs.getString("name"),
-											managerAccount,
-											rs.getInt("id"),
-											GroupTasksDatabase.getAllTasks(rs.getInt("id"),email),
-											memberAccounts));
-					}
 				}
-				return all_groups;
+				
+				if (rs.getString("manager_email").equals(user.getEmail())) {
+					managerAccount = user;
+					tasks = GroupTasksDatabase.getAllTasks(rs.getInt("id"));
+				}
+				else {
+					managerAccount = new Account(rs.getString("manager_email"), rs.getString("manager_name"));
+					tasks = GroupTasksDatabase.getAllTasks(rs.getInt("id"), user.getEmail());
+				}
+				
+				if (managerAccount != null) {
+					all_groups.add(	new Group( 	rs.getString("name"),
+												managerAccount,
+												rs.getInt("id"),
+												tasks,
+												memberAccounts));	
+				}
 			}
+			return all_groups;
 		}
-		return null;
 	}
 	
 	/**
@@ -143,6 +153,7 @@ public class GroupsDatabase extends Database{
 		) > 0);
 	}
 
+	// TODO: Comment and Verify code
 	public static boolean addMember(int id, Account member) throws SQLException {
 		
 		return (executeUpdate(

@@ -71,7 +71,7 @@ public class ControllerSignUpScene {
 		ArrayList<Group> groups;
 		ArrayList<List> lists; 
 		try {
-			groups = GroupsDatabase.getAllGroups(account.getEmail());
+			groups = GroupsDatabase.getAllGroups(account);
 			lists = PersonalListsDatabase.getAllLists(account.getEmail());
 		} catch (SQLException exeption) {
 			System.out.println("Error! Please, check your connection");
