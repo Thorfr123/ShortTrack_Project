@@ -12,6 +12,8 @@ import com.psw.shortTrack.data.Group;
 public class GroupsDatabase extends Database{
 
 	/**
+	 * TODO: Refactor return
+	 * 
 	 * Creates a new group in the database. Returns the groups' id
 	 * 
 	 * @param group Group that you want to add in the database

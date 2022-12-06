@@ -1,8 +1,7 @@
 package com.psw.shortTrack.data;
 
 public class Notification {
-	// TODO: Talvez seja necessário
-	//private int id;
+	private int id;
 	private int type;
 	private Account source, destination;
 	private String message;
@@ -15,6 +14,14 @@ public class Notification {
 	 */
 	
 	// TODO: Maybe we could add a enum to the notification types
+	
+	public Notification(int id, int type, Account source, Account destination, String message) {
+		this.id = id;
+		this.type = type;
+		this.source = source;
+		this.destination = destination;		
+		this.message = message;
+	}
 	
 	public Notification(int type, Account source, Account destination, String message) {
 		this.type = type;
@@ -38,5 +45,13 @@ public class Notification {
 	// TODO: Maybe useless
 	public Account getDestination() {
 		return destination;
+	}
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 }

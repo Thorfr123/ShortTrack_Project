@@ -153,11 +153,11 @@ BEGIN
 	-- Adiciona a referencia da source a uma conta
 	IF (SELECT NOT EXISTS(SELECT 1 FROM pg_catalog.pg_constraint WHERE conname='notifications_source_fkey')) THEN
 		ALTER TABLE ONLY projeto.notifications ADD CONSTRAINT notifications_source_fkey FOREIGN KEY (source)
-			REFERENCES projeto.account (email) ON DELETE SET NULL ON UPDATE CASCADE;
+			REFERENCES projeto.account (email) ON DELETE CASCADE ON UPDATE CASCADE;
 	END IF;
 	-- Adiciona a referencia do destino a uma conta
 	IF (SELECT NOT EXISTS(SELECT 1 FROM pg_catalog.pg_constraint WHERE conname='notifications_destination_fkey')) THEN
 		ALTER TABLE ONLY projeto.notifications ADD CONSTRAINT notifications_destination_fkey FOREIGN KEY (destination)
-			REFERENCES projeto.account (email) ON DELETE SET NULL ON UPDATE CASCADE;
+			REFERENCES projeto.account (email) ON DELETE CASCADE ON UPDATE CASCADE;
 	END IF;
 END $$;
