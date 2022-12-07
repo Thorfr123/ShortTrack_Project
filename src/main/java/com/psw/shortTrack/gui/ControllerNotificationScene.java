@@ -1,11 +1,13 @@
 package com.psw.shortTrack.gui;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import com.psw.shortTrack.data.Notification;
 import com.psw.shortTrack.data.Notification.NotificationType;
 import com.psw.shortTrack.data.User;
+import com.psw.shortTrack.database.NotificationDatabase;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,7 +24,13 @@ public class ControllerNotificationScene {
 	@FXML
     public void initialize() {
 		
-		notifications = User.getNotifications();
+		//notifications = User.getNotifications();
+		try {
+			notifications = NotificationDatabase.getAllNotifications(User.getAccount());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		for(Notification n : notifications) {
 			if(n.getType() == NotificationType.invitateToGroup) {

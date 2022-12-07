@@ -64,12 +64,10 @@ public class GroupsDatabase extends Database{
 			}
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(
-					"SELECT id, groups.name, members, account.email AS manager_email, account.name AS manager_name\r\n"
-					+ "FROM projeto.groups JOIN projeto.account ON manager=email\r\n"
-				    + "WHERE manager=" + toSQL((String)user.getEmail()) + " OR " + toSQL((String)user.getEmail()) + "=ANY(members);"
-					);
-			
-			
+				"SELECT id, groups.name, members, account.email AS manager_email, account.name AS manager_name\r\n"
+				+ "FROM projeto.groups JOIN projeto.account ON manager=email\r\n"
+				+ "WHERE manager=" + toSQL((String)user.getEmail()) + " OR " + toSQL((String)user.getEmail()) + "=ANY(members);"
+			);
 			/*
 			 * 	SELECT id, groups.name, members, account.email AS manager_email, account.name AS manager_name
    					FROM projeto.groups, projeto.account
