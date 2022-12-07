@@ -133,37 +133,23 @@ public class ControllerLoginScene {
 				return;
 			}
 		} catch (SQLException exeption) {
-			Pane newBox = (Pane)loginBox;
-			String notification = "Error! Please, check your connection";
-			showNotification(notification,newBox);
+			App.connectionErrorMessage();
 			return;
 		}
 		
 		App.writeLocalFiles();
 		
 		Account account = null;
-		ArrayList<Group> groups;
 		ArrayList<List> lists;
-		// TODO: Add notifications to the database and create some methods to access them
-		ArrayList<Notification> notifications; 
 		try {
 			account = AccountsDatabase.getAccount(email);
-			// XXX: Isto é executado novamente no initialize do logout
-			//groups = GroupsDatabase.getAllGroups(account.getEmail());
 			lists = PersonalListsDatabase.getAllLists(account.getEmail());
-			//notifications = NotificationDatabase.getAllNotifications(account.getEmail());
-			
+			User.setAccount(account);	
+			User.setLists(lists);
 		} catch (SQLException exception) {
-			Pane newBox = (Pane)loginBox;
-			String notification = "Error! Please, check your connection";
-			showNotification(notification,newBox);
+			App.connectionErrorMessage();
 			return;
 		}
-		
-		User.setAccount(account);	
-		//User.setGroups(groups);
-		User.setLists(lists);
-		//User.setNotifications(notifications);
 		
 		root = FXMLLoader.load(getClass().getResource("LogoutScene.fxml"));
 		App.loadScene(root);

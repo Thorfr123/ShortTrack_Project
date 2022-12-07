@@ -51,7 +51,7 @@ public class ControllerEditListScene {
 				try {
 					PersonalListsDatabase.deleteList(list.getID());
 				} catch (SQLException exception) {
-					showNotification("Error! Please, check your connection");
+					App.connectionErrorMessage();
 					return;
 				}
 			}
@@ -88,7 +88,7 @@ public class ControllerEditListScene {
 			try {
 				PersonalListsDatabase.updateList(list.getID(),newListName);
 			} catch (SQLException exception) {
-				showNotification("Error! Please, check your connection");
+				App.connectionErrorMessage();
 				return;
 			}
 		}

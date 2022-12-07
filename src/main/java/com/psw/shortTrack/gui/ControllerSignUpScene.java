@@ -60,7 +60,7 @@ public class ControllerSignUpScene {
 				return;
 			}
 		} catch (SQLException e1) {
-			showNotification("Error! Please, check your conection");
+			App.connectionErrorMessage();
 			return;
 		}
 		
@@ -74,7 +74,7 @@ public class ControllerSignUpScene {
 			groups = GroupsDatabase.getAllGroups(account);
 			lists = PersonalListsDatabase.getAllLists(account.getEmail());
 		} catch (SQLException exeption) {
-			System.out.println("Error! Please, check your connection");
+			App.connectionErrorMessage();
 			return;
 		}
 		User.setGroups(groups);
@@ -114,7 +114,7 @@ public class ControllerSignUpScene {
 		
 		if(firstName.isBlank() || lastName.isBlank() || email.isBlank() 
 				|| password.isBlank() || repeatPassword.isBlank()) {
-			showNotification("Please complete all the fields!");
+			App.connectionErrorMessage();
 			return false;
 		}
 		
@@ -175,7 +175,7 @@ public class ControllerSignUpScene {
 				return false;
 			}
 		} catch (SQLException e) {
-			showNotification("Error! Please, check your conection");
+			App.connectionErrorMessage();
 			return false;
 		}
 		

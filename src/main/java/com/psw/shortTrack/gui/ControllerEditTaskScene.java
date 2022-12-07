@@ -76,7 +76,7 @@ public class ControllerEditTaskScene {
 				try {
 					PersonalTasksDatabase.deleteTask(task.getID());
 				} catch (SQLException exception) {
-					showNotification("Error! Please, check your connection");
+					App.connectionErrorMessage();
 					return;
 				}
 			}
@@ -118,7 +118,7 @@ public class ControllerEditTaskScene {
 			try {
 				PersonalTasksDatabase.updateTask(task.getID(), newTaskName, newDescription, newDeadline, checkButton.isSelected());
 			} catch (SQLException exception) {
-				showNotification("Error! Please, check your connection");
+				App.connectionErrorMessage();
 				return;
 			}
 		}
@@ -142,7 +142,7 @@ public class ControllerEditTaskScene {
 				try {
 					PersonalTasksDatabase.deleteTask(task.getID());
 				} catch (SQLException exception) {
-					showNotification("Error! Please, check your connection");
+					App.connectionErrorMessage();
 					return;
 				}
 			}
