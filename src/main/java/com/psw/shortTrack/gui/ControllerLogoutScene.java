@@ -16,6 +16,7 @@ import com.psw.shortTrack.data.SearchList;
 import com.psw.shortTrack.data.Task;
 import com.psw.shortTrack.data.TaskOrganizer;
 import com.psw.shortTrack.data.User;
+import com.psw.shortTrack.data.TaskOrganizer.SortBy;
 import com.psw.shortTrack.database.GroupTasksDatabase;
 import com.psw.shortTrack.database.GroupsDatabase;
 import com.psw.shortTrack.database.NotificationDatabase;
@@ -132,6 +133,13 @@ public class ControllerLogoutScene {
 		choiceBox.setValue("Search by");
 		choiceBox.getItems().addAll(searchOptions);
 		choiceBox.setOnAction(this::searchOption);
+		
+		// Loads sort by options
+		for (String option : SortBy.options()) {
+			MenuItem item = new MenuItem(option);
+			item.setOnAction(this::sortTasks);
+			sortByMenu.getItems().add(item);
+		}
 		
 		for(List l : lists) {
 			ListButton listButton = new ListButton(l);
@@ -632,15 +640,7 @@ public class ControllerLogoutScene {
 	public void sortTasks(ActionEvent e) {
 		
 		String option = ((MenuItem)e.getSource()).getText();
-		
-		if(option.equals("Name"))
-			loadList.sortByName();
-		else if(option.equals("Created Date"))
-			loadList.sortByCreatedDate();
-		else if(option.equals("Deadline"))
-			loadList.sortByDeadline();
-		else if(option.equals("Completed"))
-			loadList.sortByCompleted();
+		loadList.sort(SortBy.fromString(option));
 		
 		tasksBox.getChildren().clear();
 		loadTasks();
@@ -769,7 +769,7 @@ public class ControllerLogoutScene {
 				CheckBox taskCheckBox = taskBar.getCheckBox();
 				Button taskButton = taskBar.getButton();
 				
-				if(t.chekCompleted()) {
+				if(t.isCompleted()) {
 					taskCheckBox.setSelected(true);
 					taskBar.setOpacity(0.5);
 				}
@@ -790,7 +790,7 @@ public class ControllerLogoutScene {
 				CheckBox taskCheckBox = taskBar.getCheckBox();
 				Button taskButton = taskBar.getButton();
 				
-				if(t.chekCompleted()) {
+				if(t.isCompleted()) {
 					taskCheckBox.setSelected(true);
 					taskBar.setOpacity(0.5);
 				}

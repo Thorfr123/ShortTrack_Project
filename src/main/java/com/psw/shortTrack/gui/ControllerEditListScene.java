@@ -86,7 +86,7 @@ public class ControllerEditListScene {
 		
 		if(User.isLogedIn()) {
 			try {
-				PersonalListsDatabase.updateList(list.getID(),newListName);
+				PersonalListsDatabase.changeName(list.getID(),newListName);
 			} catch (SQLException exception) {
 				App.connectionErrorMessage();
 				return;

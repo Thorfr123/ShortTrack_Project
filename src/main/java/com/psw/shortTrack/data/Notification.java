@@ -14,13 +14,11 @@ public class Notification {
 		acceptedInviteToGroup(4);
 
 		private final int type;
-		NotificationType(final int newType) {
+		NotificationType(final int newType) { 
 			type = newType;
 		}
 		
-		public int toInt() {
-			return type;
-		}
+		public int toInt() { return type; }
 		
 		public static NotificationType getType(int id) {
 			for (NotificationType t : values()) {
@@ -63,44 +61,26 @@ public class Notification {
 	 * Called from notification database
 	 */
 	public Notification(int id, int type, Account source, Account destination, String group_name, int group_id) {
-		this (NotificationType.getType(type), source, destination, new Group(group_name, null, group_id));
+		this (NotificationType.getType(type), source, destination, new Group(group_id, group_name));
 		this.id = id;
 	}
 	
-	public String getMessage() {
-		return message;
-	}
+	public String getMessage() { return message; }
 	
-	public int getTypeAsInt() {
-		return type.toInt();
-	}
+	public int getTypeAsInt() { return type.toInt(); }
 	
-	public NotificationType getType() {
-		return type;
-	}
+	public NotificationType getType() { return type; }
 	
-	public Account getSource() {
-		return source;
-	}
+	public Account getSource() { return source; }
 	
-	// TODO: Maybe useless
-	public Account getDestination() {
-		return destination;
-	}
+	public Account getDestination() { return destination; }
 	
-	public int getId() {
-		return id;
-	}
+	public int getId() { return id; }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+	public void setId(int id) { this.id = id; }
 	
-	public int getGroup_id() {
-		return group.getID();
-	}
+	public int getGroup_id() { return group.getID(); }
 	
-	public Group getGroup() {
-		return group;
-	}
+	public Group getGroup() { return group; }
+	
 }

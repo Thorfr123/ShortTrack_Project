@@ -134,7 +134,8 @@ public class ControllerEditAccountScene {
 		savePassword = createButton("Save");
 		savePassword.setOnAction(event -> {
 			savePassword();
-	    });	
+	    });
+		
     }
     
 	@FXML
@@ -155,40 +156,31 @@ public class ControllerEditAccountScene {
 		alert.setContentText("Are you sure you really want to delete your account?");
 		
 		if(alert.showAndWait().get() == ButtonType.OK){
-			
 			try {
-				if (!AccountsDatabase.deleteAccount(account.getEmail())) {
-					System.out.println("Couldn't delete account because it doesn't exist!");
-					//TODO: Choose verification
-					if (AccountsDatabase.checkEmail(account.getEmail())) {
-						System.out.println("Checked!");
-					}
-					else {
-						showNotification("Unknown error! Please, try again.");
-						return;
-					}
-				}
+				
+				AccountsDatabase.deleteAccount(account.getEmail());
+				User.setLogedIn(false);
+				
+				App.readLocalFiles();
+				App.loadMainScene();
+				
 			} catch (SQLException sqle) {
 				App.connectionErrorMessage();
 				return;
 			}
-			
-			User.setLogedIn(false);
-			
-			App.readLocalFiles();
-			App.loadMainScene();
 		}
+		
     }
 
     @FXML
     void changeName(ActionEvent event) {
-    	    	
+    	
     	removeErrorNotifications();
     	
     	String newFirstName = newFirstNameField.getText();
     	String newLastName = newLastNameField.getText();
-    	String notif = null;
     	
+    	String notif = null;
     	if (newFirstName.equals(firstName) && newLastName.equals(lastName)) {
     		showNotification("Name didn't change!");
     		return;

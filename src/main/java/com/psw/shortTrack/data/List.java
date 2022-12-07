@@ -17,9 +17,5 @@ public class List extends TaskOrganizer {
 	public List(String name, int id, ArrayList<Task> taskList) {
 		super(name,id,taskList);
 	}
-	
-	public void addTask(PersonalTask task) {
-		taskList.add(task);
-	}
 
 }

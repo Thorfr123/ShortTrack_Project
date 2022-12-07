@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import com.psw.shortTrack.data.*;
+import com.psw.shortTrack.data.TaskOrganizer.SortBy;
 import com.psw.shortTrack.database.*;
 
 import javafx.event.ActionEvent;
@@ -85,6 +86,13 @@ public class ControllerLoginScene {
 		choiceBox.setValue("Search by");
 		choiceBox.getItems().addAll(searchOptions);
 		choiceBox.setOnAction(this::searchOption);
+		
+		// Loads sort by options
+		for (String option : SortBy.options()) {
+			MenuItem item = new MenuItem(option);
+			item.setOnAction(this::sortTasks);
+			sortByMenu.getItems().add(item);
+		}
 		
 		lists = User.getLists();
 		
@@ -341,7 +349,7 @@ public class ControllerLoginScene {
 		
 		task.setCompleted(taskCheckBox.isSelected());
 		
-		if(task.chekCompleted()) {
+		if(task.isCompleted()) {
 			taskCheckBox.setSelected(true);
 			taskBar.setOpacity(0.5);
 		}
@@ -353,15 +361,7 @@ public class ControllerLoginScene {
 	public void sortTasks(ActionEvent e) {
 		
 		String option = ((MenuItem)e.getSource()).getText();
-		
-		if(option.equals("Name"))
-			loadList.sortByName();
-		else if(option.equals("Created Date"))
-			loadList.sortByCreatedDate();
-		else if(option.equals("Deadline"))
-			loadList.sortByDeadline();
-		else if(option.equals("Completed"))
-			loadList.sortByCompleted();
+		loadList.sort(SortBy.fromString(option));
 		
 		tasksBox.getChildren().clear();
 		loadTasks();
@@ -472,7 +472,7 @@ public class ControllerLoginScene {
 			CheckBox taskCheckBox = taskBar.getCheckBox();
 			Button taskButton = taskBar.getButton();
 			
-			if(t.chekCompleted()) {
+			if(t.isCompleted()) {
 				taskCheckBox.setSelected(true);
 				taskBar.setOpacity(0.5);
 			}

@@ -6,7 +6,6 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
@@ -234,12 +233,6 @@
                            </font>
                         </Label>
                         <MenuButton fx:id="sortByMenu" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Sort by" visible="false">
-                          <items>
-                            <MenuItem mnemonicParsing="false" onAction="#sortTasks" text="Name" />
-                            <MenuItem mnemonicParsing="false" onAction="#sortTasks" text="Created Date" />
-                              <MenuItem mnemonicParsing="false" onAction="#sortTasks" text="Deadline" />
-                              <MenuItem mnemonicParsing="false" onAction="#sortTasks" text="Completed" />
-                          </items>
                            <HBox.margin>
                               <Insets left="5.0" right="5.0" />
                            </HBox.margin>

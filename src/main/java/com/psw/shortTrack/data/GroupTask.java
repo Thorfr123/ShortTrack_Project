@@ -2,39 +2,31 @@ package com.psw.shortTrack.data;
 
 import java.time.LocalDate;
 
+@SuppressWarnings("serial")
 public class GroupTask extends Task {
-	private static final long serialVersionUID = 8953497056843371921L;
+	// 
+	private Account assignedTo = nobody;
 	
-	private Account assignedTo;
+	public static Account nobody = new Account(null, "Nobody");
 
-	public GroupTask(String name, int id, String description, LocalDate createdDate, LocalDate deadline, Boolean completed, int groupID, Account assignedTo) {
-		super(name, id, description, createdDate, deadline, completed, groupID);
+	public GroupTask(String name, int id, String description, LocalDate createdDate, LocalDate deadline, Boolean completed, 
+						int groupID, Account assignedTo) {
 		
-		if(assignedTo == null)
-			this.assignedTo = new Account(null,"Nobody");
-		else
-			this.assignedTo = assignedTo;
+		super(name, id, description, createdDate, deadline, completed, groupID);
+		if (assignedTo != null)
+			this.assignedTo = assignedTo;		
 	}
 	
 	public GroupTask(String name, int groupID) {
 		super(name, groupID);
-		this.assignedTo = new Account(null,"Nobody");
 	}
 
-	public Account getAssignedToAccount() {
-		return assignedTo;
-	}
+	public Account getAssignedToAccount() { return assignedTo; }
 	
-	public String getAssignedToName() {
-		return assignedTo.getName();
-	}
+	public String getAssignedToName() { return assignedTo.getName(); }
 	
-	public String getAssignedToEmail() {
-		return assignedTo.getEmail();
-	}
+	public String getAssignedToEmail() { return assignedTo.getEmail(); }
 	
-	public void setAssignedTo(Account assignedTo) {
-		this.assignedTo = assignedTo;
-	}
+	public void setAssignedTo(Account assignedTo) { this.assignedTo = assignedTo; }
 
 }
