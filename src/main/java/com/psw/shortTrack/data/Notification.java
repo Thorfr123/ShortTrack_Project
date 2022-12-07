@@ -27,7 +27,6 @@ public class Notification {
 		}
 		
 		public static NotificationType getType(int id) {
-			System.out.println(id);
 			for (NotificationType t : values()) {
 				if (t.toInt() == id) {
 					return t;

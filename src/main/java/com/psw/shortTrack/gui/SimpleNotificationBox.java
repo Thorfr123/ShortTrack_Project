@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.text.Font;
 
 public class SimpleNotificationBox extends HBox {
 	
@@ -22,8 +23,9 @@ public class SimpleNotificationBox extends HBox {
      
 		setSpacing(10.0);
 		
-		// TODO: change label text
-		Label notificationText = new Label("Text");
+		Label notificationText = new Label(notification.getMessage());
+		notificationText.setFont(Font.font(14.0));
+		getChildren().add(notificationText);
 		HBox.setHgrow(notificationText,Priority.ALWAYS);
 		notificationText.setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
 		
@@ -36,6 +38,9 @@ public class SimpleNotificationBox extends HBox {
 		okButton.setMnemonicParsing(false);
 		okButton.setPrefSize(60.0, 26.0);
 		okButton.setFocusTraversable(false);
+		
+		buttons.getChildren().add(okButton);
+		getChildren().add(buttons);
 		
 		this.setPadding(new Insets(0, 5, 0, 5));
 	}
