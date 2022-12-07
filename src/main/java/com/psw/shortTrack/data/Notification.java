@@ -27,6 +27,7 @@ public class Notification {
 		}
 		
 		public static NotificationType getType(int id) {
+			System.out.println(id);
 			for (NotificationType t : values()) {
 				if (t.toInt() == id) {
 					return t;
@@ -36,14 +37,6 @@ public class Notification {
 		}
 	}
 	
-	public Notification(int id, NotificationType type, Account source, Account destination, String message) {
-		this.id = id;
-		this.type = type;
-		this.source = source;
-		this.destination = destination;		
-		this.message = message;
-	}
-	
 	public Notification(NotificationType type, Account source, Account destination, String message) {
 		this.type = type;
 		this.source = source;
@@ -51,9 +44,12 @@ public class Notification {
 		this.message = message;
 	}
 	
+	/**
+	 * Called from notification database
+	 */
 	public Notification(int id, int type, Account source, Account destination, String message) {
 		this.id = id;
-		this.type = NotificationType.getType(id);
+		this.type = NotificationType.getType(type);
 		this.source = source;
 		this.destination = destination;
 		this.message = message;
