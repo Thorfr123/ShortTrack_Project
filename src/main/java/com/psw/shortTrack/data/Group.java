@@ -2,9 +2,8 @@ package com.psw.shortTrack.data;
 
 import java.util.ArrayList;
 
+@SuppressWarnings("serial")
 public class Group extends TaskOrganizer{
-
-	private static final long serialVersionUID = 8490848681679284579L;
 	
 	private ArrayList<Account> members = new ArrayList<Account>(0);
 	private Account manager;

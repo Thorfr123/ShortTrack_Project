@@ -21,10 +21,10 @@ public class NotificationDatabase extends Database{
 	 * 
 	 * @param notif New notification to add
 	 * 
-	 * @throws AccountNotFound If at least one of the accounts (source or destination) don't exist
+	 * @throws AccountNotFoundException If at least one of the accounts (source or destination) don't exist
 	 * @throws SQLException If there is a connection error
 	 */
-	public static void createNotification(Notification notif) throws SQLException, AccountNotFound {
+	public static void createNotification(Notification notif) throws SQLException, AccountNotFoundException {
 		try {
 			
 			notif.setId(Integer.parseInt(executeQueryReturnSingleColumn(
@@ -35,7 +35,7 @@ public class NotificationDatabase extends Database{
 			
 		} catch (PSQLException psql) {
 			if (psql.getSQLState().equals(PSQLState.FOREIGN_KEY_VIOLATION.getState())) {
-				throw new AccountNotFound(psql);
+				throw new AccountNotFoundException(psql);
 			}
 			throw psql;
 		}

@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.psw.shortTrack.fileIO.FileIO;
 
-
 /*
  * Error codes uteis
  * 
@@ -31,13 +30,11 @@ public class Database {
 	
 	// Initial setup for the database
 	static {
-		// Cria uma forma de manter a conecção persistente
 		try {
 			config();
 			setup();
 		} catch (PropertyVetoException pve) {
-			System.out.println("Unreachable!");
-			pve.printStackTrace();
+			System.out.println("Database postgresql driver not found!");
 		} catch (SQLException sqle) {
 			System.out.println("Connection error in database setup");
 		}
@@ -50,7 +47,11 @@ public class Database {
 	 * @throws SQLException If a database access error occurs
 	 */
 	protected static Connection getConnection() throws SQLException {
-		return dataSource.getConnection();
+		Connection connection = dataSource.getConnection();
+		if (connection != null)
+			return connection;
+		else
+			throw new SQLException("Connection failed!");
 	}
 	
 	/**
@@ -92,35 +93,51 @@ public class Database {
 	protected static String executeQueryReturnSingleColumn(String query) throws SQLException{
 		
 		try (Connection connection = getConnection()){
-			if (connection != null) {
-				Statement stmt = connection.createStatement();
-				ResultSet rs = stmt.executeQuery(query);
-				if (rs.next()) {
-					return rs.getString(1);
-				}
-			} else {
-				throw new SQLException("Connection failed!");
-			}
+			
+			Statement stmt = connection.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			
+			return (rs.next() ? rs.getString(1) : null);
 		}
-		
-		return null;
+
 	}
 	
+	/**
+	 * Executes a query to the database and returns the first column of the response as a boolean
+	 * 
+	 * @param query SQL code to execute
+	 * @return Boolean - Response
+	 * 
+	 * @throws SQLException If a database access error occurs 
+	 */
 	protected static boolean executeQueryReturnBoolean(String query) throws SQLException {
 		
 		try (Connection connection = getConnection()){
-			if (connection != null) {
-				Statement stmt = connection.createStatement();
-				ResultSet rs = stmt.executeQuery(query);
-				if (rs.next()) {
-					return rs.getBoolean(1);
-				}
-			} else {
-				throw new SQLException("Connection failed!");
-			}
+				
+			Statement stmt = connection.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			
+			return (rs.next() ? rs.getBoolean(1) : false);
 		}
+	}
+	
+	/**
+	 * Executes a query to the database and returns the first column of the response as a boolean
+	 * 
+	 * @param query SQL code to execute
+	 * @return Boolean - Response
+	 * 
+	 * @throws SQLException If a database access error occurs 
+	 */
+	protected static int executeQueryReturnInt(String query) throws SQLException {
 		
-		return false;
+		try (Connection connection = getConnection()){
+				
+			Statement stmt = connection.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			
+			return (rs.next() ? rs.getInt(1) : -1);
+		}
 	}
 	
 	/**
@@ -135,12 +152,10 @@ public class Database {
 	protected static int executeUpdate(String query) throws SQLException{
 		
 		try (Connection connection = getConnection()){
-			if (connection != null) {
-				Statement stmt = connection.createStatement();
-				return stmt.executeUpdate(query);
-			} else {
-				throw new SQLException("Connection failed!");
-			}
+			
+			Statement stmt = connection.createStatement();
+			
+			return stmt.executeUpdate(query);
 		}
 		
 	}
@@ -153,6 +168,7 @@ public class Database {
 	 */
 	private static void setup() throws SQLException {		
 		String query = FileIO.readDatabaseSetup();
+		
 		if (query == null || query.isBlank()) {
 			System.out.println("Couldn't read the database setup local file");
 			return;
@@ -228,20 +244,6 @@ public class Database {
 		}
 		
 		return str + "}'";
-	}
-	
-	/**
-	 * Returns true if all string are not null and not empty. False otherwise
-	 * 
-	 * @param AllParams
-	 * @return
-	 */
-	protected static boolean checkStringParams(String ...AllParams) {
-		for (String s : AllParams) {
-			if (s == null || s.isBlank())
-				return false;
-		}
-		return true;
 	}
 }
 

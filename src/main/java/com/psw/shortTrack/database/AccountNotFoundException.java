@@ -4,21 +4,21 @@ import org.postgresql.util.PSQLException;
 import org.postgresql.util.PSQLState;
 
 @SuppressWarnings("serial")
-public class AccountNotFound extends PSQLException {
+public class AccountNotFoundException extends PSQLException {
 
-	public AccountNotFound() {
+	public AccountNotFoundException() {
 		super("Account was deleted", PSQLState.FOREIGN_KEY_VIOLATION);
 	}
 	
-	public AccountNotFound(String msg) {
+	public AccountNotFoundException(String msg) {
 		super(msg, PSQLState.FOREIGN_KEY_VIOLATION);
 	}
 
-	public AccountNotFound(String msg, Throwable cause) {
+	public AccountNotFoundException(String msg, Throwable cause) {
 		super(msg, PSQLState.FOREIGN_KEY_VIOLATION, cause);
 	}
 	
-	public AccountNotFound(Throwable cause) {
+	public AccountNotFoundException(Throwable cause) {
 		super("Account was deleted", PSQLState.FOREIGN_KEY_VIOLATION, cause);
 	}
 

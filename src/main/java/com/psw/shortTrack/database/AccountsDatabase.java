@@ -19,23 +19,28 @@ public class AccountsDatabase extends Database{
 	 * @throws SQLException If there's a network error
 	 */
 	public static boolean checkLogin(String email, String password) throws SQLException{
+		
 		return executeQueryReturnBoolean(
-			"SELECT EXISTS (SELECT 1 FROM projeto.account WHERE email=" + toSQL((String)email)
-			+ " AND password=" + toSQL((String)password) + ");"
+			"SELECT EXISTS (SELECT 1 FROM projeto.account\r\n"
+			+ "WHERE email=" + toSQL((String)email) + " AND password=" + toSQL((String)password) + ");"
 		);
+		
 	}
 	
 	/**
-	 * Checks if the email is already in use
+	 * Checks if the email is already in use.
+	 * It doesn't verify consistency of the email, for example, if you try to check with email "example" it will return true.
 	 * 
 	 * @param email String with user's email
 	 * @return True - This email is available; False - This email is already in use
 	 * @throws SQLException If there is a network error
 	 */
 	public static boolean checkEmail(String email) throws SQLException{
+		
 		return executeQueryReturnBoolean(
 			"SELECT NOT EXISTS(SELECT 1 FROM projeto.account WHERE email=" + toSQL((String)email) + ");"
 		);
+		
 	}
 	
 	/**
@@ -48,36 +53,35 @@ public class AccountsDatabase extends Database{
 	public static boolean createAccount(Account account, String password) throws SQLException {
 		
 		try {
-			// It either returns true or throws psqlexception because of the email
+			
 			return (executeUpdate(
 				"INSERT INTO projeto.account (email, password, name)\r\n"
 				+ "VALUES (" + toSQL((String)account.getEmail()) + "," + toSQL((String)password) + "," 
 				+ toSQL((String)account.getName()) + ");"
 			) > 0);
+			
 		} catch (PSQLException sqle) {
 			if (sqle.getSQLState().equals(PSQLState.UNIQUE_VIOLATION.getState())) {
-				/* XXX: Neste caso o error code corresponde ao 23505 que significa uma violação de primary key (unique violation)
-				/* Este erro só acontece quando o email já existe. 
-				 * Assim, podemos apenas usar esta função para criar conta, nao sendo necessário verificar se o email existe */
 				return false;
 			}
-			System.out.println("AccountsDatabase : createAccount : Unreachable code!");
 			throw sqle;
 		}
 	}
 	
 	/**
 	 * Deletes an account from the database.
-	 * If it returns false, it means the email doesn't exist or some unknown error.
+	 * If it returns false, it means the email doesn't exist.
 	 * 
 	 * @param email String with user's email
 	 * @return Either (True) If it succeeds or (False) If it fails (Account didn't exist)
 	 * @throws SQLException If there is a network error
 	 */
 	public static boolean deleteAccount(String email) throws SQLException {
+		
 		return (executeUpdate(
 			"DELETE FROM projeto.account WHERE email=" + toSQL((String)email) + ";"
 		) > 0);
+		
 	}
 	
 	/**
@@ -88,20 +92,20 @@ public class AccountsDatabase extends Database{
 	 * @throws SQLException If there is a network error
 	 */
 	public static Account getAccount (String email) throws SQLException{
+		
 		try (Connection connection = getConnection()){
-			if (connection != null) {
-					Statement stmt = connection.createStatement();
-					ResultSet rs = stmt.executeQuery(
-						"SELECT name FROM projeto.account WHERE email=" + toSQL((String)email) + ";"
-					);
-					if (rs.next()) {
-						return new Account( email, rs.getString("name"));
-					}
-			} else {
-				throw new SQLException("Connection failed");
-			}
+			
+			Statement stmt = connection.createStatement();
+			ResultSet rs = stmt.executeQuery(
+				"SELECT name FROM projeto.account WHERE email=" + toSQL((String)email) + ";"
+			);
+			
+			if (rs.next())
+				return new Account(email, rs.getString("name"));
+			else
+				return null;
 		}
-		return null;
+		
 	}
 	
 	/**
@@ -115,10 +119,12 @@ public class AccountsDatabase extends Database{
 	 * @throws SQLException If there is a network error
 	 */
 	public static boolean changePassword(String email, String old_password, String new_password) throws SQLException{
+		
 		return (executeUpdate(
 			"UPDATE projeto.account SET password=" + toSQL((String)new_password) + "\r\n"
 			+"WHERE email="+ toSQL((String)email) + " AND password=" + toSQL((String)old_password) + ";"
 		) > 0);
+	
 	}
 	
 	/**
@@ -130,12 +136,15 @@ public class AccountsDatabase extends Database{
 	 * 
 	 * @throws SQLException If there is a network error
 	 */
-	public static boolean changeName(String email, String new_name) throws SQLException {		
+	public static boolean changeName(String email, String new_name) throws SQLException {
+		
 		return (executeUpdate(
 			"UPDATE projeto.account SET name=" + toSQL((String)new_name) + " WHERE email=" + toSQL((String)email) + ";"
 		) > 0);
+		
 	}
 
+	// TODO: Exception when new email is in use
 	/**
 	 * Changes the email of the user in the database.
 	 * 
@@ -146,10 +155,17 @@ public class AccountsDatabase extends Database{
 	 * @throws PSQLException (UNIQUE_VIOLATION) If new email is already in use
 	 * @throws SQLException If there is a network error
 	 */
-	public static boolean changeEmail(String email, String newEmail) throws PSQLException, SQLException{
-		return (executeUpdate(
-			"UPDATE projeto.account SET email=" + toSQL((String)newEmail) + " WHERE email=" + toSQL((String)email) + ";"
-			+ "UPDATE projeto.groups SET members=(SELECT array_replace(members," + toSQL((String)email) + "," + toSQL((String)newEmail) + "));"
-		) > 0);
+	public static boolean changeEmail(String email, String newEmail) throws AccountNotFoundException, SQLException{
+		try {
+			return (executeUpdate(
+				"UPDATE projeto.account SET email=" + toSQL((String)newEmail) + " WHERE email=" + toSQL((String)email) + ";"
+				+ "UPDATE projeto.groups SET members=(SELECT array_replace(members," + toSQL((String)email) + "," + toSQL((String)newEmail) + "));"
+			) > 0);
+		} catch (PSQLException psql) {
+			if (psql.getSQLState().equals(PSQLState.UNIQUE_VIOLATION.getState())) {
+				throw new AccountNotFoundException();
+			}
+			throw psql;
+		}
 	}
 }

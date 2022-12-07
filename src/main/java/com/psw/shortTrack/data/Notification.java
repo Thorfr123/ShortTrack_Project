@@ -7,13 +7,6 @@ public class Notification {
 	private String message;
 	private Group group;
 	
-	/*
-	 * Code = 0
-	 * Source = Conta Teste (teste)
-	 * Destination = Conta FFF (ggg@gmail.com)
-	 * Message = Conta Teste invited you to the group Group 1 (Accept) (Decline)
-	 */
-	
 	public enum NotificationType {
 		invitateToGroup(1),
 		removedFromGroup(2),

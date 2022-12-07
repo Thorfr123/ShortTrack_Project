@@ -13,16 +13,14 @@ import com.psw.shortTrack.data.Task;
 public class GroupsDatabase extends Database{
 
 	/**
-	 * TODO: Refactor return
-	 * 
-	 * Creates a new group in the database. Returns the groups' id
+	 * Creates a new group in the database. Updates the groups' id
 	 * 
 	 * @param group Group that you want to add in the database
-	 * @return Group id
 	 * 
 	 * @throws SQLException If a database access error occurs
 	 */
 	public static void createGroup(Group group) throws SQLException {
+		
 		group.setID(Integer.parseInt(executeQueryReturnSingleColumn(
 					"INSERT INTO projeto.groups (name, manager, members)\r\n"
 			   		+ "VALUES (" + toSQL((String)group.getName()) + "," + toSQL((String)group.getManagerEmail()) + "," 
@@ -31,6 +29,7 @@ public class GroupsDatabase extends Database{
 		   		)
 			)
 		);
+		
 	}
 	
 	/**
@@ -42,37 +41,33 @@ public class GroupsDatabase extends Database{
 	 * @throws SQLException If a database access error occurs
 	 */
 	public static boolean deleteGroup(int id) throws SQLException {
+		
 		return (executeUpdate(
 			"DELETE FROM projeto.groups WHERE id=" + toSQL(id) + ";"
 		) > 0);
+		
 	}
 	
 	/**
 	 * Returns every groups with the user's email, as a manager or as a member.
-	 * If the user is the manager, it also returns all the tasks of that one group.
+	 * If the user is the manager, it returns all the tasks of that group.
 	 * If the user is only a member, it only returns the tasks assigned to him.
 	 * 
 	 * @param email String with user's email
 	 * @return ArrayList every group with the user's email
+	 * 
 	 * @throws SQLException If a database access error occurs
 	 */
 	public static ArrayList<Group> getAllGroups(Account user) throws SQLException {
 		
 		try (Connection connection = getConnection()) {
-			if (connection == null) {
-				throw new SQLException("Connection error");
-			}
+
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(
 				"SELECT id, groups.name, members, account.email AS manager_email, account.name AS manager_name\r\n"
 				+ "FROM projeto.groups JOIN projeto.account ON manager=email\r\n"
 				+ "WHERE manager=" + toSQL((String)user.getEmail()) + " OR " + toSQL((String)user.getEmail()) + "=ANY(members);"
 			);
-			/*
-			 * 	SELECT id, groups.name, members, account.email AS manager_email, account.name AS manager_name
-   					FROM projeto.groups, projeto.account
-      					WHERE manager=email AND (manager='ggg@gmail.com' OR 'ggg@gmail.com'=ANY(members));
-			 */
 			
 			ArrayList<Group> all_groups = new ArrayList<Group>();
 			while (rs.next()) {
