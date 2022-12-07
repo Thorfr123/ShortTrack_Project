@@ -65,5 +65,24 @@ public class Group extends TaskOrganizer{
 	public void setMembers(ArrayList<Account> members) {
 		this.members = members;
 	}
+	
+	public void addMember(Account newMember) {
+
+		for (Account acc : members) {
+			if (acc.getEmail().equals(newMember.getEmail())) {
+				return;
+			}
+		}
+		members.add(newMember);
+	}
+	
+	public void removeMember(Account member) {
+		
+		for (Account acc : members) {
+			if (acc.getEmail().equals(member.getEmail())) {
+				members.remove(acc);
+			}
+		}
+	}
 
 }

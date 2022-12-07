@@ -5,6 +5,7 @@ public class Notification {
 	private NotificationType type;
 	private Account source, destination;
 	private String message;
+	private Group group;
 	
 	/*
 	 * Code = 0
@@ -15,7 +16,9 @@ public class Notification {
 	
 	public enum NotificationType {
 		invitateToGroup(1),
-		removedFromGroup(2);
+		removedFromGroup(2),
+		leftGroup(3),
+		acceptedInviteToGroup(4);
 
 		private final int type;
 		NotificationType(final int newType) {
@@ -36,22 +39,39 @@ public class Notification {
 		}
 	}
 	
-	public Notification(NotificationType type, Account source, Account destination, String message) {
+	/**
+	 * Called when we create a new notification
+	 */
+	public Notification(NotificationType type, Account source, Account destination, Group group) {
 		this.type = type;
 		this.source = source;
 		this.destination = destination;
-		this.message = message;
+		this.group = group;
+		
+		switch (type) {
+		case invitateToGroup:
+			this.message = this.source.getName() + " invited you to the group " + group.getName();
+			break;
+		case removedFromGroup:
+			this.message = this.source.getName() + " removed you from the group " + group.getName();
+			break;
+		case leftGroup:
+			this.message = this.source.getName() + " left the group " + group.getName();
+			break;
+		case acceptedInviteToGroup:
+			this.message = this.source.getName() + " accepted your invitation to enter group " + group.getName();
+			break;
+		default:
+			this.message = "Notification without purpose";
+		}
 	}
 	
 	/**
 	 * Called from notification database
 	 */
-	public Notification(int id, int type, Account source, Account destination, String message) {
+	public Notification(int id, int type, Account source, Account destination, String group_name, int group_id) {
+		this (NotificationType.getType(type), source, destination, new Group(group_name, null, group_id));
 		this.id = id;
-		this.type = NotificationType.getType(type);
-		this.source = source;
-		this.destination = destination;
-		this.message = message;
 	}
 	
 	public String getMessage() {
@@ -81,5 +101,13 @@ public class Notification {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	public int getGroup_id() {
+		return group.getID();
+	}
+	
+	public Group getGroup() {
+		return group;
 	}
 }

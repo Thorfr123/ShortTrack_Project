@@ -134,7 +134,7 @@ ALTER TABLE projeto.notifications ADD COLUMN IF NOT EXISTS id integer NOT NULL;
 ALTER TABLE projeto.notifications ADD COLUMN IF NOT EXISTS type integer NOT NULL;
 ALTER TABLE projeto.notifications ADD COLUMN IF NOT EXISTS source character varying (254);
 ALTER TABLE projeto.notifications ADD COLUMN IF NOT EXISTS destination character varying (254);
-ALTER TABLE projeto.notifications ADD COLUMN IF NOT EXISTS message character varying (256);
+ALTER TABLE projeto.notifications ADD COLUMN IF NOT EXISTS group_id integer NOT NULL;
 CREATE SEQUENCE IF NOT EXISTS projeto.notifications_id_seq
 	AS integer
 	START WITH 1
@@ -159,5 +159,10 @@ BEGIN
 	IF (SELECT NOT EXISTS(SELECT 1 FROM pg_catalog.pg_constraint WHERE conname='notifications_destination_fkey')) THEN
 		ALTER TABLE ONLY projeto.notifications ADD CONSTRAINT notifications_destination_fkey FOREIGN KEY (destination)
 			REFERENCES projeto.account (email) ON DELETE CASCADE ON UPDATE CASCADE;
+	END IF;
+	-- Adiciona a referencia do group id ao grupo
+	IF (SELECT NOT EXISTS(SELECT 1 FROM pg_catalog.pg_constraint WHERE conname='notifications_group_id_fkey')) THEN
+		ALTER TABLE ONLY projeto.notifications ADD CONSTRAINT notifications_group_id_fkey FOREIGN KEY (group_id)
+			REFERENCES projeto.groups (id) ON DELETE CASCADE;
 	END IF;
 END $$;

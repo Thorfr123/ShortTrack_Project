@@ -2,14 +2,16 @@ package com.psw.shortTrack.gui;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collections;
 
 import com.psw.shortTrack.data.Account;
 import com.psw.shortTrack.data.Group;
+import com.psw.shortTrack.data.Notification;
 import com.psw.shortTrack.data.User;
+import com.psw.shortTrack.data.Notification.NotificationType;
 import com.psw.shortTrack.database.AccountsDatabase;
 import com.psw.shortTrack.database.GroupsDatabase;
+import com.psw.shortTrack.database.NotificationDatabase;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -43,9 +45,6 @@ public class ControllerEditGroupScene {
 	private HBox memberButtonsBox;
 	
 	private Group group;
-	private ArrayList<Account> membersToAdd = new ArrayList<Account>(0);
-	private ArrayList<Account> membersToRemove = new ArrayList<Account>(0);
-	private ArrayList<Account> newMembersList = new ArrayList<Account>(0);
 	
 	public void initData(Group group) {
 
@@ -53,7 +52,6 @@ public class ControllerEditGroupScene {
 		
 		groupNameField.setText(group.getName());
 		
-		newMembersList.addAll(group.getMemberAccounts());
 		memberList.getItems().addAll(group.getMemberAccounts());
 		
 		if(!group.getManagerEmail().equals(User.getAccount().getEmail())) {
@@ -103,24 +101,25 @@ public class ControllerEditGroupScene {
 		String newGroupName = groupNameField.getText();
 		
 		if(newGroupName.isBlank()) {
-			showNotification("The Group needs a name!");
+			showNotification("The Group needs a name!", true);
 			groupNameField.getStyleClass().add("error");
 			return;
+		}
+		else if (newGroupName.equals(group.getName())) {
+			App.loadMainScene();
 		}
 		
 		Group g = User.checkGroupName(newGroupName);
 		if ((g != null) && (g != group)) {
-			showNotification("Already exist a group with that name!");
+			showNotification("Already exist a group with that name!", true);
 			return;
 		}
 		
 		if(User.isLogedIn()) {
-			try {			
-				for(Account a : membersToRemove)
-					GroupsDatabase.removeMember(group.getID(), a);
+			try {
 				
-				GroupsDatabase.updateGroup(group.getID(),newGroupName,newMembersList);
-				
+				GroupsDatabase.changeName(group.getID(),newGroupName);
+
 			} catch (SQLException exception) {
 				App.connectionErrorMessage();
 				return;
@@ -128,7 +127,6 @@ public class ControllerEditGroupScene {
 		}
 
 		group.setName(newGroupName);
-		group.setMembers(newMembersList);
 		
 		App.loadMainScene();
 		
@@ -158,6 +156,9 @@ public class ControllerEditGroupScene {
 		
 		removeErrorNotifications();
 		try {
+			
+			Notification leave = new Notification(NotificationType.leftGroup, User.getAccount(), group.getManagerAccount(), group);
+			NotificationDatabase.createNotification(leave);
 			GroupsDatabase.removeMember(group.getID(), User.getAccount());
 			
 		} catch (SQLException exception) {
@@ -180,50 +181,45 @@ public class ControllerEditGroupScene {
 		memberTextField.clear();
 		
 		String errorNotification;
-		if((errorNotification = Account.checkValidEmail(newMember)) != null) {
-			showNotification(errorNotification);
+		if ((errorNotification = Account.checkValidEmail(newMember)) != null) {
+			showNotification(errorNotification, true);
+			memberTextField.getStyleClass().add("error");
+			return;
+		}
+		else if (newMember.equals(group.getManagerEmail())) {
+			showNotification("This account is the manager of this group!", true);
+			memberTextField.getStyleClass().add("error");
+			return;
+		}
+		else if (group.getMemberEmails().contains(newMember)) {
+			showNotification("This account is already in the group!", true);
 			memberTextField.getStyleClass().add("error");
 			return;
 		}
 		
-		if(newMember.equals(group.getManagerEmail())) {
-			showNotification("This account is the manager of this group!");
-			memberTextField.getStyleClass().add("error");
-			return;
-		}
-		
-		boolean sameMember = false;
-		for(Account a: membersToAdd) {
-			if(a.getEmail().equals(newMember)) {
-				sameMember = true;
-				break;
-			}	
-		}
-		
-		if(group.getMemberEmails().contains(newMember) || sameMember) {
-			showNotification("This member already belongs to this group!");
-			memberTextField.getStyleClass().add("error");
-			return;
-		}
-		
-		Account newMemberAccount;
-		try {
-			newMemberAccount = AccountsDatabase.getAccount(newMember);
-		} catch (SQLException exception) {
+		try {			
+			Account newMemberAccount = AccountsDatabase.getAccount(newMember);
+			if (newMemberAccount == null) {
+				showNotification("There is no account with this email!", true);
+				memberTextField.getStyleClass().add("error");
+				return;
+			}
+			
+			if (NotificationDatabase.checkInvitation(newMember, group.getID())) {
+				showNotification("You have already sent an invitation to " + newMemberAccount.toString() + "!", true);
+				memberTextField.getStyleClass().add("error");
+				return;
+			}
+			
+			Notification invite = new Notification(NotificationType.invitateToGroup, User.getAccount(), newMemberAccount, group);
+			NotificationDatabase.createNotification(invite);
+			
+			showNotification("Invitation sent to " + newMemberAccount.toString(), false);
+			
+		} catch (SQLException sqle) {
 			App.connectionErrorMessage();
 			return;
 		}
-		
-		if(newMemberAccount == null) {
-			showNotification("There is no account with this email!");
-			memberTextField.getStyleClass().add("error");
-			return;
-		}
-
-		memberList.getItems().add(newMemberAccount);
-		membersToAdd.add(newMemberAccount);
-		
-		newMembersList.add(newMemberAccount);
 		
 	}
 	
@@ -235,21 +231,30 @@ public class ControllerEditGroupScene {
 		if(memberToRemove == null)
 			return;
 		
+		try {
+			
+			GroupsDatabase.removeMember(group.getID(), memberToRemove);
+			Notification remove = new Notification(NotificationType.removedFromGroup, User.getAccount(), memberToRemove, group);
+			NotificationDatabase.createNotification(remove);
+			
+		} catch (SQLException sqle) {
+			App.connectionErrorMessage();
+			return;
+		}
+		
+		//group.removeMember(memberToRemove);
+		
 		memberList.getItems().remove(memberToRemove);
 		
-		if(membersToAdd.contains(memberToRemove))
-			membersToAdd.remove(memberToRemove);
-		else
-			membersToRemove.add(memberToRemove);
+		showNotification("You have successfully removed " + memberToRemove.toString(), false);
 		
-		newMembersList.remove(memberToRemove);
 	}
 	
-	private void showNotification(String notification) {
+	private void showNotification(String notification, boolean error) {
 		
 		notificationLabel.setText(notification);
-		notificationLabel.setTextFill(Color.RED);
-		notificationLabel.setVisible(true);
+		notificationLabel.setTextFill(error ? Color.RED : Color.GREEN);
+		notificationLabel.setVisible(true);		
 		
 	}
 	

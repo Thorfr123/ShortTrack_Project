@@ -109,26 +109,26 @@ public class GroupsDatabase extends Database{
 			return all_groups;
 		}
 	}
-	
+	//TODO: change to changeName
 	/**
 	 * Updates, in the database, the name and members in a group
-	 * 
+	 *
 	 * @param id Integer with group's id
 	 * @param newGroupName String with group's new name
 	 * @param newMembers ArrayList(Account) with members' accounts
 	 * @return (True) Success; (False) Error
 	 * @throws SQLException If a database access error occurs
 	 */
-	public static boolean updateGroup(int id, String newGroupName, ArrayList<Account> newMembers) throws SQLException {
+	public static boolean changeName(int id, String newGroupName) throws SQLException {
 		
-		ArrayList<String> members = new ArrayList<String>(0);
+		/*ArrayList<String> members = new ArrayList<String>(0);
 		for(Account a : newMembers) {
 			members.add(a.getEmail());
-		}
+		}*/
 		
 		return (executeUpdate(
-			"UPDATE projeto.groups SET name=" + toSQL((String)newGroupName) + ", members=" + toSQL((ArrayList<String>)members) + "\r\n"
-			+ "WHERE id=" + toSQL(id) + ";"
+			"UPDATE projeto.groups SET name=" + toSQL((String)newGroupName) //+ ", members=" + toSQL((ArrayList<String>)members) + "\r\n"
+			+ " WHERE id=" + toSQL(id) + ";"
 		) > 0);
 	}
 	

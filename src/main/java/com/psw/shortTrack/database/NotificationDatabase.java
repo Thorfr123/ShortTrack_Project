@@ -11,6 +11,7 @@ import org.postgresql.util.PSQLState;
 
 import com.psw.shortTrack.data.Account;
 import com.psw.shortTrack.data.Notification;
+import com.psw.shortTrack.data.Notification.NotificationType;
 
 public class NotificationDatabase extends Database{
 
@@ -27,9 +28,9 @@ public class NotificationDatabase extends Database{
 		try {
 			
 			notif.setId(Integer.parseInt(executeQueryReturnSingleColumn(
-					"INSERT INTO projeto.notifications (type, source, destination, message)\r\n"
+					"INSERT INTO projeto.notifications (type, source, destination, group_id)\r\n"
 					+ "VALUES (" + toSQL((int)notif.getTypeAsInt()) + "," + toSQL((String)notif.getSource().getEmail()) + "," 
-					+ toSQL((String)notif.getDestination().getEmail()) + "," + toSQL((String)notif.getMessage()) + ")\r\n"
+					+ toSQL((String)notif.getDestination().getEmail()) + "," + toSQL(notif.getGroup_id()) + ")\r\n"
 					+ "RETURNING id;")));
 			
 		} catch (PSQLException psql) {
@@ -69,25 +70,41 @@ public class NotificationDatabase extends Database{
 			
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(
-				"SELECT id, type, source, message FROM projeto.notifications WHERE destination=" + toSQL((String)user.getEmail()) + ";"
+				"SELECT notifications.id, type, source, group_id, groups.name AS group_name\r\n"
+				+ "FROM projeto.notifications JOIN projeto.groups ON group_id=groups.id\r\n"
+				+ "WHERE destination=" + toSQL((String)user.getEmail()) + ";"
 			);
 			
 			ArrayList<Notification> allNotif = new ArrayList<Notification>();
 			
 			while (rs.next()) {
-				Account dest = AccountsDatabase.getAccount(rs.getString("source"));
-				if (dest == null) {
+				Account source = AccountsDatabase.getAccount(rs.getString("source"));
+				if (source == null) {
 					continue;
 				}
 				
 				allNotif.add(new Notification(	rs.getInt("id"),
 												rs.getInt("type"),
-												dest,
+												source,
 												user,
-												rs.getString("message")));
+												rs.getString("group_name"),
+												rs.getInt("group_id")));
 			}
 			return allNotif;
+		} catch (SQLException sqle) {
+			System.out.println(sqle);
+			throw sqle;
 		}
+		
+	}
+	
+	//TODO: check notification
+	public static boolean checkInvitation(String destination, int group_id) throws SQLException {
+		
+		return executeQueryReturnBoolean(
+				"SELECT EXISTS (SELECT 1 FROM projeto.notifications "
+				+ "WHERE type=" + toSQL(NotificationType.invitateToGroup.toInt()) +"AND destination=" + toSQL((String)destination) + " AND group_id=" + group_id + ");"
+		);
 		
 	}
 }

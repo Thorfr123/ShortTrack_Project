@@ -1,52 +1,46 @@
 package com.psw.shortTrack.gui;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.sql.SQLException;
 
 import com.psw.shortTrack.data.Notification;
 import com.psw.shortTrack.data.Notification.NotificationType;
 import com.psw.shortTrack.data.User;
+import com.psw.shortTrack.database.GroupsDatabase;
+import com.psw.shortTrack.database.NotificationDatabase;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 public class ControllerNotificationScene {
 	
 	@FXML
-	VBox notificationList;
-	
-	ArrayList<Notification> notifications;
+	private VBox notificationList;
 	
 	@FXML
     public void initialize() {
 		
-		notifications = User.getNotifications();
-		
-		for(Notification n : notifications) {
+		for(Notification notification : User.getNotifications()) {
 			
-			if(n.getType() == NotificationType.invitateToGroup) {
-				InviteNotificationBox notificationBar = new InviteNotificationBox(n);
-				Button acceptButton = notificationBar.getAcceptButton();
-				Button refuseButton = notificationBar.getRefuseButton();
+			if(notification.getType() == NotificationType.invitateToGroup) {
+				InviteNotificationBox notificationBar = new InviteNotificationBox(notification);
 				
-				acceptButton.setOnAction(event -> {
-					accept(event);
+				notificationBar.getAcceptButton().setOnAction(event -> {
+					accept(notification, notificationBar);
 		        });
-				refuseButton.setOnAction(event -> {
-					decline(event);
+				notificationBar.getRefuseButton().setOnAction(event -> {
+					decline(notification, notificationBar);
 		        });
 				
 				notificationList.getChildren().add(notificationBar);
 				
 			}
-			else if(n.getType() == NotificationType.removedFromGroup) {
-				SimpleNotificationBox notificationBar = new SimpleNotificationBox(n);
-				Button okButton = notificationBar.getOkButton();
+			else {
+				SimpleNotificationBox notificationBar = new SimpleNotificationBox(notification);
 				
-				okButton.setOnAction(event -> {
-					ok(event);
+				notificationBar.getOkButton().setOnAction(event -> {
+					ok(notification, notificationBar);
 		        });
 				
 				notificationList.getChildren().add(notificationBar);
@@ -54,27 +48,55 @@ public class ControllerNotificationScene {
 		}
     }
 	
-	public void close(ActionEvent e) throws IOException {
+	public void close() throws IOException {
 		
 		App.loadMainScene();
 		
 	}
 	
-	public void ok(ActionEvent e) {
+	public void ok(Notification notification, HBox notificationBar) {
 		
-		System.out.println("ok - Not Working!");
+		try {
+			deleteNotification(notification, notificationBar);
+		} catch (SQLException e) {
+			App.connectionErrorMessage();
+			return;
+		}
 		
 	}
 	
-	public void accept(ActionEvent e) {
+	public void accept(Notification notification, HBox notificationBar) {
 		
-		System.out.println("accept - Not Working!");
+		try {
+			
+			GroupsDatabase.addMember(notification.getGroup_id(), User.getAccount());
+			deleteNotification(notification, notificationBar);
+			
+			Notification accepted = new Notification(NotificationType.acceptedInviteToGroup, User.getAccount(), notification.getSource(), notification.getGroup());
+			NotificationDatabase.createNotification(accepted);
+			
+		} catch (SQLException sqle) {
+			App.connectionErrorMessage();
+			return;
+		}
 		
 	}
 
-	public void decline(ActionEvent e) {
+	public void decline(Notification notification, HBox notificationBar) {
 		
-		System.out.println("decline - Not Working!");
+		try {
+			deleteNotification(notification, notificationBar);
+		} catch (SQLException e) {
+			App.connectionErrorMessage();
+			return;
+		}
+		
+	}
+	
+	private void deleteNotification(Notification notification, HBox notificationBar) throws SQLException{
+		
+		NotificationDatabase.deleteNotification(notification.getId());
+		notificationList.getChildren().remove(notificationBar);
 		
 	}
 	
