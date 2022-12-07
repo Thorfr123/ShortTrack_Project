@@ -169,7 +169,7 @@ public class ControllerEditAccountScene {
 					}
 				}
 			} catch (SQLException sqle) {
-				showNotification("Error! Please, check your connection");
+				App.connectionErrorMessage();
 				return;
 			}
 			
@@ -223,7 +223,7 @@ public class ControllerEditAccountScene {
     		}
     	}
     	catch (SQLException sqle) {
-    		showNotification("Error! Please, check your connection.");
+    		App.connectionErrorMessage();
     		return;
     	}
     	
@@ -295,7 +295,7 @@ public class ControllerEditAccountScene {
 				return;
 			}
 		} catch (SQLException e1) {
-			showNotification("Error! Please, check your connection");
+			App.connectionErrorMessage();
 			return;
 		}
     	
@@ -374,8 +374,7 @@ public class ControllerEditAccountScene {
 			}
 		}
 		catch (SQLException sqle) {
-			System.out.println(sqle);
-			showNotification("Error! Please, check your connection");
+			App.connectionErrorMessage();
 			return;
 		}
 		

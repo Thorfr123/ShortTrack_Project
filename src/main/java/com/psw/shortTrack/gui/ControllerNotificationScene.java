@@ -33,6 +33,9 @@ public class ControllerNotificationScene {
 		}
 		
 		for(Notification n : notifications) {
+			
+			System.out.println(n.getType());
+			
 			if(n.getType() == NotificationType.invitateToGroup) {
 				InviteNotificationBox notificationBar = new InviteNotificationBox(n);
 				Button acceptButton = notificationBar.getAcceptButton();

@@ -16,6 +16,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 
 public class App extends Application {
@@ -125,6 +128,18 @@ public class App extends Application {
 		} catch (IOException e) {
 			System.out.println("Erro a tentar escrever o ficheiro de backup local!");
 		}
+		
+	}
+	
+	public static void connectionErrorMessage() {
+		
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle("Connection Error");
+		alert.setHeaderText("The connection to the database was lost!");
+		alert.setContentText("Error! Please, check your connection");
+
+		if(alert.showAndWait().get() == ButtonType.OK)
+			return;
 		
 	}
 	

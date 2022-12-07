@@ -83,7 +83,7 @@ public class ControllerEditGroupScene {
 			try {
 				GroupsDatabase.deleteGroup(group.getID());
 			} catch (SQLException exception) {
-				showNotification("Error! Please, check your connection");
+				App.connectionErrorMessage();
 				return;
 			}
 			
@@ -122,7 +122,7 @@ public class ControllerEditGroupScene {
 				GroupsDatabase.updateGroup(group.getID(),newGroupName,newMembersList);
 				
 			} catch (SQLException exception) {
-				showNotification("Error! Please, check your connection");
+				App.connectionErrorMessage();
 				return;
 			}
 		}
@@ -143,7 +143,7 @@ public class ControllerEditGroupScene {
 			try {
 				GroupsDatabase.deleteGroup(group.getID());
 			} catch (SQLException exception) {
-				showNotification("Error! Please, check your connection");
+				App.connectionErrorMessage();
 				return;
 			}
 			User.getGroups().remove(group);
@@ -161,7 +161,7 @@ public class ControllerEditGroupScene {
 			GroupsDatabase.removeMember(group.getID(), User.getAccount());
 			
 		} catch (SQLException exception) {
-			showNotification("Error! Please, check your connection");
+			App.connectionErrorMessage();
 			return;
 		}
 		
@@ -210,7 +210,7 @@ public class ControllerEditGroupScene {
 		try {
 			newMemberAccount = AccountsDatabase.getAccount(newMember);
 		} catch (SQLException exception) {
-			showNotification("Error! Please, check your connection");
+			App.connectionErrorMessage();
 			return;
 		}
 		

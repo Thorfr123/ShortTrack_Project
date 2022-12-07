@@ -10,6 +10,7 @@ import com.psw.shortTrack.data.Account;
 import com.psw.shortTrack.data.Group;
 import com.psw.shortTrack.data.GroupTask;
 import com.psw.shortTrack.data.List;
+import com.psw.shortTrack.data.Notification;
 import com.psw.shortTrack.data.PersonalTask;
 import com.psw.shortTrack.data.SearchList;
 import com.psw.shortTrack.data.Task;
@@ -17,6 +18,7 @@ import com.psw.shortTrack.data.TaskOrganizer;
 import com.psw.shortTrack.data.User;
 import com.psw.shortTrack.database.GroupTasksDatabase;
 import com.psw.shortTrack.database.GroupsDatabase;
+import com.psw.shortTrack.database.NotificationDatabase;
 import com.psw.shortTrack.database.PersonalListsDatabase;
 import com.psw.shortTrack.database.PersonalTasksDatabase;
 
@@ -90,6 +92,7 @@ public class ControllerLogoutScene {
 	
 	private static ArrayList<List> lists;
 	private static ArrayList<Group> groups;
+	private static ArrayList<Notification> notifications;
 	private static Account account;
 	private static TaskOrganizer loadList;
 	
@@ -106,8 +109,10 @@ public class ControllerLogoutScene {
 		try {
 			User.setGroups(GroupsDatabase.getAllGroups(User.getAccount()));
 			groups = User.getGroups();
+			User.setNotifications(NotificationDatabase.getAllNotifications(account));
+			notifications = User.getNotifications();
 		} catch (SQLException exception) {
-			showNotification("Error! Please, check your connection",(Pane)newGroupBox);
+			App.connectionErrorMessage();
 			return;
 		}
 		
@@ -116,6 +121,13 @@ public class ControllerLogoutScene {
 		
 		notificationLabel = new Label();
 		notificationLabel.setTextFill(Color.RED);
+		
+		if(notifications.size() == 0)
+			notificationNumber.setVisible(false);
+		else {
+			notificationNumber.setText(String.valueOf(notifications.size()));
+			notificationNumber.setVisible(true);
+		}
 		
 		choiceBox.setValue("Search by");
 		choiceBox.getItems().addAll(searchOptions);
@@ -219,8 +231,7 @@ public class ControllerLogoutScene {
 			PersonalListsDatabase.createList(newList);
 		}
 		catch (SQLException exception) {
-			notification = "Error! Please, check your connection";
-			showNotification(notification,newBox);
+			App.connectionErrorMessage();
 			return;
 		}
 		
@@ -261,8 +272,7 @@ public class ControllerLogoutScene {
 			GroupsDatabase.createGroup(newGroup);
 		}
 		catch (SQLException exception) {
-			notification = "Error! Please, check your connection";
-			showNotification(notification,newBox);
+			App.connectionErrorMessage();
 			return;
 		}
 		
@@ -300,8 +310,7 @@ public class ControllerLogoutScene {
 			GroupsDatabase.createGroup(newGroup);
 		}
 		catch (SQLException exception) {
-			notification = "Error! Please, check your connection";
-			showNotification(notification,newBox);
+			App.connectionErrorMessage();
 			return;
 		}
 		
@@ -363,8 +372,7 @@ public class ControllerLogoutScene {
 		try {
 			PersonalTasksDatabase.createTask(newTask);
 		} catch (SQLException exception) {
-			notification = "Error! Please, check your connection";
-			showNotification(notification,newBox);
+			App.connectionErrorMessage();
 			return null;
 		}	
 
@@ -403,8 +411,7 @@ public class ControllerLogoutScene {
 		try {
 			GroupTasksDatabase.createTask(newTask);
 		} catch (SQLException exception) {
-			notification = "Error! Please, check your connection";
-			showNotification(notification,newBox);
+			App.connectionErrorMessage();
 			return null;
 		}
 		
@@ -585,9 +592,7 @@ public class ControllerLogoutScene {
 		try {
 			PersonalTasksDatabase.updateTask(task.getID(), task.getName(), task.getDescription(), task.getDeadlineDate(), taskCheckBox.isSelected());
 		} catch (SQLException exception) {
-			Pane newBox = (Pane)newTaskBox;
-			showNotification("Error! Please, check your connection",newBox);
-			taskCheckBox.setSelected(!taskCheckBox.isSelected());
+			App.connectionErrorMessage();
 			return;
 		}
 		
@@ -611,9 +616,7 @@ public class ControllerLogoutScene {
 		try {
 			GroupTasksDatabase.updateTask(task.getID(), task.getName(), task.getDescription(), task.getDeadlineDate(), taskCheckBox.isSelected(), task.getAssignedToEmail());
 		} catch (SQLException exception) {
-			Pane newBox = (Pane)newTaskBox;
-			showNotification("Error! Please, check your connection",newBox);
-			taskCheckBox.setSelected(!taskCheckBox.isSelected());
+			App.connectionErrorMessage();
 			return;
 		}
 		

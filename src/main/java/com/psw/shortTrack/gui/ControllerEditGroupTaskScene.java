@@ -112,7 +112,7 @@ public class ControllerEditGroupTaskScene {
 			try {
 				GroupTasksDatabase.deleteTask(task.getID());
 			} catch (SQLException exception) {
-				showNotification("Error! Please, check your connection");
+				App.connectionErrorMessage();
 				return;
 			}
 			
@@ -154,7 +154,7 @@ public class ControllerEditGroupTaskScene {
 			GroupTasksDatabase.updateTask(task.getID(), newTaskName, newDescription, newDeadline, checkButton.isSelected(), newAssignedTo.getEmail());
 		} catch (SQLException exception) {
 			System.out.println(exception);
-			showNotification("Error! Please, check your connection");
+			App.connectionErrorMessage();
 			return;
 		}
 		
@@ -177,7 +177,7 @@ public class ControllerEditGroupTaskScene {
 			try {
 				GroupTasksDatabase.deleteTask(task.getID());
 			} catch (SQLException exception) {
-				showNotification("Error! Please, check your connection");
+				App.connectionErrorMessage();
 				return;
 			}
 			group.removeTask(task);
