@@ -7,7 +7,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import org.postgresql.util.PSQLException;
-import org.postgresql.util.PSQLState;
 
 import com.psw.shortTrack.data.Account;
 import com.psw.shortTrack.data.Notification;
@@ -15,30 +14,31 @@ import com.psw.shortTrack.data.Notification.NotificationType;
 
 public class NotificationDatabase extends Database{
 
-	//TODO: Maybe change returns
 	/**
 	 * Sends a new notification to the database
 	 * 
 	 * @param notif New notification to add
+	 * @return (True) Success; (False) Error - If at least one of the accounts (source or destination) don't exist
 	 * 
-	 * @throws AccountNotFoundException If at least one of the accounts (source or destination) don't exist
 	 * @throws SQLException If there is a connection error
 	 */
-	public static void createNotification(Notification notif) throws SQLException, AccountNotFoundException {
-		try {
-			
-			notif.setId(Integer.parseInt(executeQueryReturnSingleColumn(
-					"INSERT INTO projeto.notifications (type, source, destination, group_id)\r\n"
-					+ "VALUES (" + toSQL((int)notif.getTypeAsInt()) + "," + toSQL((String)notif.getSource().getEmail()) + "," 
-					+ toSQL((String)notif.getDestination().getEmail()) + "," + toSQL(notif.getGroup_id()) + ")\r\n"
-					+ "RETURNING id;")));
-			
+	public static boolean createNotification(Notification notif) throws SQLException {
+		
+		try {	
+			notif.setId(executeQueryReturnInt(
+				"INSERT INTO projeto.notifications (type, source, destination, group_id)\r\n"
+				+ "VALUES (" + toSQL((int)notif.getTypeAsInt()) + "," + toSQL((String)notif.getSource().getEmail()) + "," 
+				+ toSQL((String)notif.getDestination().getEmail()) + "," + toSQL(notif.getGroup_id()) + ")\r\n"
+				+ "RETURNING id;")
+			);
+			return true;
 		} catch (PSQLException psql) {
-			if (psql.getSQLState().equals(PSQLState.FOREIGN_KEY_VIOLATION.getState())) {
-				throw new AccountNotFoundException(psql);
+			if (psql.getSQLState().startsWith("23")) {
+				return false;
 			}
 			throw psql;
 		}
+		
 	}
 	
 	/**
@@ -46,12 +46,15 @@ public class NotificationDatabase extends Database{
 	 * 
 	 * @param id Notification's id
 	 * @return (True) If it succeeds; (False) Otherwise (Notification didn't exist)
-	 * @throws SQLException
+	 * 
+	 * @throws SQLException If there is a connection error
 	 */
 	public static boolean deleteNotification(int id) throws SQLException {
+		
 		return (executeUpdate(
 				"DELETE FROM projeto.notifications WHERE id=" + toSQL(id) + ";"
-			) > 0);
+		) > 0);
+		
 	}
 	
 	/**
@@ -65,8 +68,6 @@ public class NotificationDatabase extends Database{
 	public static ArrayList<Notification> getAllNotifications(Account user) throws SQLException {
 		
 		try (Connection connection = getConnection()) {
-			if (connection == null)
-				throw new SQLException("Connection error");
 			
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(
@@ -76,29 +77,31 @@ public class NotificationDatabase extends Database{
 			);
 			
 			ArrayList<Notification> allNotif = new ArrayList<Notification>();
-			
 			while (rs.next()) {
 				Account source = AccountsDatabase.getAccount(rs.getString("source"));
-				if (source == null) {
-					continue;
+				if (source != null) {
+					allNotif.add(new Notification(	rs.getInt("id"),
+													rs.getInt("type"),
+													source,
+													user,
+													rs.getString("group_name"),
+													rs.getInt("group_id")));
 				}
-				
-				allNotif.add(new Notification(	rs.getInt("id"),
-												rs.getInt("type"),
-												source,
-												user,
-												rs.getString("group_name"),
-												rs.getInt("group_id")));
 			}
 			return allNotif;
-		} catch (SQLException sqle) {
-			System.out.println(sqle);
-			throw sqle;
 		}
 		
 	}
 	
-	//TODO: check notification
+	/**
+	 * Checks if there is an invitation sent to destination to this group.
+	 * 
+	 * @param destination Destination User Email
+	 * @param group_id Group's id
+	 * @return (True) There is an invitation already; (False) There isn't
+	 * 
+	 * @throws SQLException If there is a connection error
+	 */
 	public static boolean checkInvitation(String destination, int group_id) throws SQLException {
 		
 		return executeQueryReturnBoolean(

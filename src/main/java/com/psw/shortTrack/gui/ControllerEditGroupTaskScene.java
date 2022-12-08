@@ -52,8 +52,6 @@ public class ControllerEditGroupTaskScene {
 	private Group group;
 	private TaskOrganizer loadList;
 	
-	private Account nobody = new Account(null,"Nobody");
-	
 	public void initData(GroupTask task, TaskOrganizer loadList) {
 		this.task = task;
 		this.loadList = loadList;
@@ -64,7 +62,7 @@ public class ControllerEditGroupTaskScene {
 		descriptionField.setText(task.getDescription());
 		dueDateField.setValue(task.getDeadlineDate());
 		
-		if(task.chekCompleted()) {
+		if(task.isCompleted()) {
 			checkButton.setSelected(true);
 			checkButton.setText("Completed");
 		}
@@ -73,15 +71,11 @@ public class ControllerEditGroupTaskScene {
 			checkButton.setText("To be started");
 		}
 		
-		assignedToBox.getItems().add(nobody);
+		assignedToBox.getItems().add(GroupTask.nobody);
 		assignedToBox.getItems().addAll(group.getMemberAccounts());
 		assignedToBox.getItems().add(group.getManagerAccount());
 		
-		if(task.getAssignedToAccount() == null)
-			assignedToBox.setValue(nobody);
-		else
-			assignedToBox.setValue(task.getAssignedToAccount());
-		
+		assignedToBox.setValue(task.getAssignedToAccount());
 		
 		if(!group.getManagerEmail().equals(User.getAccount().getEmail())) {
 			taskNameField.setDisable(true);

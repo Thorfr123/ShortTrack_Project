@@ -2,7 +2,6 @@ package com.psw.shortTrack.data;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.io.Serializable;
 
 public abstract class Task implements Serializable {
@@ -13,24 +12,23 @@ public abstract class Task implements Serializable {
 						description;
 	private LocalDate 	createdDate,
 						deadline;
-	private Boolean 	completed;
+	private Boolean 	completed = false;
 	private int 		id,
 						parent_id;
 	
 	public static int idCount = 1;
-
 
 	// Utilizado durante a criação de uma nova task
 	public Task(String name, int parentID) {
 		this.name = name;
 		this.parent_id = parentID;
 		this.createdDate = LocalDate.now();
-		this.completed = false;
 		this.id = idCount++;
 	}
 	
-	//Utilizado quando carrega da database ou local files
-	public Task(String name, int id, String description, LocalDate createdDate, LocalDate deadline, Boolean completed, int parentID) {
+	//Utilizado quando carrega da database
+	public Task(String name, int id, String description, LocalDate createdDate, LocalDate deadline, 
+					Boolean completed, int parentID) {
 		this.name = name;
 		this.id = id;
 		this.description = description;
@@ -40,67 +38,43 @@ public abstract class Task implements Serializable {
 		this.parent_id = parentID;
 	}
 	
-	public String getName() {
-		return name;
-	}
+	public String getName() { return name; }
 	
-	public int getID() {
-		return id;
-	}
+	public int getID() { return id; }
 	
-	public String getDescription() {
-		return description;
-	}
+	public String getDescription() { return description; }
 	
-	public LocalDate getCreatedDate() {
-		return createdDate;
-	}
+	public LocalDate getCreatedDate() { return createdDate; }
 	
-	public LocalDate getDeadlineDate() {
-		return deadline;
-	}
+	public LocalDate getDeadlineDate() { return deadline; }
 	
-	public int getParentID() {
-		return parent_id;
-	}
+	public int getParentID() { return parent_id; }
 	
-	public Boolean chekCompleted() {
-		return completed;
-	}
+	public Boolean isCompleted() { return completed; }
 	
-	public void setName(String newName) {
-		name = newName;
-	}
+	public void setName(String newName) { name = newName; }
 	
-	public void setID(int newID) {
-		id = newID;
-	}
+	public void setID(int newID) { id = newID; }
 	
-	public void setDescription(String newDescription) {
-		description = newDescription;
-	}
+	public void setDescription(String newDescription) { description = newDescription; }
 	
-	public void setDeadline(LocalDate newDeadline) {
-		deadline = newDeadline;
-	}
+	public void setDeadline(LocalDate newDeadline) { deadline = newDeadline; }
 	
-	public void setCompleted(Boolean state) {
-		completed = state;
-	}
+	public void setCompleted(Boolean newState) { completed = newState; }
 	
-	public void setParentID(int newParentID) {
-		parent_id = newParentID;
-	}
-	
+	/**
+	 * Checks if the date, provided as a String, has a valid format and returns it as a LocalDate.
+	 * 
+	 * @param date Date to check and parse
+	 * @return Parsed date or (null) if it can't be parsed
+	 */
 	public static LocalDate checkValidDate(String date) {
 		
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
-		LocalDate localDate = null;
 		try {
-			localDate = LocalDate.parse(date, formatter);
-			return localDate;
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
+			return LocalDate.parse(date, formatter);
 		}
-		catch (DateTimeParseException ex) {
+		catch (Exception e) {
 			return null;
 		}
 		

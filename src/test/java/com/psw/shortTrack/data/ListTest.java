@@ -9,6 +9,8 @@ import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 
+import com.psw.shortTrack.data.TaskOrganizer.SortBy;
+
 public class ListTest {
 	
 	@Test
@@ -44,7 +46,7 @@ public class ListTest {
 		listToTest.addTask(task2);
 		listToTest.addTask(task4);
 		
-		listToTest.sortByName();
+		listToTest.sort(SortBy.Name);
 		
 		List orderedList = new List("Ordered list",11);
 		orderedList.addTask(task1);
@@ -68,7 +70,7 @@ public class ListTest {
 		listToTest.addTask(task3);
 		listToTest.addTask(task4);
 		
-		listToTest.sortByName();
+		listToTest.sort(SortBy.Name);
 		
 		List orderedList = new List("Ordered list",11);
 		orderedList.addTask(task1);
@@ -96,7 +98,7 @@ public class ListTest {
 		listToTest.addTask(task2);
 		listToTest.addTask(task1);
 		
-		listToTest.sortByDeadline();
+		listToTest.sort(SortBy.DeadlineDate);
 		
 		List orderedList = new List("Ordered list",11);
 		orderedList.addTask(task1);
@@ -122,7 +124,7 @@ public class ListTest {
 		listToTest.addTask(task2);
 		listToTest.addTask(task4);
 		
-		listToTest.sortByDeadline();
+		listToTest.sort(SortBy.DeadlineDate);
 		
 		List orderedList = new List("Ordered list",11);
 		orderedList.addTask(task1);
@@ -150,7 +152,7 @@ public class ListTest {
 		listToTest.addTask(task4);
 		listToTest.addTask(task2);
 		
-		listToTest.sortByCompleted();
+		listToTest.sort(SortBy.Completed);
 		
 		List orderedList = new List("Ordered list",11);
 		orderedList.addTask(task1);

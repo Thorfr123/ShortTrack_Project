@@ -47,11 +47,13 @@ public class Database {
 	 * @throws SQLException If a database access error occurs
 	 */
 	protected static Connection getConnection() throws SQLException {
+		
 		Connection connection = dataSource.getConnection();
 		if (connection != null)
 			return connection;
 		else
 			throw new SQLException("Connection failed!");
+		
 	}
 	
 	/**
@@ -60,12 +62,12 @@ public class Database {
 	 * @throws PropertyVetoException If the specified driver is not valid (unreachable)
 	 */
 	private static void config() throws PropertyVetoException {
+		
 		dataSource = new ComboPooledDataSource();
 		dataSource.setDriverClass(driver);
 		dataSource.setJdbcUrl(url);
 		dataSource.setUser(user);
 		dataSource.setPassword(password);
-		
 		// Define o numero máximo de conexões
 		dataSource.setMaxPoolSize(30);
 		// Timeout de checkout (getConnection)
@@ -80,6 +82,7 @@ public class Database {
 		dataSource.setMaxIdleTimeExcessConnections(180);
 		// Define a query a executar nos testes (query mais rapida)
 		dataSource.setPreferredTestQuery("SELECT 1");
+		
 	}
 	
 	/**
@@ -138,6 +141,7 @@ public class Database {
 			
 			return (rs.next() ? rs.getInt(1) : -1);
 		}
+		
 	}
 	
 	/**
@@ -166,7 +170,8 @@ public class Database {
 	 * 
 	 * @throws SQLException If a database access error occurs
 	 */
-	private static void setup() throws SQLException {		
+	private static void setup() throws SQLException {
+		
 		String query = FileIO.readDatabaseSetup();
 		
 		if (query == null || query.isBlank()) {
@@ -175,6 +180,7 @@ public class Database {
 		}
 		
 		executeUpdate(query);
+		
 	}
 	
 	/**
@@ -208,11 +214,7 @@ public class Database {
 	 * @return SQL String
 	 */
 	protected static String toSQL(LocalDate date) {
-		String str = null;
-		if (date != null) {
-			str = "'" + date.toString() + "'";
-		}
-		return str;
+		return (date == null ? null : "'" + date.toString() + "'");
 	}
 	
 	/**
@@ -233,7 +235,6 @@ public class Database {
 	 */
 	protected static String toSQL(ArrayList<String> array) {
 		String str = "'{";
-		
 		if (array != null) {
 			for (int i = 0; i < array.size(); i++) {
 				str += "\"" + array.get(i) + "\"";
@@ -242,7 +243,6 @@ public class Database {
 				}
 			}
 		}
-		
 		return str + "}'";
 	}
 }

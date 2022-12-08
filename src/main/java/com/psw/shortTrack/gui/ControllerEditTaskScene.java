@@ -47,7 +47,7 @@ public class ControllerEditTaskScene {
 		descriptionField.setText(task.getDescription());
 		dueDateField.setValue(task.getDeadlineDate());
 		
-		if(task.chekCompleted()) {
+		if(task.isCompleted()) {
 			checkButton.setSelected(true);
 			checkButton.setText("Completed");
 		}

@@ -2,7 +2,6 @@ package com.psw.shortTrack.gui;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import com.psw.shortTrack.data.List;
 import com.psw.shortTrack.data.PersonalTask;
@@ -17,7 +16,6 @@ import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 
@@ -62,13 +60,20 @@ public class App extends Application {
 			System.out.println(e);
 			e.printStackTrace();
 		}
+		
 	}
 	
 	public static void main(String[] args) {
 		launch(args);
 	}
 	
+	/**
+	 * Calculates the actual task id counter
+	 * 
+	 * @return Task id counter
+	 */
 	private static int calculateTaskIdCounter() {
+		
 		int idCount = 1;
 		for (List lst : User.getLists()) {
 			for (Task tsk : lst.getTaskList()) {
@@ -78,9 +83,16 @@ public class App extends Application {
 			}
 		}
 		return idCount;
+		
 	}
 	
+	/**
+	 * Calculates the actual list id counter
+	 * 
+	 * @return List id counter
+	 */
 	private static int calculateListIdCounter() {
+		
 		int idCount = 1;
 		for (List lst : User.getLists()) {
 			if (lst.getID() >= idCount) {
@@ -88,13 +100,18 @@ public class App extends Application {
 			}
 		}
 		return idCount;
+		
 	}
 	
+	/**
+	 * Reads all the data stored in the local files. It restores the offline personal lists and tasks and the id counters.
+	 */
 	public static void readLocalFiles() {
 		
 		try {
-			ArrayList<List> lists = FileIO.readPersonalListsFromFile();
-			User.setLists(lists);			
+			
+			User.setLists(FileIO.readPersonalListsFromFile());
+			
 		} catch (FileNotFoundException fnfe) {
 			System.out.println("Couldn't find local backup file");
 		} catch (ClassNotFoundException | IOException e) {
@@ -103,34 +120,44 @@ public class App extends Application {
 		
 		int [] idCounter = {-1, -1};
 		try {
+			
 			idCounter = FileIO.readIdCountersFromFile();
+			if (idCounter[0] < 1 || idCounter[1] < 1)
+				throw new IOException();
+			
+		} catch (IOException | ClassNotFoundException e){
 			if (idCounter[0] < 1) {
 				idCounter[0] = calculateTaskIdCounter();
 			}
 			if (idCounter[1] < 1) {
 				idCounter[1] = calculateListIdCounter();
 			}
-		} catch (IOException | ClassNotFoundException e){
-			System.out.println("Erro a tentar ler o ficheiro de idCounters local!");
-			idCounter[0] = calculateTaskIdCounter();
-			idCounter[1] = calculateListIdCounter();
 		}
 		PersonalTask.idCount = idCounter[0];
 		List.idCount = idCounter[1];
 		
 	}
 	
+	/**
+	 * Writes the offline data to local files. It stores the offline personal lists and tasks and id counters
+	 */
 	public static void writeLocalFiles() {
 		
 		try {
+			
 			FileIO.writePersonalListsToFile(User.getLists());
 			FileIO.writeIdCountersToFile(PersonalTask.idCount, List.idCount);
+			
 		} catch (IOException e) {
+			// XXX: Maybe throw the exception
 			System.out.println("Erro a tentar escrever o ficheiro de backup local!");
 		}
 		
 	}
 	
+	/**
+	 * Shows the connection error alert
+	 */
 	public static void connectionErrorMessage() {
 		
 		Alert alert = new Alert(AlertType.ERROR);
@@ -138,11 +165,13 @@ public class App extends Application {
 		alert.setHeaderText("The connection to the database was lost!");
 		alert.setContentText("Error! Please, check your connection");
 
-		if(alert.showAndWait().get() == ButtonType.OK)
-			return;
+		alert.showAndWait();
 		
 	}
 	
+	/**
+	 * Loads a new scene
+	 */
 	public static void loadScene(Parent root) {
 		
 		Scene scene = new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight());
@@ -151,19 +180,17 @@ public class App extends Application {
 		stage.show();
 		
 		Platform.runLater(() -> scene.getRoot().requestFocus());
+		
 	}
 	
-	
+	/**
+	 * Loads the main window scene
+	 */
 	public static void loadMainScene() throws IOException {
 		
-		Parent root;
-		
-		if(User.isLogedIn())
-			root = FXMLLoader.load(App.class.getResource("LogoutScene.fxml"));
-		else
-			root = FXMLLoader.load(App.class.getResource("LoginScene.fxml"));
-		
+		Parent root = FXMLLoader.load(App.class.getResource(User.isLogedIn() ? "LogoutScene.fxml" : "LoginScene.fxml"));
 		loadScene(root);
+		
 	}
 	
 }
