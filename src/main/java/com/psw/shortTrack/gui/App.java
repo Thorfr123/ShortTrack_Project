@@ -186,10 +186,14 @@ public class App extends Application {
 	/**
 	 * Loads the main window scene
 	 */
-	public static void loadMainScene() throws IOException {
+	public static void loadMainScene() {
 		
-		Parent root = FXMLLoader.load(App.class.getResource(User.isLogedIn() ? "LogoutScene.fxml" : "LoginScene.fxml"));
-		loadScene(root);
+		try {
+			Parent root = FXMLLoader.load(App.class.getResource(User.isLogedIn() ? "LogoutScene.fxml" : "LoginScene.fxml"));
+			loadScene(root);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 	}
 	

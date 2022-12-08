@@ -1,6 +1,5 @@
 package com.psw.shortTrack.gui;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collections;
 
@@ -139,14 +138,14 @@ public class ControllerEditAccountScene {
     }
     
 	@FXML
-    void close(ActionEvent event) throws IOException {
+    void close(ActionEvent event) {
     	
 		App.loadMainScene();
 		
     }
     
     @FXML
-    void delete(ActionEvent event) throws IOException {
+    void delete(ActionEvent event) {
     	
     	removeErrorNotifications();
     	

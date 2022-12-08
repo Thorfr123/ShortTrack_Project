@@ -38,7 +38,7 @@ public class ControllerSignUpScene {
 	
 	private Parent root;
 
-	public void create(ActionEvent e) throws IOException {
+	public void create(ActionEvent e) {
 		
 		removeErrorNotifications();
 
@@ -81,16 +81,24 @@ public class ControllerSignUpScene {
 		User.setLists(lists);
 		
 		
-		root = FXMLLoader.load(getClass().getResource("LogoutScene.fxml"));
-		App.loadScene(root);
+		try {
+			root = FXMLLoader.load(getClass().getResource("LogoutScene.fxml"));
+			App.loadScene(root);
+		} catch (IOException exception) {
+			exception.printStackTrace();
+		}
 	}
 	
-	public void cancel(ActionEvent e) throws IOException {
+	public void cancel(ActionEvent e) {
 		
 		removeErrorNotifications();
 		
-		root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
-		App.loadScene(root);
+		try {
+			root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
+			App.loadScene(root);
+		} catch (IOException exception) {
+			exception.printStackTrace();
+		}
 		
 	}
 	

@@ -110,10 +110,9 @@ public class ControllerLogoutScene {
 		account = User.getAccount();
 		lists = User.getLists();
 		
-		int count = 0;
-		int maxTries = 3;
-		while(true) {
-			try {
+		int maxAttempts = 3;
+        for (int count = 0; count < maxAttempts; count++) {
+        	try {
 				User.setGroups(GroupsDatabase.getAllGroups(User.getAccount()));
 				groups = User.getGroups();
 				User.setNotifications(NotificationDatabase.getAllNotifications(account));
@@ -121,7 +120,7 @@ public class ControllerLogoutScene {
 				break;
 			} catch (SQLException exception) {
 				
-				if (++count == maxTries) {
+				if (++count == maxAttempts) {
 					Alert alert = new Alert(AlertType.ERROR);
 					alert.setTitle("Connection Error");
 					alert.setHeaderText("Number of connection attempts exceeded!");
@@ -129,20 +128,15 @@ public class ControllerLogoutScene {
 
 					if(alert.showAndWait().get() == ButtonType.OK) {
 						ActionEvent e = new ActionEvent();
-						try {
-							logout(e);
-							return;
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						}
-					}
-						
+						logout(e);
+						return;	
+					}	
 				}
 				else
-					App.connectionErrorMessage();
+					App.connectionErrorMessage();			
 			}
-		}
-		
+        }
+
 		printNameLabel.setText(account.getName());
 		printEmailLabel.setText(account.getEmail());
 		
@@ -215,26 +209,33 @@ public class ControllerLogoutScene {
 		loadTasks();
     }
 	
-	public void logout(ActionEvent e) throws IOException {
+	public void logout(ActionEvent e) {
 		
 		User.setLogedIn(false);
 		loadList = null;
 		
 		App.readLocalFiles();
 		
-		root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
-		App.loadScene(root);
+		try {
+			root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
+			App.loadScene(root);
+		} catch (IOException exception) {
+			exception.printStackTrace();
+		}
 		
 	}
 	
-	public void editAccount(ActionEvent e) throws IOException {
+	public void editAccount(ActionEvent e) {
 		
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("EditAccountScene.fxml"));
-		root = loader.load();
-		
-		ControllerEditAccountScene controller = loader.getController();
-		controller.initData();
-		App.loadScene(root);
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditAccountScene.fxml"));
+			root = loader.load();	
+			ControllerEditAccountScene controller = loader.getController();
+			controller.initData();
+			App.loadScene(root);
+		} catch (IOException exception) {
+			exception.printStackTrace();
+		}
 		
 	}
 		

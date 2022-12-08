@@ -1,6 +1,5 @@
 package com.psw.shortTrack.gui;
 
-import java.io.IOException;
 import java.sql.SQLException;
 
 import com.psw.shortTrack.data.Notification;
@@ -48,7 +47,7 @@ public class ControllerNotificationScene {
 		}
     }
 	
-	public void close() throws IOException {
+	public void close() {
 		
 		App.loadMainScene();
 		

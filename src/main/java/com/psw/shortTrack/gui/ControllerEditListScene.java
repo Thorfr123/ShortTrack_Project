@@ -1,6 +1,5 @@
 package com.psw.shortTrack.gui;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,7 +35,7 @@ public class ControllerEditListScene {
 		
     }
 	
-	public void delete(ActionEvent e) throws IOException {
+	public void delete(ActionEvent e) {
 		
 		removeErrorNotifications();
 		
@@ -65,7 +64,7 @@ public class ControllerEditListScene {
 		
 	}
 	
-	public void save(ActionEvent e) throws IOException {
+	public void save(ActionEvent e) {
 		
 		removeErrorNotifications();
 		
@@ -99,7 +98,7 @@ public class ControllerEditListScene {
 		
 	}
 	
-	public void cancel(ActionEvent e) throws IOException {
+	public void cancel(ActionEvent e) {
 		
 		removeErrorNotifications();
 		

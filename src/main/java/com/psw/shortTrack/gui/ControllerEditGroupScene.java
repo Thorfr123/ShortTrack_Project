@@ -1,6 +1,5 @@
 package com.psw.shortTrack.gui;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collections;
 
@@ -67,7 +66,7 @@ public class ControllerEditGroupScene {
 		}
     }
 	
-	public void delete(ActionEvent e) throws IOException {
+	public void delete(ActionEvent e) {
 		
 		removeErrorNotifications();
 		
@@ -94,7 +93,7 @@ public class ControllerEditGroupScene {
 		
 	}
 	
-	public void save(ActionEvent e) throws IOException {
+	public void save(ActionEvent e) {
 		
 		removeErrorNotifications();
 		
@@ -132,7 +131,7 @@ public class ControllerEditGroupScene {
 		
 	}
 	
-	public void cancel(ActionEvent e) throws IOException {
+	public void cancel(ActionEvent e) {
 		
 		removeErrorNotifications();
 		
@@ -152,7 +151,7 @@ public class ControllerEditGroupScene {
 		
 	}
 	
-	public void leave(ActionEvent e) throws IOException {
+	public void leave(ActionEvent e) {
 		
 		removeErrorNotifications();
 		try {
@@ -170,7 +169,7 @@ public class ControllerEditGroupScene {
 		
 	}
 	
-	public void addMember(ActionEvent e) throws IOException {
+	public void addMember(ActionEvent e) {
 		
 		removeErrorNotifications();
 		String newMember = memberTextField.getText();
@@ -223,7 +222,7 @@ public class ControllerEditGroupScene {
 		
 	}
 	
-	public void removeMember(ActionEvent e) throws IOException {
+	public void removeMember(ActionEvent e) {
 		
 		removeErrorNotifications();
 		Account memberToRemove = memberList.getSelectionModel().getSelectedItem();
@@ -241,8 +240,6 @@ public class ControllerEditGroupScene {
 			App.connectionErrorMessage();
 			return;
 		}
-		
-		//group.removeMember(memberToRemove);
 		
 		memberList.getItems().remove(memberToRemove);
 		

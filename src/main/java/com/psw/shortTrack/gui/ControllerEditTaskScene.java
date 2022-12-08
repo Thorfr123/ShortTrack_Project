@@ -1,6 +1,5 @@
 package com.psw.shortTrack.gui;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Collections;
@@ -58,7 +57,7 @@ public class ControllerEditTaskScene {
 		
     }
 	
-	public void delete(ActionEvent e) throws IOException {
+	public void delete(ActionEvent e) {
 		
 		removeErrorNotifications();
 		
@@ -82,7 +81,7 @@ public class ControllerEditTaskScene {
 		
 	}
 	
-	public void save(ActionEvent e) throws IOException {
+	public void save(ActionEvent e) {
 		
 		removeErrorNotifications();
 		
@@ -120,7 +119,7 @@ public class ControllerEditTaskScene {
 		
 	}
 	
-	public void cancel(ActionEvent e) throws IOException {
+	public void cancel(ActionEvent e) {
 		
 		removeErrorNotifications();
 		

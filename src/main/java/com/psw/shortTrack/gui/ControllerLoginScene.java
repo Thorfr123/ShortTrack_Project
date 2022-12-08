@@ -115,7 +115,7 @@ public class ControllerLoginScene {
 		loadTasks();
     }
 
-	public void login(ActionEvent e) throws IOException {
+	public void login(ActionEvent e) {
 		
 		removeErrorNotifications();
 		
@@ -159,15 +159,23 @@ public class ControllerLoginScene {
 			return;
 		}
 		
-		root = FXMLLoader.load(getClass().getResource("LogoutScene.fxml"));
-		App.loadScene(root);
+		try {
+			root = FXMLLoader.load(getClass().getResource("LogoutScene.fxml"));
+			App.loadScene(root);
+		} catch (IOException exception) {
+			exception.printStackTrace();
+		}
 		
 	}
 	
-	public void signUp(ActionEvent e) throws IOException {
+	public void signUp(ActionEvent e) {
 		
-		root = FXMLLoader.load(getClass().getResource("SignUpScene.fxml"));
-		App.loadScene(root);
+		try {
+			root = FXMLLoader.load(getClass().getResource("SignUpScene.fxml"));
+			App.loadScene(root);
+		} catch (IOException exception) {
+			exception.printStackTrace();
+		}
 		
 	}
 	
