@@ -26,13 +26,16 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -106,14 +109,37 @@ public class ControllerLogoutScene {
 		account = User.getAccount();
 		lists = User.getLists();
 		
-		try {
-			User.setGroups(GroupsDatabase.getAllGroups(User.getAccount()));
-			groups = User.getGroups();
-			User.setNotifications(NotificationDatabase.getAllNotifications(account));
-			notifications = User.getNotifications();
-		} catch (SQLException exception) {
-			App.connectionErrorMessage();
-			return;
+		int count = 0;
+		int maxTries = 3;
+		while(true) {
+			try {
+				User.setGroups(GroupsDatabase.getAllGroups(User.getAccount()));
+				groups = User.getGroups();
+				User.setNotifications(NotificationDatabase.getAllNotifications(account));
+				notifications = User.getNotifications();
+				break;
+			} catch (SQLException exception) {
+				
+				if (++count == maxTries) {
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("Connection Error");
+					alert.setHeaderText("Number of connection attempts exceeded!");
+					alert.setContentText("Your section will be terminated");
+
+					if(alert.showAndWait().get() == ButtonType.OK) {
+						ActionEvent e = new ActionEvent();
+						try {
+							logout(e);
+							return;
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+					}
+						
+				}
+				else
+					App.connectionErrorMessage();
+			}
 		}
 		
 		printNameLabel.setText(account.getName());

@@ -13,14 +13,11 @@ import com.psw.shortTrack.database.PersonalTasksDatabase;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.paint.Color;
 
 public class ControllerEditTaskScene {
@@ -65,32 +62,23 @@ public class ControllerEditTaskScene {
 		
 		removeErrorNotifications();
 		
-		Alert alert = new Alert(AlertType.CONFIRMATION);
-		alert.setTitle("Delete Task");
-		alert.setHeaderText("You're about to delete this task and lose this data!");
-		alert.setContentText("Are you sure you really want to delete the task?");
-
-		if(alert.showAndWait().get() == ButtonType.OK){
-			
-			if(User.isLogedIn()) {
-				try {
-					PersonalTasksDatabase.deleteTask(task.getID());
-				} catch (SQLException exception) {
-					App.connectionErrorMessage();
-					return;
-				}
+		if(User.isLogedIn()) {
+			try {
+				PersonalTasksDatabase.deleteTask(task.getID());
+			} catch (SQLException exception) {
+				App.connectionErrorMessage();
+				return;
 			}
-			
-			list.removeTask(task);
-			
-			if(loadList instanceof SearchList)
-				loadList.removeTask(task);
-			
-			task = null;
-			
-			App.loadMainScene();
-			
 		}
+		
+		list.removeTask(task);
+		
+		if(loadList instanceof SearchList)
+			loadList.removeTask(task);
+		
+		task = null;
+		
+		App.loadMainScene();
 		
 	}
 	

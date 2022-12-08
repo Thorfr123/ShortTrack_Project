@@ -114,7 +114,7 @@ public class ControllerSignUpScene {
 		
 		if(firstName.isBlank() || lastName.isBlank() || email.isBlank() 
 				|| password.isBlank() || repeatPassword.isBlank()) {
-			App.connectionErrorMessage();
+			showNotification("Please complete all the fields!");
 			return false;
 		}
 		
