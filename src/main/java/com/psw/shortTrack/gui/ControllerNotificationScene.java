@@ -92,7 +92,7 @@ public class ControllerNotificationScene {
 		
 	}
 	
-	private void deleteNotification(Notification notification, HBox notificationBar) throws SQLException{
+	private void deleteNotification(Notification notification, HBox notificationBar) throws SQLException {
 		
 		NotificationDatabase.deleteNotification(notification.getId());
 		notificationList.getChildren().remove(notificationBar);

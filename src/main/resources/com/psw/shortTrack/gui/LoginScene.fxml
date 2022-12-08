@@ -167,7 +167,7 @@
                               <Font name="System Bold" size="24.0" />
                            </font>
                         </Label>
-                        <MenuButton fx:id="sortByMenu" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Sort by" visible="false">
+                        <MenuButton fx:id="sortByMenu" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="85.0" mnemonicParsing="false" text="Sort by" visible="false">
                            <HBox.margin>
                               <Insets left="5.0" right="5.0" />
                            </HBox.margin>
@@ -175,7 +175,7 @@
                               <Font size="14.0" />
                            </font>
                         </MenuButton>
-                        <Button fx:id="editListButton" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#editList" text="Edit List" visible="false">
+                        <Button fx:id="editListButton" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="80.0" mnemonicParsing="false" onAction="#editList" text="Edit List" visible="false">
                            <HBox.margin>
                               <Insets left="5.0" right="5.0" />
                            </HBox.margin>

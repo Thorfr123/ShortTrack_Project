@@ -104,12 +104,17 @@ public class ControllerEditGroupScene {
 			groupNameField.getStyleClass().add("error");
 			return;
 		}
-		else if (newGroupName.equals(group.getName())) {
+		else if(newGroupName.length() > 128) {
+			showNotification("Group name exceeds maximum character length allowed!", true);
+			groupNameField.getStyleClass().add("error");
+			return;
+		}
+		else if(newGroupName.equals(group.getName())) {
 			App.loadMainScene();
 		}
 		
 		Group g = User.checkGroupName(newGroupName);
-		if ((g != null) && (g != group)) {
+		if((g != null) && (g != group)) {
 			showNotification("Already exist a group with that name!", true);
 			return;
 		}

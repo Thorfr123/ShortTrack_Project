@@ -29,14 +29,14 @@
 		               <children>
 		                  <HBox alignment="CENTER_LEFT" prefHeight="20.0" prefWidth="228.0" spacing="20.0">
 		                     <children>
-		                        <Label fx:id="printNameLabel" prefHeight="18.0" prefWidth="180.0" style="-fx-font-size: 14;" text="COLOCAR AQUI O NOME" />
-		                        <Button alignment="CENTER" focusTraversable="false" mnemonicParsing="false" onAction="#logout" prefHeight="30.0" prefWidth="70.0" style="-fx-background-color: #4385F4; -fx-text-fill: white; -fx-font-size: 13;" text="Logout" />
+		                        <Label fx:id="printNameLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-font-size: 14;" text="COLOCAR AQUI O NOME" HBox.hgrow="ALWAYS" />
+		                        <Button alignment="CENTER" focusTraversable="false" minWidth="64.0" mnemonicParsing="false" onAction="#logout" style="-fx-background-color: #4385F4; -fx-text-fill: white; -fx-font-size: 13;" text="Logout" />
 		                     </children>
 		                  </HBox>
-		                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+		                  <HBox alignment="CENTER_LEFT" spacing="20.0">
 		                     <children>
-		                        <Label fx:id="printEmailLabel" prefHeight="80.0" prefWidth="180.0" style="-fx-font-size: 14;" text="COLOCAR AQUI O EMAIL" />
-		                        <Button alignment="CENTER" focusTraversable="false" mnemonicParsing="false" onAction="#editAccount" prefHeight="30.0" prefWidth="70.0" style="-fx-background-color: #4385F4; -fx-text-fill: white; -fx-font-size: 13;" text="Settings" textAlignment="CENTER" />
+		                        <Label fx:id="printEmailLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-font-size: 14;" text="COLOCAR AQUI O EMAIL" HBox.hgrow="ALWAYS" />
+		                        <Button alignment="CENTER" focusTraversable="false" minWidth="64.0" mnemonicParsing="false" onAction="#editAccount" style="-fx-background-color: #4385F4; -fx-text-fill: white; -fx-font-size: 13;" text="Settings" textAlignment="CENTER" />
 		                     </children>
 		                  </HBox>
 		               </children>
@@ -222,7 +222,7 @@
             </GridPane>
             <BorderPane style="-fx-background-color: #f3f3f3; -fx-background-radius: 8;" GridPane.columnIndex="1" GridPane.hgrow="SOMETIMES" GridPane.vgrow="SOMETIMES">
                <top>
-                  <HBox BorderPane.alignment="CENTER">
+                  <HBox fx:id="listOptionsBox" spacing="5.0" BorderPane.alignment="CENTER">
                      <BorderPane.margin>
                         <Insets bottom="5.0" top="2.0" />
                      </BorderPane.margin>
@@ -232,25 +232,30 @@
                               <Font name="System Bold" size="24.0" />
                            </font>
                         </Label>
-                        <MenuButton fx:id="sortByMenu" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Sort by" visible="false">
+                        <MenuButton fx:id="sortByMenu" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="85.0" mnemonicParsing="false" text="Sort by" visible="false">
                            <HBox.margin>
-                              <Insets left="5.0" right="5.0" />
+                              <Insets />
                            </HBox.margin>
                            <font>
                               <Font size="14.0" />
                            </font>
                         </MenuButton>
-                        <Button fx:id="editListButton" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#editListOrGroup" text="Edit List" visible="false">
+                        <Button fx:id="editListButton" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="85.0" mnemonicParsing="false" onAction="#editListOrGroup" text="Edit List" visible="false">
                            <HBox.margin>
-                              <Insets left="5.0" right="5.0" />
+                              <Insets />
                            </HBox.margin>
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="myTasksButton" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="85.0" mnemonicParsing="false" onAction="#showMyTasks" text="My Tasks" visible="false">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Button>
                      </children>
                      <padding>
-                        <Insets left="10.0" />
+                        <Insets left="10.0" right="5.0" />
                      </padding>
                   </HBox>
                </top>

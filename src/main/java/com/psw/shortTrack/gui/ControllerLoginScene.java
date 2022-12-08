@@ -193,6 +193,13 @@ public class ControllerLoginScene {
 		Pane newBox = (Pane)newListBox;
 		String notification;
 		
+		if(listName.length() > 128) {
+			notification = "Group name exceeds maximum character length allowed!";
+			showNotification(notification,newBox);
+			newListName.getStyleClass().add("error");
+			return;
+		}
+		
 		if(User.checkListName(listName)) {
 			notification = "This List already exist!";
 			showNotification(notification,newBox);
@@ -223,9 +230,18 @@ public class ControllerLoginScene {
 		
 		newTaskName.clear();
 		
+		Pane newBox = (Pane)newTaskBox;
+		String notification;
+		
+		if(taskName.length() > 128) {
+			notification = "Task name exceeds maximum character length allowed!";
+			showNotification(notification,newBox);
+			newTaskName.getStyleClass().add("error");
+			return;
+		}
+		
 		if(loadList.checkName(taskName)) {
-			Pane newBox = (Pane)newTaskBox;
-			String notification = "This Task already exist!";
+			notification = "This Task already exist!";
 			showNotification(notification,newBox);
 			newTaskName.getStyleClass().add("error");
 			return;
@@ -258,9 +274,18 @@ public class ControllerLoginScene {
 
 		newTaskName.clear();
 		
+		Pane newBox = (Pane)newTaskBox;
+		String notification;
+		
+		if(taskName.length() > 128) {
+			notification = "Task name exceeds maximum character length allowed!";
+			showNotification(notification,newBox);
+			newTaskName.getStyleClass().add("error");
+			return;
+		}
+		
 		if(loadList.checkName(taskName)) {
-			Pane newBox = (Pane)newTaskBox;
-			String notification = "This Task already exist!";
+			notification = "This Task already exist!";
 			showNotification(notification,newBox);
 			newTaskName.getStyleClass().add("error");
 			return;

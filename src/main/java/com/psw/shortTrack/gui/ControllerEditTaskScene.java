@@ -92,6 +92,12 @@ public class ControllerEditTaskScene {
 			return;
 		}
 		
+		if(newTaskName.length() > 128) {
+			showNotification("Task name exceeds maximum character length allowed!");
+			taskNameField.getStyleClass().add("error");
+			return;
+		}
+		
 		if(!newTaskName.equals(task.getName()) && list.checkName(newTaskName)) {
 			showNotification("Already exist a task with that name!");
 			taskNameField.getStyleClass().add("error");

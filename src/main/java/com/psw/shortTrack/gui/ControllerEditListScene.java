@@ -75,6 +75,12 @@ public class ControllerEditListScene {
 			return;
 		}
 		
+		if(newListName.length() > 128) {
+			showNotification("List name exceeds maximum character length allowed!");
+			listNameField.getStyleClass().add("error");
+			return;
+		}
+		
 		if (newListName.equals(list.getName()))
 			return;
 		

@@ -71,6 +71,8 @@ public class ControllerLogoutScene {
 	@FXML
 	private MenuButton sortByMenu;
 	@FXML
+	private Button myTasksButton;
+	@FXML
 	private ChoiceBox<String> choiceBox;
 	
 	@FXML 
@@ -91,6 +93,8 @@ public class ControllerLogoutScene {
 	private HBox addTaskBox;
 	@FXML
 	private VBox searchVerticalBox;
+	@FXML
+	private HBox listOptionsBox;
 
 	private Parent root;
 	
@@ -99,6 +103,8 @@ public class ControllerLogoutScene {
 	private static ArrayList<Notification> notifications;
 	private static Account account;
 	private static TaskOrganizer loadList;
+	
+	private static Boolean showAllTasks = true;
 	
 	private String[] searchOptions = {"Name", "Created Date", "Deadline"};
 	
@@ -193,6 +199,7 @@ public class ControllerLogoutScene {
 		
 		if(loadList == null) {
 			listNameLabel.setText("Choose one List or Group!");
+			listOptionsBox.getChildren().remove(editListButton);
 			return;
 		}
 		else if(loadList instanceof Group) {
@@ -253,6 +260,13 @@ public class ControllerLogoutScene {
 		Pane newBox = (Pane)newListBox;
 		String notification;
 		
+		if(listName.length() > 128) {
+			notification = "List name exceeds maximum character length allowed!";
+			showNotification(notification,newBox);
+			newListName.getStyleClass().add("error");
+			return;
+		}
+		
 		if(User.checkListName(listName)) {
 			notification = "This List already exist!";
 			showNotification(notification,newBox);
@@ -294,6 +308,13 @@ public class ControllerLogoutScene {
 		Pane newBox = (Pane)newGroupBox;
 		String notification;
 		
+		if(groupName.length() > 128) {
+			notification = "Group name exceeds maximum character length allowed!";
+			showNotification(notification,newBox);
+			newGroupName.getStyleClass().add("error");
+			return;
+		}
+		
 		if(User.checkGroupName(groupName) != null) {
 			notification = "This Group already exist!";
 			showNotification(notification,newBox);
@@ -331,6 +352,13 @@ public class ControllerLogoutScene {
 		
 		Pane newBox = (Pane)newGroupBox;
 		String notification;
+		
+		if(groupName.length() > 128) {
+			notification = "Group name exceeds maximum character length allowed!";
+			showNotification(notification,newBox);
+			newGroupName.getStyleClass().add("error");
+			return;
+		}
 		
 		if(User.checkGroupName(groupName) != null) {
 			notification = "This Group already exist!";
@@ -382,6 +410,13 @@ public class ControllerLogoutScene {
 		
 		newTaskName.clear();
 		
+		if(taskName.length() > 128) {
+			String notification = "Task name exceeds maximum character length allowed!";
+			showNotification(notification,(Pane)newTaskBox);
+			newTaskName.getStyleClass().add("error");
+			return;
+		}
+		
 		if(loadList instanceof List)
 			addTaskToList(taskName);
 		else if(loadList instanceof Group)
@@ -393,7 +428,6 @@ public class ControllerLogoutScene {
 		
 		Pane newBox = (Pane)newTaskBox;
 		String notification;
-
 
 		if(loadList.checkName(taskName)) {
 			notification = "This Task already exist!";
@@ -536,6 +570,11 @@ public class ControllerLogoutScene {
 		
 		if(((Group)loadList).getManagerEmail().equals(User.getAccount().getEmail())) {
 			editListButton.setText("Edit Group");
+
+			if(showAllTasks)
+				myTasksButton.setText("My Tasks");
+			else
+				myTasksButton.setText("All Tasks");
 		}
 		else {
 			editListButton.setText("Group Members");
@@ -757,12 +796,29 @@ public class ControllerLogoutScene {
 
 	}
 	
-	public void notifications(ActionEvent e) throws IOException {
+	public void showMyTasks(ActionEvent e) {
+		
+		showAllTasks = !showAllTasks;
+		
+		if(showAllTasks)
+			myTasksButton.setText("My Tasks");
+		else
+			myTasksButton.setText("All Tasks");
+		
+		tasksBox.getChildren().clear();
+		loadTasks();
+	}
+	
+	public void notifications(ActionEvent e) {
 		
 		removeErrorNotifications();
 		
-		root = FXMLLoader.load(getClass().getResource("NotificationScene.fxml"));
-		App.loadScene(root);
+		try {
+			root = FXMLLoader.load(getClass().getResource("NotificationScene.fxml"));
+			App.loadScene(root);
+		} catch (IOException exception) {
+			exception.printStackTrace();
+		}
 		
 	}
 	
@@ -771,22 +827,38 @@ public class ControllerLogoutScene {
 		boolean searchMode = (loadList instanceof SearchList);
 		boolean isMemberOfTheGroup = (loadList instanceof Group) 
 						&& !((Group)loadList).getManagerEmail().equals(User.getAccount().getEmail());
+		boolean isMasterOfTheGroup = (loadList instanceof Group) 
+				&& ((Group)loadList).getManagerEmail().equals(User.getAccount().getEmail());
 		
-		if(searchMode || isMemberOfTheGroup)
+		// Remove add tasks buttons and text fields for members, search lists and for the master with showMyTasks option
+		if(searchMode || isMemberOfTheGroup || !showAllTasks)
 			newTaskBox.getChildren().remove(addTaskBox);
 		else if(!newTaskBox.getChildren().contains(addTaskBox))
 			newTaskBox.getChildren().add(addTaskBox);
-
+		
 		addTaskBox.setVisible(true);
-
-		HBox searchBox = (HBox)sortByMenu.getParent();
+		
+		// Remove edit list/group button for search lists
 		if(searchMode)
-			searchBox.getChildren().remove(editListButton);
-		else if(!searchBox.getChildren().contains(editListButton))
-			searchBox.getChildren().add(editListButton);
+			listOptionsBox.getChildren().remove(editListButton);
+		else if(!listOptionsBox.getChildren().contains(editListButton))
+			listOptionsBox.getChildren().add(editListButton);
 		
 		editListButton.setVisible(true);
 		sortByMenu.setVisible(true);
+		
+		// Remove show my tasks / show all tasks for everyone besides master
+		if(!isMasterOfTheGroup)
+			listOptionsBox.getChildren().remove(myTasksButton);
+		else if(!listOptionsBox.getChildren().contains(myTasksButton))
+			listOptionsBox.getChildren().add(myTasksButton);
+		
+		myTasksButton.setVisible(true);
+		
+		if(showAllTasks)
+			myTasksButton.setText("My Tasks");
+		else
+			myTasksButton.setText("All Tasks");
 		
 		listNameLabel.setText(loadList.getName());
 		ArrayList<Task> tasks = loadList.getTaskList();
@@ -813,6 +885,15 @@ public class ControllerLogoutScene {
 				tasksBox.getChildren().add(taskBar);
 			}
 			else if(t instanceof GroupTask) {
+				
+				if(isMasterOfTheGroup && !showAllTasks) {
+					String taskEmail = ((GroupTask)t).getAssignedToEmail();
+					if(taskEmail == null)
+						continue;
+					if(!taskEmail.equals(User.getAccount().getEmail()))
+						continue;		
+				}
+				
 				GroupTaskBar taskBar = new GroupTaskBar((GroupTask)t,searchMode);
 				CheckBox taskCheckBox = taskBar.getCheckBox();
 				Button taskButton = taskBar.getButton();
