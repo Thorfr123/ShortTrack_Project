@@ -49,7 +49,7 @@ public class ControllerLogoutScene {
 	@FXML 
 	private Label printEmailLabel;
 	@FXML 
-	private Label notificationLabel;
+	private Label notificationLabel = new Label();
 	@FXML
 	private Label listNameLabel;
 	@FXML
@@ -111,42 +111,16 @@ public class ControllerLogoutScene {
 	@FXML
     public void initialize() {
 		
-		User.setLogedIn(true);
-		
+		User.setLogedIn(true);		
 		account = User.getAccount();
 		lists = User.getLists();
 		
-		int maxAttempts = 3;
-        for (int count = 0; count < maxAttempts; count++) {
-        	try {
-				User.setGroups(GroupsDatabase.getAllGroups(User.getAccount()));
-				groups = User.getGroups();
-				User.setNotifications(NotificationDatabase.getAllNotifications(account));
-				notifications = User.getNotifications();
-				break;
-			} catch (SQLException exception) {
-				
-				if (++count == maxAttempts) {
-					Alert alert = new Alert(AlertType.ERROR);
-					alert.setTitle("Connection Error");
-					alert.setHeaderText("Number of connection attempts exceeded!");
-					alert.setContentText("Your section will be terminated");
-
-					if(alert.showAndWait().get() == ButtonType.OK) {
-						ActionEvent e = new ActionEvent();
-						logout(e);
-						return;	
-					}	
-				}
-				else
-					App.connectionErrorMessage();			
-			}
-        }
+		if(!updateDataFromDatabase())
+			return;
 
 		printNameLabel.setText(account.getName());
 		printEmailLabel.setText(account.getEmail());
 		
-		notificationLabel = new Label();
 		notificationLabel.setTextFill(Color.RED);
 		
 		if(notifications.size() == 0)
@@ -156,6 +130,7 @@ public class ControllerLogoutScene {
 			notificationNumber.setVisible(true);
 		}
 		
+		// Loads Search by options
 		choiceBox.setValue("Search by");
 		choiceBox.getItems().addAll(searchOptions);
 		choiceBox.setOnAction(this::searchOption);
@@ -167,6 +142,7 @@ public class ControllerLogoutScene {
 			sortByMenu.getItems().add(item);
 		}
 		
+		// Loads personal list buttons
 		for(List l : lists) {
 			ListButton listButton = new ListButton(l);
 			listButton.setOnAction(event -> {
@@ -175,6 +151,7 @@ public class ControllerLogoutScene {
 			listsBox.getChildren().add(listButton);
 		}
 		
+		// Loads group buttons
 		for(Group g : groups) {
 			GroupButton groupButton = new GroupButton(g);
 			groupButton.setOnAction(event -> {
@@ -245,345 +222,20 @@ public class ControllerLogoutScene {
 		}
 		
 	}
-		
-	public void addList(ActionEvent e) {
-		
-		removeErrorNotifications();
-		
-		String listName = newListName.getText();
-		
-		if(listName.isBlank())
-			return;
-		
-		newListName.clear();
-		
-		Pane newBox = (Pane)newListBox;
-		String notification;
-		
-		if(listName.length() > 128) {
-			notification = "List name exceeds maximum character length allowed!";
-			showNotification(notification,newBox);
-			newListName.getStyleClass().add("error");
-			return;
-		}
-		
-		if(User.checkListName(listName)) {
-			notification = "This List already exist!";
-			showNotification(notification,newBox);
-			newListName.getStyleClass().add("error");
-			return;
-		}
-		
-		List newList = new List(listName);
-		
-		try {
-			PersonalListsDatabase.createList(newList);
-		}
-		catch (SQLException exception) {
-			App.connectionErrorMessage();
-			return;
-		}
-		
-		lists.add(newList);
-		
-		ListButton listButton = new ListButton(newList);
-		listButton.setOnAction(event -> {
-	        changeList(event);
-	    });
-		listsBox.getChildren().add(listButton);
-
-	}
 	
-	public void addGroup(ActionEvent e) {
+	public void notifications(ActionEvent e) {
 		
 		removeErrorNotifications();
 		
-		String groupName = newGroupName.getText();
-		
-		if(groupName.isBlank())
-			return;
-		
-		newGroupName.clear();
-		
-		Pane newBox = (Pane)newGroupBox;
-		String notification;
-		
-		if(groupName.length() > 128) {
-			notification = "Group name exceeds maximum character length allowed!";
-			showNotification(notification,newBox);
-			newGroupName.getStyleClass().add("error");
-			return;
-		}
-		
-		if(User.checkGroupName(groupName) != null) {
-			notification = "This Group already exist!";
-			showNotification(notification,newBox);
-			newGroupName.getStyleClass().add("error");
-			return;
-		}
-		
-		Group newGroup = new Group(groupName,account);
-		
 		try {
-			GroupsDatabase.createGroup(newGroup);
-		}
-		catch (SQLException exception) {
-			App.connectionErrorMessage();
-			return;
-		}
-		
-		groups.add(newGroup);
-		
-		GroupButton groupButton = new GroupButton(newGroup);
-		groupButton.setOnAction(event -> {
-	        changeGroup(event);
-	    });
-		groupsBox.getChildren().add(groupButton);
-		
-	}
-	
-	public void addGroupComplete(ActionEvent e) {
-		
-		removeErrorNotifications();
-		
-		String groupName = newGroupName.getText();
-		
-		newGroupName.clear();
-		
-		Pane newBox = (Pane)newGroupBox;
-		String notification;
-		
-		if(groupName.length() > 128) {
-			notification = "Group name exceeds maximum character length allowed!";
-			showNotification(notification,newBox);
-			newGroupName.getStyleClass().add("error");
-			return;
-		}
-		
-		if(User.checkGroupName(groupName) != null) {
-			notification = "This Group already exist!";
-			showNotification(notification,newBox);
-			newGroupName.getStyleClass().add("error");
-			return;
-		}
-		
-		Group newGroup = new Group(groupName,account);
-		
-		try {
-			GroupsDatabase.createGroup(newGroup);
-		}
-		catch (SQLException exception) {
-			App.connectionErrorMessage();
-			return;
-		}
-		
-		groups.add(newGroup);
-		
-		GroupButton groupButton = new GroupButton(newGroup);
-		groupButton.setOnAction(event -> {
-	        changeGroup(event);
-	    });
-		groupsBox.getChildren().add(groupButton);
-		
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditGroupScene.fxml"));
-			root = loader.load();
-			
-			ControllerEditGroupScene controller = loader.getController();
-			controller.initData(newGroup);
+			root = FXMLLoader.load(getClass().getResource("NotificationScene.fxml"));
 			App.loadScene(root);
-			
-		} catch (IOException exeption) {
-			exeption.printStackTrace();
+		} catch (IOException exception) {
+			exception.printStackTrace();
 		}
 		
 	}
 	
-	public void addTask(ActionEvent e) {
-		
-		removeErrorNotifications();
-		
-		String taskName = newTaskName.getText();
-		
-		if(taskName.isBlank())
-			return;
-		
-		newTaskName.clear();
-		
-		if(taskName.length() > 128) {
-			String notification = "Task name exceeds maximum character length allowed!";
-			showNotification(notification,(Pane)newTaskBox);
-			newTaskName.getStyleClass().add("error");
-			return;
-		}
-		
-		if(loadList instanceof List)
-			addTaskToList(taskName);
-		else if(loadList instanceof Group)
-			addTaskToGroup(taskName);
-		
-	}
-	
-	private PersonalTask addTaskToList(String taskName) {
-		
-		Pane newBox = (Pane)newTaskBox;
-		String notification;
-
-		if(loadList.checkName(taskName)) {
-			notification = "This Task already exist!";
-			showNotification(notification,newBox);
-			newTaskName.getStyleClass().add("error");
-			return null;
-		}
-		
-		PersonalTask newTask = new PersonalTask(taskName,loadList.getID());
-
-		try {
-			PersonalTasksDatabase.createTask(newTask);
-		} catch (SQLException exception) {
-			App.connectionErrorMessage();
-			return null;
-		}	
-
-		((List)loadList).addTask(newTask);
-		
-		TaskBar taskBar = new TaskBar(newTask);
-		CheckBox taskCheckBox = taskBar.getCheckBox();
-		Button taskButton = taskBar.getButton();
-		
-		taskCheckBox.setOnAction(event -> {
-            checkTask(event);
-        });
-		taskButton.setOnAction(event -> {
-            editTask(event);
-        });
-		
-		tasksBox.getChildren().add(taskBar);
-		
-		return newTask;
-	}
-	
-	private GroupTask addTaskToGroup(String taskName) {
-		
-		Pane newBox = (Pane)newTaskBox;
-		String notification;
-
-		if(loadList.checkName(taskName)) {
-			notification = "This Task already exist!";
-			showNotification(notification,newBox);
-			newTaskName.getStyleClass().add("error");
-			return null;
-		}
-		
-		GroupTask newTask = new GroupTask(taskName,loadList.getID());
-
-		try {
-			GroupTasksDatabase.createTask(newTask);
-		} catch (SQLException exception) {
-			App.connectionErrorMessage();
-			return null;
-		}
-		
-		((Group)loadList).addTask(newTask);
-		
-		GroupTaskBar taskBar = new GroupTaskBar(newTask);
-		CheckBox taskCheckBox = taskBar.getCheckBox();
-		Button taskButton = taskBar.getButton();
-		
-		taskCheckBox.setOnAction(event -> {
-			checkGroupTask(event);
-        });
-		taskButton.setOnAction(event -> {
-            editGroupTask(event);
-        });
-		
-		tasksBox.getChildren().add(taskBar);
-		
-		return newTask;
-	}
-	
-	public void addTaskComplete(ActionEvent e) {
-		
-		removeErrorNotifications();
-		
-		String taskName = newTaskName.getText();
-		
-		newTaskName.clear();
-		
-		Task newTask = null;
-		if(loadList instanceof List)
-			newTask = addTaskToList(taskName);
-		else if(loadList instanceof Group)
-			newTask = addTaskToGroup(taskName);
-		
-		if(newTask == null)
-			return;
-		
-		if(loadList instanceof List) {
-			try {
-				FXMLLoader loader = new FXMLLoader(getClass().getResource("EditTaskScene.fxml"));
-				root = loader.load();
-				
-				ControllerEditTaskScene controller = loader.getController();
-				controller.initData(newTask, loadList);	
-				App.loadScene(root);
-				
-			} catch (IOException exeption) {
-				exeption.printStackTrace();
-			}
-		}
-		else if(loadList instanceof Group) {
-			try {
-				FXMLLoader loader = new FXMLLoader(getClass().getResource("EditGroupTaskScene.fxml"));
-				root = loader.load();
-				
-				ControllerEditGroupTaskScene controller = loader.getController();
-				controller.initData((GroupTask)newTask, loadList);	
-				App.loadScene(root);
-				
-			} catch (IOException exeption) {
-				exeption.printStackTrace();
-			}
-		}
-		
-	}
-	
-	public void changeList(ActionEvent e) {
-		
-		removeErrorNotifications();
-		
-		editListButton.setText("Edit List");
-		ListButton listButton = (ListButton)e.getSource();
-		loadList = listButton.getList();
-		
-		tasksBox.getChildren().clear();
-		loadTasks();
-		
-	}
-	
-	public void changeGroup(ActionEvent e) {
-		
-		removeErrorNotifications();
-		
-		GroupButton groupButton = (GroupButton)e.getSource();
-		loadList = groupButton.getGroup();
-		
-		if(((Group)loadList).getManagerEmail().equals(User.getAccount().getEmail())) {
-			editListButton.setText("Edit Group");
-
-			if(showAllTasks)
-				myTasksButton.setText("My Tasks");
-			else
-				myTasksButton.setText("All Tasks");
-		}
-		else {
-			editListButton.setText("Group Members");
-		}
-		
-		tasksBox.getChildren().clear();
-		loadTasks();
-		
-	}
 	
 	public void editListOrGroup(ActionEvent e) {
 		
@@ -654,6 +306,285 @@ public class ControllerLogoutScene {
 			exeption.printStackTrace();
 		}
 	}
+		
+	public void addList(ActionEvent e) {
+		
+		removeErrorNotifications();
+		
+		String listName = newListName.getText();
+		
+		if(listName.isBlank())
+			return;
+		
+		newListName.clear();
+		
+		if(listName.length() > 128) {
+			showNotification("List name exceeds maximum character length allowed!",(Pane)newListBox);
+			return;
+		}
+		else if(User.checkListName(listName)) {
+			showNotification("This List already exist!",(Pane)newListBox);
+			return;
+		}
+		
+		List newList = new List(listName);
+		
+		try {
+			PersonalListsDatabase.createList(newList);
+		}
+		catch (SQLException exception) {
+			App.connectionErrorMessage();
+			return;
+		}
+		
+		lists.add(newList);
+		
+		ListButton listButton = new ListButton(newList);
+		listButton.setOnAction(event -> {
+	        changeList(event);
+	    });
+		listsBox.getChildren().add(listButton);
+
+	}
+	
+	public void addGroup(ActionEvent e) {
+		
+		removeErrorNotifications();
+		
+		String groupName = newGroupName.getText();
+		
+		if(groupName.isBlank())
+			return;
+		
+		newGroupName.clear();
+		
+		if(groupName.length() > 128) {
+			showNotification("Group name exceeds maximum character length allowed!",(Pane)newGroupBox);
+			return;
+		}
+		else if(User.checkGroupName(groupName) != null) {
+			showNotification("This Group already exist!",(Pane)newGroupBox);
+			return;
+		}
+		
+		Group newGroup = new Group(groupName,account);
+		
+		try {
+			GroupsDatabase.createGroup(newGroup);
+		}
+		catch (SQLException exception) {
+			App.connectionErrorMessage();
+			return;
+		}
+		
+		groups.add(newGroup);
+		
+		GroupButton groupButton = new GroupButton(newGroup);
+		groupButton.setOnAction(event -> {
+	        changeGroup(event);
+	    });
+		groupsBox.getChildren().add(groupButton);
+		
+	}
+	
+	public void addGroupComplete(ActionEvent e) {
+		
+		removeErrorNotifications();
+		
+		String groupName = newGroupName.getText();
+		
+		newGroupName.clear();
+		
+		if(groupName.length() > 128) {
+			showNotification("Group name exceeds maximum character length allowed!",(Pane)newGroupBox);
+			return;
+		}
+		else if(User.checkGroupName(groupName) != null) {
+			showNotification("This Group already exist!",(Pane)newGroupBox);
+			return;
+		}
+		
+		Group newGroup = new Group(groupName,account);
+		
+		try {
+			GroupsDatabase.createGroup(newGroup);
+		}
+		catch (SQLException exception) {
+			App.connectionErrorMessage();
+			return;
+		}
+		
+		groups.add(newGroup);
+		
+		GroupButton groupButton = new GroupButton(newGroup);
+		groupButton.setOnAction(event -> {
+	        changeGroup(event);
+	    });
+		groupsBox.getChildren().add(groupButton);
+		
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditGroupScene.fxml"));
+			root = loader.load();
+			
+			ControllerEditGroupScene controller = loader.getController();
+			controller.initData(newGroup);
+			App.loadScene(root);
+			
+		} catch (IOException exeption) {
+			exeption.printStackTrace();
+		}
+		
+	}
+	
+	public void addTask(ActionEvent e) {
+		
+		removeErrorNotifications();
+		
+		String taskName = newTaskName.getText();
+		
+		if(taskName.isBlank())
+			return;
+		
+		newTaskName.clear();
+		
+		if(taskName.length() > 128) {
+			showNotification("Task name exceeds maximum character length allowed!",(Pane)newTaskBox);
+			return;
+		}
+		
+		if(loadList instanceof List)
+			addTaskToList(taskName);
+		else if(loadList instanceof Group)
+			addTaskToGroup(taskName);
+		
+	}
+	
+	private PersonalTask addTaskToList(String taskName) {
+
+		if(loadList.checkName(taskName)) {
+			showNotification("This Task already exist!",(Pane)newTaskBox);
+			return null;
+		}
+		
+		PersonalTask newTask = new PersonalTask(taskName,loadList.getID());
+
+		try {
+			PersonalTasksDatabase.createTask(newTask);
+		} catch (SQLException exception) {
+			App.connectionErrorMessage();
+			return null;
+		}	
+
+		((List)loadList).addTask(newTask);
+		
+		createPersonalTaskButton(newTask,false);
+		
+		return newTask;
+	}
+	
+	private GroupTask addTaskToGroup(String taskName) {
+
+		if(loadList.checkName(taskName)) {
+			showNotification("This Task already exist!",(Pane)newTaskBox);
+			return null;
+		}
+		
+		GroupTask newTask = new GroupTask(taskName,loadList.getID());
+
+		try {
+			GroupTasksDatabase.createTask(newTask);
+		} catch (SQLException exception) {
+			App.connectionErrorMessage();
+			return null;
+		}
+		
+		((Group)loadList).addTask(newTask);
+		
+		createGroupTaskButton(newTask,false);
+		
+		return newTask;
+	}
+	
+	public void addTaskComplete(ActionEvent e) {
+		
+		removeErrorNotifications();
+		
+		String taskName = newTaskName.getText();
+		
+		newTaskName.clear();
+		
+		Task newTask = null;
+		if(loadList instanceof List)
+			newTask = addTaskToList(taskName);
+		else if(loadList instanceof Group)
+			newTask = addTaskToGroup(taskName);
+		
+		if(newTask == null)
+			return;
+		
+		if(loadList instanceof List) {
+			try {
+				FXMLLoader loader = new FXMLLoader(getClass().getResource("EditTaskScene.fxml"));
+				root = loader.load();
+				
+				ControllerEditTaskScene controller = loader.getController();
+				controller.initData(newTask, loadList);	
+				App.loadScene(root);
+				
+			} catch (IOException exeption) {
+				exeption.printStackTrace();
+			}
+		}
+		else if(loadList instanceof Group) {
+			try {
+				FXMLLoader loader = new FXMLLoader(getClass().getResource("EditGroupTaskScene.fxml"));
+				root = loader.load();
+				
+				ControllerEditGroupTaskScene controller = loader.getController();
+				controller.initData((GroupTask)newTask, loadList);	
+				App.loadScene(root);
+				
+			} catch (IOException exeption) {
+				exeption.printStackTrace();
+			}
+		}
+		
+	}
+	
+	public void changeList(ActionEvent e) {
+		
+		removeErrorNotifications();
+		
+		editListButton.setText("Edit List");
+		ListButton listButton = (ListButton)e.getSource();
+		loadList = listButton.getList();
+		
+		loadTasks();
+		
+	}
+	
+	public void changeGroup(ActionEvent e) {
+		
+		removeErrorNotifications();
+		
+		GroupButton groupButton = (GroupButton)e.getSource();
+		loadList = groupButton.getGroup();
+		
+		if(((Group)loadList).getManagerEmail().equals(User.getAccount().getEmail())) {
+			editListButton.setText("Edit Group");
+
+			if(showAllTasks)
+				myTasksButton.setText("My Tasks");
+			else
+				myTasksButton.setText("All Tasks");
+		}
+		else {
+			editListButton.setText("Group Members");
+		}
+
+		loadTasks();
+		
+	}
 	
 	public void checkTask(ActionEvent e) {
 		
@@ -708,7 +639,6 @@ public class ControllerLogoutScene {
 		String option = ((MenuItem)e.getSource()).getText();
 		loadList.sort(SortBy.fromString(option));
 		
-		tasksBox.getChildren().clear();
 		loadTasks();
 		
 	}
@@ -749,11 +679,9 @@ public class ControllerLogoutScene {
 		String searchOption = choiceBox.getValue();
 		Boolean isDateType = searchOption.equals("Created Date") || searchOption.equals("Deadline");
 		LocalDate date = null;
-		Pane newBox = (Pane)searchVerticalBox;
 		
 		if(isDateType && (date = Task.checkValidDate(text)) == null) {
-			showNotification("Invalid date format!",newBox);
-			searchBarField.getStyleClass().add("error");
+			showNotification("Invalid date format!",(Pane)searchVerticalBox);
 			return;
 		}
 		
@@ -777,21 +705,16 @@ public class ControllerLogoutScene {
 					g.findTaskByName(text,searchList.getTaskList());			
 				break;	
 			default:
-				String notification = "Please select one option!";
-				showNotification(notification,newBox);
-				searchBarField.getStyleClass().add("error");
+				showNotification("Please select one option!",(Pane)searchVerticalBox);
 				return;
 		}
 		
 		if(searchList.getTaskList().isEmpty()) {
-			String notification = "Nothing was found!";
-			showNotification(notification,newBox);
-			searchBarField.getStyleClass().add("error");
+			showNotification("Nothing was found!",(Pane)searchVerticalBox);
 			return;
 		}
 		
 		loadList = searchList;
-		tasksBox.getChildren().clear();
 		loadTasks();
 
 	}
@@ -805,30 +728,90 @@ public class ControllerLogoutScene {
 		else
 			myTasksButton.setText("All Tasks");
 		
-		tasksBox.getChildren().clear();
 		loadTasks();
-	}
-	
-	public void notifications(ActionEvent e) {
-		
-		removeErrorNotifications();
-		
-		try {
-			root = FXMLLoader.load(getClass().getResource("NotificationScene.fxml"));
-			App.loadScene(root);
-		} catch (IOException exception) {
-			exception.printStackTrace();
-		}
-		
 	}
 	
 	private void loadTasks() {
 		
+		tasksBox.getChildren().clear();
+		
 		boolean searchMode = (loadList instanceof SearchList);
-		boolean isMemberOfTheGroup = (loadList instanceof Group) 
-						&& !((Group)loadList).getManagerEmail().equals(User.getAccount().getEmail());
 		boolean isMasterOfTheGroup = (loadList instanceof Group) 
 				&& ((Group)loadList).getManagerEmail().equals(User.getAccount().getEmail());
+		
+		setVisibleNodes(searchMode,isMasterOfTheGroup);
+		
+		listNameLabel.setText(loadList.getName());
+		ArrayList<Task> tasks = loadList.getTaskList();
+		for(Task t : tasks) {
+			
+			if (t instanceof PersonalTask)
+				createPersonalTaskButton(t,searchMode);
+			else if(t instanceof GroupTask) {
+				
+				if(isMasterOfTheGroup && !showAllTasks) {
+					String taskEmail = ((GroupTask)t).getAssignedToEmail();
+					if(taskEmail == null)
+						continue;
+					else if(!taskEmail.equals(User.getAccount().getEmail()))
+						continue;		
+				}
+				
+				createGroupTaskButton(t, searchMode);
+				
+			}
+
+		}
+	}
+	
+	private void createPersonalTaskButton(Task t, boolean searchMode) {
+		TaskBar taskBar = new TaskBar(t,searchMode);
+		CheckBox taskCheckBox = taskBar.getCheckBox();
+		Button taskButton = taskBar.getButton();
+		
+		if(t.isCompleted()) {
+			taskCheckBox.setSelected(true);
+			taskBar.setOpacity(0.5);
+		}
+		else
+			taskBar.setOpacity(1);
+		
+		taskCheckBox.setOnAction(event -> {
+            checkTask(event);
+        });
+		taskButton.setOnAction(event -> {
+            editTask(event);
+        });
+		
+		tasksBox.getChildren().add(taskBar);
+	}
+	
+	private void createGroupTaskButton(Task t, boolean searchMode) {
+		GroupTaskBar taskBar = new GroupTaskBar((GroupTask)t,searchMode);
+		CheckBox taskCheckBox = taskBar.getCheckBox();
+		Button taskButton = taskBar.getButton();
+		
+		if(t.isCompleted()) {
+			taskCheckBox.setSelected(true);
+			taskBar.setOpacity(0.5);
+		}
+		else
+			taskBar.setOpacity(1);
+		
+		taskCheckBox.setOnAction(event -> {
+			checkGroupTask(event);
+        });
+		taskButton.setOnAction(event -> {
+            editGroupTask(event);
+        });
+		
+		tasksBox.getChildren().add(taskBar);
+	}
+	
+	private void setVisibleNodes(boolean searchMode, boolean isMasterOfTheGroup) {
+		
+		boolean isMemberOfTheGroup = (loadList instanceof Group) 
+				&& !((Group)loadList).getManagerEmail().equals(User.getAccount().getEmail());
 		
 		// Remove add tasks buttons and text fields for members, search lists and for the master with showMyTasks option
 		if(searchMode || isMemberOfTheGroup || !showAllTasks)
@@ -860,62 +843,38 @@ public class ControllerLogoutScene {
 		else
 			myTasksButton.setText("All Tasks");
 		
-		listNameLabel.setText(loadList.getName());
-		ArrayList<Task> tasks = loadList.getTaskList();
-		for(Task t : tasks) {
-			if (t instanceof PersonalTask) {
-				TaskBar taskBar = new TaskBar(t,searchMode);
-				CheckBox taskCheckBox = taskBar.getCheckBox();
-				Button taskButton = taskBar.getButton();
+	}
+	
+	private boolean updateDataFromDatabase() {
+		
+		int maxAttempts = 3;
+        for (int count = 0; count < maxAttempts; count++) {
+        	try {
+				User.setGroups(GroupsDatabase.getAllGroups(User.getAccount()));
+				groups = User.getGroups();
+				User.setNotifications(NotificationDatabase.getAllNotifications(account));
+				notifications = User.getNotifications();
+				break;
+			} catch (SQLException exception) {
 				
-				if(t.isCompleted()) {
-					taskCheckBox.setSelected(true);
-					taskBar.setOpacity(0.5);
-				}
-				else
-					taskBar.setOpacity(1);
-				
-				taskCheckBox.setOnAction(event -> {
-		            checkTask(event);
-		        });
-				taskButton.setOnAction(event -> {
-		            editTask(event);
-		        });
-				
-				tasksBox.getChildren().add(taskBar);
-			}
-			else if(t instanceof GroupTask) {
-				
-				if(isMasterOfTheGroup && !showAllTasks) {
-					String taskEmail = ((GroupTask)t).getAssignedToEmail();
-					if(taskEmail == null)
-						continue;
-					if(!taskEmail.equals(User.getAccount().getEmail()))
-						continue;		
-				}
-				
-				GroupTaskBar taskBar = new GroupTaskBar((GroupTask)t,searchMode);
-				CheckBox taskCheckBox = taskBar.getCheckBox();
-				Button taskButton = taskBar.getButton();
-				
-				if(t.isCompleted()) {
-					taskCheckBox.setSelected(true);
-					taskBar.setOpacity(0.5);
-				}
-				else
-					taskBar.setOpacity(1);
-				
-				taskCheckBox.setOnAction(event -> {
-					checkGroupTask(event);
-		        });
-				taskButton.setOnAction(event -> {
-		            editGroupTask(event);
-		        });
-				
-				tasksBox.getChildren().add(taskBar);
-			}
+				if (++count == maxAttempts) {
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("Connection Error");
+					alert.setHeaderText("Number of connection attempts exceeded!");
+					alert.setContentText("Your section will be terminated");
 
-		}
+					if(alert.showAndWait().get() == ButtonType.OK) {
+						ActionEvent e = new ActionEvent();
+						logout(e);
+						return false;	
+					}	
+				}
+				else
+					App.connectionErrorMessage();			
+			}
+        }
+        
+        return true;
 	}
 
 	private void showNotification(String notification, Pane newBox) {
@@ -924,11 +883,19 @@ public class ControllerLogoutScene {
 		notificationLabel.setText(notification);
 		System.out.println(notification);
 		
+		if(newBox.equals(newTaskBox))
+			newTaskName.getStyleClass().add("error");
+		else if(newBox.equals(newListBox))
+			newListName.getStyleClass().add("error");
+		else if(newBox.equals(newGroupBox))
+			newGroupName.getStyleClass().add("error");
+		else if(newBox.equals(searchVerticalBox))
+			searchBarField.getStyleClass().add("error");
+		
 	}
 	
 	private void removeErrorNotifications() {
 		
-		logoutBox.getChildren().remove(notificationLabel);
 		newTaskBox.getChildren().remove(notificationLabel);
 		newListBox.getChildren().remove(notificationLabel);
 		newGroupBox.getChildren().remove(notificationLabel);

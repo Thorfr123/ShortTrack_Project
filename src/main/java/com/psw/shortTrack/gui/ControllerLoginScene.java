@@ -29,7 +29,7 @@ import javafx.scene.paint.Color;
 public class ControllerLoginScene {
 	
 	@FXML 
-	private Label notificationLabel;
+	private Label notificationLabel = new Label();;
 	@FXML
 	private Label listNameLabel;
 	
@@ -80,7 +80,6 @@ public class ControllerLoginScene {
 	@FXML
     public void initialize() {
 				
-		notificationLabel = new Label();
 		notificationLabel.setTextFill(Color.RED);
 		
 		choiceBox.setValue("Search by");
@@ -96,6 +95,7 @@ public class ControllerLoginScene {
 		
 		lists = User.getLists();
 		
+		// Create all personal lists buttons
 		for(List l : lists) {
 			ListButton listButton = new ListButton(l);
 			listButton.setOnAction(event -> {
@@ -123,21 +123,13 @@ public class ControllerLoginScene {
 		String password = passwordField.getText();
 		
 		if(email.isBlank() || password.isBlank()) {
-			Pane newBox = (Pane)loginBox;
-			String notification = "Please complete both fields!";
-			showNotification(notification,newBox);
-			emailField.getStyleClass().add("error");
-			passwordField.getStyleClass().add("error");
+			showNotification("Please complete both fields!",(Pane)loginBox);
 			return;
 		}
 		
 		try {
 			if(!AccountsDatabase.checkLogin(email, password)) {
-				Pane newBox = (Pane)loginBox;
-				String notification = "Invalid email or password!";
-				showNotification(notification,newBox);
-				emailField.getStyleClass().add("error");
-				passwordField.getStyleClass().add("error");
+				showNotification("Invalid email or password!",(Pane)loginBox);
 				return;
 			}
 		} catch (SQLException exeption) {
@@ -190,20 +182,12 @@ public class ControllerLoginScene {
 		
 		newListName.clear();
 		
-		Pane newBox = (Pane)newListBox;
-		String notification;
-		
 		if(listName.length() > 128) {
-			notification = "Group name exceeds maximum character length allowed!";
-			showNotification(notification,newBox);
-			newListName.getStyleClass().add("error");
+			showNotification("Group name exceeds maximum character length allowed!",(Pane)newListBox);
 			return;
 		}
-		
-		if(User.checkListName(listName)) {
-			notification = "This List already exist!";
-			showNotification(notification,newBox);
-			newListName.getStyleClass().add("error");
+		else if(User.checkListName(listName)) {
+			showNotification("This List already exist!",(Pane)newListBox);
 			return;
 		}
 		
@@ -227,23 +211,15 @@ public class ControllerLoginScene {
 		
 		if(taskName.isBlank())
 			return;
-		
+
 		newTaskName.clear();
-		
-		Pane newBox = (Pane)newTaskBox;
-		String notification;
-		
+
 		if(taskName.length() > 128) {
-			notification = "Task name exceeds maximum character length allowed!";
-			showNotification(notification,newBox);
-			newTaskName.getStyleClass().add("error");
+			showNotification("Task name exceeds maximum character length allowed!",(Pane)newTaskBox);
 			return;
-		}
-		
-		if(loadList.checkName(taskName)) {
-			notification = "This Task already exist!";
-			showNotification(notification,newBox);
-			newTaskName.getStyleClass().add("error");
+		}	
+		else if(loadList.checkName(taskName)) {
+			showNotification("This Task already exist!",(Pane)newTaskBox);
 			return;
 		}
 		
@@ -274,20 +250,12 @@ public class ControllerLoginScene {
 
 		newTaskName.clear();
 		
-		Pane newBox = (Pane)newTaskBox;
-		String notification;
-		
 		if(taskName.length() > 128) {
-			notification = "Task name exceeds maximum character length allowed!";
-			showNotification(notification,newBox);
-			newTaskName.getStyleClass().add("error");
+			showNotification("Task name exceeds maximum character length allowed!",(Pane)newTaskBox);
 			return;
 		}
-		
-		if(loadList.checkName(taskName)) {
-			notification = "This Task already exist!";
-			showNotification(notification,newBox);
-			newTaskName.getStyleClass().add("error");
+		else if(loadList.checkName(taskName)) {
+			showNotification("This Task already exist!",(Pane)newTaskBox);
 			return;
 		}
 		
@@ -330,7 +298,6 @@ public class ControllerLoginScene {
 		ListButton listButton = (ListButton)e.getSource();
 		loadList = listButton.getList();
 		
-		tasksBox.getChildren().clear();
 		loadTasks();
 		
 	}
@@ -396,7 +363,6 @@ public class ControllerLoginScene {
 		String option = ((MenuItem)e.getSource()).getText();
 		loadList.sort(SortBy.fromString(option));
 		
-		tasksBox.getChildren().clear();
 		loadTasks();
 		
 	}
@@ -437,11 +403,9 @@ public class ControllerLoginScene {
 		String searchOption = choiceBox.getValue();
 		Boolean isDateType = searchOption.equals("Created Date") || searchOption.equals("Deadline");
 		LocalDate date = null;
-		Pane newBox = (Pane)searchVerticalBox;
 		
 		if(isDateType && (date = Task.checkValidDate(text)) == null) {
-			showNotification("Invalid date format!",newBox);
-			searchBarField.getStyleClass().add("error");
+			showNotification("Invalid date format!",(Pane)searchVerticalBox);
 			return;
 		}
 		
@@ -459,45 +423,28 @@ public class ControllerLoginScene {
 					l.findTaskByDeadline(date,searchList.getTaskList());			
 				break;	
 			default:
-				String notification = "Please select one option!";
-				showNotification(notification,newBox);
-				searchBarField.getStyleClass().add("error");
+				showNotification("Please select one option!",(Pane)searchVerticalBox);
 				return;
 		}
 		
 		if(searchList.getTaskList().isEmpty()) {
-			String notification = "Nothing was found!";
-			showNotification(notification,newBox);
-			searchBarField.getStyleClass().add("error");
+			showNotification("Nothing was found!",(Pane)searchVerticalBox);
 			return;
 		}
 		
 		loadList = searchList;
-		tasksBox.getChildren().clear();
 		loadTasks();
 
 	}
 	
 	private void loadTasks() {
 		
+		tasksBox.getChildren().clear();
+		
 		listNameLabel.setText(loadList.getName());
 		boolean searchMode = (loadList instanceof SearchList);
 		
-		if(searchMode)
-			newTaskBox.getChildren().remove(addTaskBox);
-		else if(!newTaskBox.getChildren().contains(addTaskBox))
-			newTaskBox.getChildren().add(addTaskBox);
-
-		addTaskBox.setVisible(true);
-
-		HBox searchBox = (HBox)sortByMenu.getParent();
-		if(searchMode)
-			searchBox.getChildren().remove(editListButton);
-		else if(!searchBox.getChildren().contains(editListButton))
-			searchBox.getChildren().add(editListButton);
-		
-		editListButton.setVisible(true);
-		sortByMenu.setVisible(true);
+		setVisibleNodes(searchMode);
 		
 		ArrayList<Task> tasks = loadList.getTaskList();
 		for(Task t : tasks) {
@@ -524,11 +471,43 @@ public class ControllerLoginScene {
 		
 	}
 	
+	private void setVisibleNodes(boolean searchMode) {
+		
+		if(searchMode)
+			newTaskBox.getChildren().remove(addTaskBox);
+		else if(!newTaskBox.getChildren().contains(addTaskBox))
+			newTaskBox.getChildren().add(addTaskBox);
+
+		addTaskBox.setVisible(true);
+
+		HBox searchBox = (HBox)sortByMenu.getParent();
+		if(searchMode)
+			searchBox.getChildren().remove(editListButton);
+		else if(!searchBox.getChildren().contains(editListButton))
+			searchBox.getChildren().add(editListButton);
+		
+		editListButton.setVisible(true);
+		sortByMenu.setVisible(true);
+		
+	}
+	
 	private void showNotification(String notification, Pane newBox) {
 		
 		newBox.getChildren().add(notificationLabel);
 		notificationLabel.setText(notification);
 		System.out.println(notification);
+		
+		if(newBox.equals(loginBox)) {
+			emailField.getStyleClass().add("error");
+			passwordField.getStyleClass().add("error");
+		}
+		else if(newBox.equals(newListBox))
+			newListName.getStyleClass().add("error");
+		else if(newBox.equals(newTaskBox))
+			newTaskName.getStyleClass().add("error");
+		else if(newBox.equals(searchVerticalBox))
+			searchBarField.getStyleClass().add("error");
+			
 		
 	}
 	
