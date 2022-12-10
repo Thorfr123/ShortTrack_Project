@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 @SuppressWarnings("serial")
 public class GroupTask extends Task {
-	// 
+	
 	private Account assignedTo = nobody;
 	
 	public static Account nobody = new Account(null, "Nobody");
@@ -23,7 +23,7 @@ public class GroupTask extends Task {
 
 	public Account getAssignedToAccount() { return assignedTo; }
 	
-	public String getAssignedToName() { return assignedTo.getName(); }
+	//public String getAssignedToName() { return assignedTo.getName(); } //TODO: is not used
 	
 	public String getAssignedToEmail() { return assignedTo.getEmail(); }
 	

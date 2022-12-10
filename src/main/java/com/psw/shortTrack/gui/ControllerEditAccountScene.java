@@ -114,12 +114,12 @@ public class ControllerEditAccountScene {
 	
 		emailCancel = createButton("Cancel");
 		emailCancel.setOnAction(event -> {
-			resetEmailLayout();
+			resetEmailLayout(event);
 	    });
     	
 		passwordCancel = createButton("Cancel");
 		passwordCancel.setOnAction(event -> {
-			resetPasswordLayout();
+			resetPasswordLayout(event);
 	    });
 		
 		newPasswordLabel = createLabel("New password");
@@ -132,20 +132,20 @@ public class ControllerEditAccountScene {
     	
 		savePassword = createButton("Save");
 		savePassword.setOnAction(event -> {
-			savePassword();
+			savePassword(event);
 	    });
 		
     }
     
 	@FXML
-    void close(ActionEvent event) {
+	public void close(ActionEvent e) {
     	
 		App.loadMainScene();
 		
     }
     
     @FXML
-    void delete(ActionEvent event) {
+    public void delete(ActionEvent e) {
     	
     	removeErrorNotifications();
     	
@@ -172,7 +172,7 @@ public class ControllerEditAccountScene {
     }
 
     @FXML
-    void changeName(ActionEvent event) {
+    public void changeName(ActionEvent e) {
     	
     	removeErrorNotifications();
     	
@@ -222,9 +222,9 @@ public class ControllerEditAccountScene {
     }
     
     @FXML
-    void changeEmail(ActionEvent e) {
+    public void changeEmail(ActionEvent e) {
     	
-    	resetPasswordLayout();
+    	resetPasswordLayout(e);
     	
     	mailChangeBox.getChildren().remove(changeEmailButton);
     	mailChangeBox.getChildren().add(saveEmail);
@@ -238,7 +238,7 @@ public class ControllerEditAccountScene {
     }
     
     
-    void saveEmail(ActionEvent e) {
+    public void saveEmail(ActionEvent e) {
     	
     	removeErrorNotifications();
     	
@@ -291,14 +291,14 @@ public class ControllerEditAccountScene {
 		}
     	
     	account.setEmail(newEmail);
-    	resetEmailLayout();
+    	resetEmailLayout(e);
     	
     }
        
     @FXML
-    void changePassword(ActionEvent event) {
+    public void changePassword(ActionEvent e) {
     	
-    	resetEmailLayout();
+    	resetEmailLayout(e);
     	
     	changePasswordLabel.setText("Current password");
     	
@@ -315,7 +315,7 @@ public class ControllerEditAccountScene {
     	savePasswordBox.getChildren().add(savePassword);
     }
     
-	private void savePassword() {
+	private void savePassword(ActionEvent e) {
 		
 		removeErrorNotifications();
 		
@@ -369,7 +369,7 @@ public class ControllerEditAccountScene {
 			return;
 		}
 		
-		resetPasswordLayout();
+		resetPasswordLayout(e);
 	}
 
     private void removeErrorNotifications() {
@@ -390,7 +390,7 @@ public class ControllerEditAccountScene {
 		notificationLabel.setVisible(true);
 	}
 	
-	private void resetEmailLayout() {
+	private void resetEmailLayout(ActionEvent e) {
 		
 		removeErrorNotifications();
 		
@@ -414,7 +414,7 @@ public class ControllerEditAccountScene {
     	currentPasswordField.setText("");
 	}
 	
-    private void resetPasswordLayout() {
+    private void resetPasswordLayout(ActionEvent e) {
     	
     	removeErrorNotifications();
     	
