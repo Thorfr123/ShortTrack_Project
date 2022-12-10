@@ -20,10 +20,12 @@ public class GroupTask extends Task {
 	public GroupTask(String name, int groupID) {
 		super(name, groupID);
 	}
+	
+	public GroupTask(int id, String name) {
+		super(id, name);
+	}
 
 	public Account getAssignedToAccount() { return assignedTo; }
-	
-	//public String getAssignedToName() { return assignedTo.getName(); } //TODO: is not used
 	
 	public String getAssignedToEmail() { return assignedTo.getEmail(); }
 	

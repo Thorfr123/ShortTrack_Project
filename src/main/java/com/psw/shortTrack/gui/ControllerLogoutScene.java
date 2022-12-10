@@ -619,7 +619,7 @@ public class ControllerLogoutScene {
 		GroupTask task = taskBar.getTask();
 		
 		try {
-			GroupTasksDatabase.updateTask(task.getID(), task.getName(), task.getDescription(), task.getDeadlineDate(), taskCheckBox.isSelected(), task.getAssignedToEmail());
+			GroupTasksDatabase.updateTask(task.getID(), task.getName(), task.getDescription(), task.getDeadlineDate(), taskCheckBox.isSelected());
 		} catch (SQLException exception) {
 			App.connectionErrorMessage();
 			return;
@@ -856,6 +856,8 @@ public class ControllerLogoutScene {
 				notifications = User.getNotifications();
 				break;
 			} catch (SQLException exception) {
+				
+				exception.printStackTrace();
 				
 				if (++count == maxAttempts) {
 					Alert alert = new Alert(AlertType.ERROR);

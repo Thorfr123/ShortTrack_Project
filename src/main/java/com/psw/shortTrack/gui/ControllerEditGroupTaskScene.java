@@ -7,10 +7,13 @@ import java.util.Collections;
 import com.psw.shortTrack.data.Account;
 import com.psw.shortTrack.data.Group;
 import com.psw.shortTrack.data.GroupTask;
+import com.psw.shortTrack.data.Notification;
+import com.psw.shortTrack.data.Notification.NotificationType;
 import com.psw.shortTrack.data.SearchList;
 import com.psw.shortTrack.data.TaskOrganizer;
 import com.psw.shortTrack.data.User;
 import com.psw.shortTrack.database.GroupTasksDatabase;
+import com.psw.shortTrack.database.NotificationDatabase;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -88,6 +91,40 @@ public class ControllerEditGroupTaskScene {
 		
     }
 	
+	public void askHelp(ActionEvent e) {
+		
+		try {
+			
+			NotificationDatabase.clearHelpRequests(task.getID());
+			
+			if (!group.getManagerEmail().equals(User.getAccount().getEmail())) {
+				Notification ask = new Notification(NotificationType.askForHelp,
+													User.getAccount(),
+													group.getManagerAccount(),
+													group,
+													task);
+				NotificationDatabase.createNotification(ask);
+			}
+			
+			for (Account member : group.getMemberAccounts()) {
+				if (member.getEmail().equals(User.getAccount().getEmail()))
+					continue;
+				
+				Notification ask = new Notification(NotificationType.askForHelp,
+													User.getAccount(),
+													member,
+													group,
+													task);
+				
+				NotificationDatabase.createNotification(ask);
+				
+			}
+		} catch (SQLException sqle) {
+			App.connectionErrorMessage();
+		}
+		
+	}
+	
 	public void delete(ActionEvent e) {
 		
 		removeErrorNotifications();
@@ -138,7 +175,15 @@ public class ControllerEditGroupTaskScene {
 		Account newAssignedTo = assignedToBox.getValue();
 		
 		try {
-			GroupTasksDatabase.updateTask(task.getID(), newTaskName, newDescription, newDeadline, checkButton.isSelected(), newAssignedTo.getEmail());
+			GroupTasksDatabase.updateTask(task.getID(), newTaskName, newDescription, newDeadline, checkButton.isSelected());
+			
+			if (newAssignedTo.equals(GroupTask.nobody)) {
+				GroupTasksDatabase.changeAssignedTo(task.getID(), null);
+			}
+			else if (!newAssignedTo.getEmail().equals(task.getAssignedToEmail())) {
+				GroupTasksDatabase.changeAssignedTo(task.getID(), newAssignedTo.getEmail());
+			}
+			
 		} catch (SQLException exception) {
 			System.out.println(exception);
 			App.connectionErrorMessage();

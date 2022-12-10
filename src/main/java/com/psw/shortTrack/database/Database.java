@@ -13,7 +13,7 @@ import com.psw.shortTrack.fileIO.FileIO;
 
 /*
  * Error codes uteis
- * 
+ * https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-joins/
  *  - 23502 - Not null violation
  *  - 23503 - Foreign key violation
  *  - 23505 - Unique violation

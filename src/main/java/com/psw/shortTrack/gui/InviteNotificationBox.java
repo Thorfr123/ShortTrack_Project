@@ -64,5 +64,4 @@ public class InviteNotificationBox extends HBox {
 		return notification;
 	}
 
-	
 }

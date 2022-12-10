@@ -26,6 +26,12 @@ public abstract class Task implements Serializable {
 		this.id = idCount++;
 	}
 	
+	// Utilizado nas notificações
+	public Task(int id, String name) {
+		this.id = id;
+		this.name = name;
+	}
+	
 	//Utilizado quando carrega da database
 	public Task(String name, int id, String description, LocalDate createdDate, LocalDate deadline, 
 					Boolean completed, int parentID) {

@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import com.psw.shortTrack.data.Notification;
 import com.psw.shortTrack.data.Notification.NotificationType;
 import com.psw.shortTrack.data.User;
+import com.psw.shortTrack.database.GroupTasksDatabase;
 import com.psw.shortTrack.database.GroupsDatabase;
 import com.psw.shortTrack.database.NotificationDatabase;
 
@@ -26,7 +27,7 @@ public class ControllerNotificationScene {
 				InviteNotificationBox notificationBar = new InviteNotificationBox(notification);
 				
 				notificationBar.getAcceptButton().setOnAction(event -> {
-					accept(notification, notificationBar);
+					acceptGroupInvite(notification, notificationBar);
 		        });
 				notificationBar.getRefuseButton().setOnAction(event -> {
 					decline(notification, notificationBar);
@@ -34,6 +35,18 @@ public class ControllerNotificationScene {
 				
 				notificationList.getChildren().add(notificationBar);
 				
+			}
+			else if (notification.getType() == NotificationType.askForHelp) {
+				InviteNotificationBox notificationBar = new InviteNotificationBox(notification);
+				
+				notificationBar.getAcceptButton().setOnAction(event -> {
+					acceptHelpRequest(notification, notificationBar);
+		        });
+				notificationBar.getRefuseButton().setOnAction(event -> {
+					decline(notification, notificationBar);
+		        });
+				
+				notificationList.getChildren().add(notificationBar);
 			}
 			else {
 				SimpleNotificationBox notificationBar = new SimpleNotificationBox(notification);
@@ -64,15 +77,43 @@ public class ControllerNotificationScene {
 		
 	}
 	
-	public void accept(Notification notification, HBox notificationBar) {
+	public void acceptGroupInvite(Notification notification, HBox notificationBar) {
 		
 		try {
 			
-			GroupsDatabase.addMember(notification.getGroup_id(), User.getAccount());
+			GroupsDatabase.addMember(notification.getRefGroup().getID(), User.getAccount());
 			deleteNotification(notification, notificationBar);
 			
-			Notification accepted = new Notification(NotificationType.acceptedInviteToGroup, User.getAccount(), notification.getSource(), notification.getGroup());
-			NotificationDatabase.createNotification(accepted);
+			Notification response = new Notification(	notification.getResponseType(), 
+														User.getAccount(), 
+														notification.getSource(), 
+														notification.getRefGroup(),
+														notification.getRefTask());
+			NotificationDatabase.createNotification(response);
+			
+		} catch (SQLException sqle) {
+			App.connectionErrorMessage();
+			return;
+		}
+		
+	}
+	
+	public void acceptHelpRequest(Notification notification, HBox notificationBar) {
+		
+		try {
+			
+			GroupTasksDatabase.changeAssignedTo(notification.getRefTask().getID(), User.getAccount().getEmail());
+			
+			NotificationDatabase.clearHelpRequests(notification.getRefTask().getID());
+			
+			deleteNotification(notification, notificationBar);
+			
+			Notification response = new Notification(	notification.getResponseType(), 
+														User.getAccount(), 
+														notification.getSource(), 
+														notification.getRefGroup(),
+														notification.getRefTask());
+			NotificationDatabase.createNotification(response);
 			
 		} catch (SQLException sqle) {
 			App.connectionErrorMessage();

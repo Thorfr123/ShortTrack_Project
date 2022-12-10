@@ -9,8 +9,11 @@ import java.util.ArrayList;
 import org.postgresql.util.PSQLException;
 
 import com.psw.shortTrack.data.Account;
+import com.psw.shortTrack.data.Group;
+import com.psw.shortTrack.data.GroupTask;
 import com.psw.shortTrack.data.Notification;
 import com.psw.shortTrack.data.Notification.NotificationType;
+import com.psw.shortTrack.data.Task;
 
 public class NotificationDatabase extends Database{
 
@@ -24,16 +27,21 @@ public class NotificationDatabase extends Database{
 	 */
 	public static boolean createNotification(Notification notif) throws SQLException {
 		
-		try {	
+		try {
+			
+			String group_id = notif.getRefGroup() == null ? null : toSQL(notif.getRefGroup().getID());
+			String task_id = notif.getRefTask() == null ? null : toSQL(notif.getRefTask().getID());
+			
 			notif.setId(executeQueryReturnInt(
-				"INSERT INTO projeto.notifications (type, source, destination, group_id)\r\n"
+				"INSERT INTO projeto.notifications (type, source, destination, group_id, task_id)\r\n"
 				+ "VALUES (" + toSQL((int)notif.getTypeAsInt()) + "," + toSQL((String)notif.getSource().getEmail()) + "," 
-				+ toSQL((String)notif.getDestination().getEmail()) + "," + toSQL(notif.getGroup_id()) + ")\r\n"
+				+ toSQL((String)notif.getDestination().getEmail()) + "," + group_id + "," + task_id + ")\r\n"
 				+ "RETURNING id;")
 			);
 			return true;
 		} catch (PSQLException psql) {
 			if (psql.getSQLState().startsWith("23")) {
+				System.out.println(psql);
 				return false;
 			}
 			throw psql;
@@ -71,8 +79,10 @@ public class NotificationDatabase extends Database{
 			
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(
-				"SELECT notifications.id, type, source, group_id, groups.name AS group_name\r\n"
-				+ "FROM projeto.notifications JOIN projeto.groups ON group_id=groups.id\r\n"
+				"SELECT notifications.id, type, source, notifications.group_id, groups.name AS group_name, task_id, group_tasks.name AS task_name\r\n"
+				+ "FROM projeto.notifications\r\n"
+				+ "LEFT JOIN projeto.groups ON group_id=groups.id\r\n"
+				+ "LEFT JOIN projeto.group_tasks ON task_id=group_tasks.id\r\n"
 				+ "WHERE destination=" + toSQL((String)user.getEmail()) + ";"
 			);
 			
@@ -80,12 +90,18 @@ public class NotificationDatabase extends Database{
 			while (rs.next()) {
 				Account source = AccountsDatabase.getAccount(rs.getString("source"));
 				if (source != null) {
+					
+					int group_id = rs.getInt("group_id");
+					int task_id = rs.getInt("task_id");
+					Group ref_group = group_id != 0 ? new Group(group_id, rs.getString("group_name")) : null;
+					Task ref_task = task_id != 0 ? new GroupTask(task_id, rs.getString("task_name")) : null;
+					
 					allNotif.add(new Notification(	rs.getInt("id"),
 													rs.getInt("type"),
 													source,
 													user,
-													rs.getString("group_name"),
-													rs.getInt("group_id")));
+													ref_group,
+													ref_task));
 				}
 			}
 			return allNotif;
@@ -108,6 +124,15 @@ public class NotificationDatabase extends Database{
 				"SELECT EXISTS (SELECT 1 FROM projeto.notifications "
 				+ "WHERE type=" + toSQL(NotificationType.invitateToGroup.toInt()) +"AND destination=" + toSQL((String)destination) + " AND group_id=" + group_id + ");"
 		);
+		
+	}
+	
+	//TODO:comment
+	public static boolean clearHelpRequests(int task_id) throws SQLException {
+		
+		return executeUpdate(
+				"DELETE FROM projeto.notifications WHERE task_id=" + toSQL(task_id) + ";"
+		) > 0;
 		
 	}
 }

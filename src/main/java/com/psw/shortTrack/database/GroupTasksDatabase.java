@@ -120,15 +120,25 @@ public class GroupTasksDatabase extends Database {
 	 * 
 	 * @throws SQLException If there was an error in the connection to the database
 	 */
-	public static boolean updateTask(int id, String newName, String newDescription, LocalDate newDeadline, Boolean newState, String newAssignTo) throws SQLException {
+	public static boolean updateTask(int id, String newName, String newDescription, LocalDate newDeadline, Boolean newState) throws SQLException {
 		
 		return (executeUpdate(
 				"UPDATE projeto.group_tasks SET name=" + toSQL((String)newName) + ",description=" 
 				+ toSQL((String)newDescription) + ",deadline_date=" + toSQL((LocalDate)newDeadline) 
-				+ ",state=" + toSQL(newState) + ",assigned_to=" + toSQL((String)newAssignTo) + "\r\n"
+				+ ",state=" + toSQL(newState) + "\r\n"
 				+ "WHERE id=" + toSQL(id) + ";"
 		) > 0);
 		
+	}
+	
+	//TODO: comment
+	public static boolean changeAssignedTo(int id, String assignedTo) throws SQLException{
+		
+		NotificationDatabase.clearHelpRequests(id);
+		return(executeUpdate(
+				"UPDATE projeto.group_tasks SET assigned_to=" + toSQL((String)assignedTo) + "\r\n"
+				+ "WHERE id=" + toSQL(id)
+		) > 0);
 	}
 	
 	/**

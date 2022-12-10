@@ -5,13 +5,16 @@ public class Notification {
 	private NotificationType type;
 	private Account source, destination;
 	private String message;
-	private Group group;
+	private Group ref_group;
+	private Task ref_task;
 	
 	public enum NotificationType {
 		invitateToGroup(1),
 		removedFromGroup(2),
 		leftGroup(3),
-		acceptedInviteToGroup(4);
+		acceptedInviteToGroup(4),
+		askForHelp(5),
+		acceptedAskForHelp(6);
 
 		private final int type;
 		NotificationType(final int newType) { 
@@ -33,36 +36,55 @@ public class Notification {
 	/**
 	 * Called when we create a new notification
 	 */
-	public Notification(NotificationType type, Account source, Account destination, Group group) {
+	public Notification(NotificationType type, Account source, Account destination, Group ref_group, Task ref_task) {
 		this.type = type;
 		this.source = source;
 		this.destination = destination;
-		this.group = group;
-		
-		switch (type) {
-		case invitateToGroup:
-			this.message = this.source.getName() + " invited you to the group " + group.getName();
-			break;
-		case removedFromGroup:
-			this.message = this.source.getName() + " removed you from the group " + group.getName();
-			break;
-		case leftGroup:
-			this.message = this.source.getName() + " left the group " + group.getName();
-			break;
-		case acceptedInviteToGroup:
-			this.message = this.source.getName() + " accepted your invitation to enter group " + group.getName();
-			break;
-		default:
-			this.message = "Notification without purpose";
-		}
+		this.ref_group = ref_group;
+		this.ref_task = ref_task;
+		this.message = buildMessage();
+	}
+	
+	public Notification(NotificationType type, Account source, Account destination, Group ref_group) {
+		this(type, source, destination, ref_group, null);
 	}
 	
 	/**
 	 * Called from notification database
 	 */
-	public Notification(int id, int type, Account source, Account destination, String group_name, int group_id) {
-		this (NotificationType.getType(type), source, destination, new Group(group_id, group_name));
+	public Notification(int id, int type, Account source, Account destination, Group ref_group, Task ref_task) {		
+		this (NotificationType.getType(type), source, destination, ref_group, ref_task);
 		this.id = id;
+	}
+	
+	public String buildMessage() {
+		switch (type) {
+		case invitateToGroup:
+			return (this.source.getName() + " invited you to the group " + ref_group.getName());
+		case removedFromGroup:
+			return (this.source.getName() + " removed you from the group " + ref_group.getName());
+		case leftGroup:
+			return (this.source.getName() + " left the group " + ref_group.getName());
+		case acceptedInviteToGroup:
+			return (this.source.getName() + " accepted your invitation to enter group " + ref_group.getName());
+		case askForHelp:
+			return (this.source.getName() + " asked for help in the task " + ref_task.getName() + " of the group " + ref_group.getName());
+		case acceptedAskForHelp:
+			return (this.source.getName() + " accepted your help request for the task " + ref_task.getName() + " of the group " + ref_group.getName());
+		default:
+			return ("Notification without purpose");
+		}
+	}
+	
+	public NotificationType getResponseType() {
+		switch (type) {
+		case invitateToGroup:
+			return NotificationType.acceptedInviteToGroup;
+		case askForHelp:
+			return NotificationType.acceptedAskForHelp;
+		default:
+			return null;
+		}
 	}
 	
 	public String getMessage() { return message; }
@@ -79,8 +101,8 @@ public class Notification {
 
 	public void setId(int id) { this.id = id; }
 	
-	public int getGroup_id() { return group.getID(); }
+	public Group getRefGroup() { return ref_group; }
 	
-	public Group getGroup() { return group; }
+	public Task getRefTask() { return ref_task; }
 	
 }

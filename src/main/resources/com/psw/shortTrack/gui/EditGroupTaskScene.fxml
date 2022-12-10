@@ -33,7 +33,13 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <ChoiceBox fx:id="assignedToBox" focusTraversable="false" />
+            <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+               <children>
+                  <ChoiceBox fx:id="assignedToBox" focusTraversable="false" maxWidth="1.7976931348623157E308" />
+                  <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                  <Button mnemonicParsing="false" onAction="#askHelp" text="Ask for help" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
             <Label text="Task due date">
                <font>
                   <Font size="18.0" />
