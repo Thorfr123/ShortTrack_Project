@@ -9,8 +9,6 @@ import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 
-import com.psw.shortTrack.data.TaskOrganizer.SortBy;
-
 public class ListTest {
 	
 	@Test

@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import com.psw.shortTrack.data.*;
-import com.psw.shortTrack.data.TaskOrganizer.SortBy;
 import com.psw.shortTrack.database.*;
 
 import javafx.event.ActionEvent;

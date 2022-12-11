@@ -10,19 +10,19 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
 
-public class InviteNotificationBox extends HBox {
+public class RequestNotificationBox extends HBox {
 	
 	private Button acceptButton;
 	private Button refuseButton;
 	private Notification notification;
 	
-	public InviteNotificationBox(Notification notification) {
+	public RequestNotificationBox(Notification notification) {
 		
 		super();
 		
 		this.notification = notification;
 		                    
-		setSpacing(10.0);	
+		setSpacing(10.0);
 		
 		Label notificationText = new Label(notification.getMessage());
 		notificationText.setFont(Font.font(14.0));
@@ -45,8 +45,7 @@ public class InviteNotificationBox extends HBox {
 		refuseButton.setPrefSize(60.0, 26.0);
 		refuseButton.setFocusTraversable(false);
 		
-		buttons.getChildren().add(acceptButton);
-		buttons.getChildren().add(refuseButton);
+		buttons.getChildren().addAll(acceptButton, refuseButton);
 		
 		getChildren().add(buttons);
 		this.setPadding(new Insets(0, 5, 0, 5));

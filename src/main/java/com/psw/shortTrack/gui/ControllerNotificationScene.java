@@ -24,26 +24,26 @@ public class ControllerNotificationScene {
 		for(Notification notification : User.getNotifications()) {
 			
 			if(notification.getType() == NotificationType.invitateToGroup) {
-				InviteNotificationBox notificationBar = new InviteNotificationBox(notification);
+				RequestNotificationBox notificationBar = new RequestNotificationBox(notification);
 				
 				notificationBar.getAcceptButton().setOnAction(event -> {
 					acceptGroupInvite(notification, notificationBar);
 		        });
 				notificationBar.getRefuseButton().setOnAction(event -> {
-					decline(notification, notificationBar);
+					acknowledge(notification, notificationBar);
 		        });
 				
 				notificationList.getChildren().add(notificationBar);
 				
 			}
 			else if (notification.getType() == NotificationType.askForHelp) {
-				InviteNotificationBox notificationBar = new InviteNotificationBox(notification);
+				RequestNotificationBox notificationBar = new RequestNotificationBox(notification);
 				
 				notificationBar.getAcceptButton().setOnAction(event -> {
 					acceptHelpRequest(notification, notificationBar);
 		        });
 				notificationBar.getRefuseButton().setOnAction(event -> {
-					decline(notification, notificationBar);
+					acknowledge(notification, notificationBar);
 		        });
 				
 				notificationList.getChildren().add(notificationBar);
@@ -52,7 +52,7 @@ public class ControllerNotificationScene {
 				SimpleNotificationBox notificationBar = new SimpleNotificationBox(notification);
 				
 				notificationBar.getOkButton().setOnAction(event -> {
-					ok(notification, notificationBar);
+					acknowledge(notification, notificationBar);
 		        });
 				
 				notificationList.getChildren().add(notificationBar);
@@ -66,7 +66,7 @@ public class ControllerNotificationScene {
 		
 	}
 	
-	public void ok(Notification notification, HBox notificationBar) {
+	public void acknowledge(Notification notification, HBox notificationBar) {
 		
 		try {
 			deleteNotification(notification, notificationBar);
@@ -93,7 +93,6 @@ public class ControllerNotificationScene {
 			
 		} catch (SQLException sqle) {
 			App.connectionErrorMessage();
-			return;
 		}
 		
 	}
@@ -103,9 +102,7 @@ public class ControllerNotificationScene {
 		try {
 			
 			GroupTasksDatabase.changeAssignedTo(notification.getRefTask().getID(), User.getAccount().getEmail());
-			
 			NotificationDatabase.clearHelpRequests(notification.getRefTask().getID());
-			
 			deleteNotification(notification, notificationBar);
 			
 			Notification response = new Notification(	notification.getResponseType(), 
@@ -117,18 +114,6 @@ public class ControllerNotificationScene {
 			
 		} catch (SQLException sqle) {
 			App.connectionErrorMessage();
-			return;
-		}
-		
-	}
-
-	public void decline(Notification notification, HBox notificationBar) {
-		
-		try {
-			deleteNotification(notification, notificationBar);
-		} catch (SQLException e) {
-			App.connectionErrorMessage();
-			return;
 		}
 		
 	}
