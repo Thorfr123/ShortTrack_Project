@@ -122,7 +122,16 @@ public class NotificationDatabase extends Database{
 		
 		return executeQueryReturnBoolean(
 				"SELECT EXISTS (SELECT 1 FROM projeto.notifications "
-				+ "WHERE type=" + toSQL(NotificationType.invitateToGroup.toInt()) +"AND destination=" + toSQL((String)destination) + " AND group_id=" + group_id + ");"
+				+ "WHERE type=" + toSQL(NotificationType.invitateToGroup.toInt()) +" AND destination=" + toSQL((String)destination) + " AND group_id=" + group_id + ");"
+		);
+		
+	}
+	
+	public static boolean checkHelpRequest(int task_id) throws SQLException {
+		
+		return executeQueryReturnBoolean(
+			"SELECT EXISTS (SELECT 1 FROM projeto.notifications\r\n"
+			+ "WHERE type=" + toSQL(NotificationType.askForHelp.toInt()) + " AND task_id=" + toSQL(task_id) + ");"	
 		);
 		
 	}

@@ -37,7 +37,7 @@
                <children>
                   <ChoiceBox fx:id="assignedToBox" focusTraversable="false" maxWidth="1.7976931348623157E308" />
                   <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-                  <Button mnemonicParsing="false" onAction="#askHelp" text="Ask for help" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="askHelpButton" mnemonicParsing="false" onAction="#askHelp" text="Ask for help" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
             <Label text="Task due date">

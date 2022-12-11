@@ -49,6 +49,8 @@ public class ControllerEditGroupTaskScene {
 	private Button deleteButton;
 	@FXML
 	private	HBox buttonsBox;
+	@FXML
+	private Button askHelpButton;
 
 	private GroupTask task;
 	private Group group;
@@ -84,18 +86,16 @@ public class ControllerEditGroupTaskScene {
 			taskNameField.setOpacity(1);
 			dueDateField.setDisable(true);
 			assignedToBox.setDisable(true);
-
+			
 			editGroupTaskBox.getChildren().remove(clearButton);
 			buttonsBox.getChildren().remove(deleteButton);
 		}
 		
+		// Ask for help
+		setHelpButton();
+		
     }
 	
-	//TODO: Show a message to the user so that he can see when the notification was sent
-	//TODO: The button only makes sense to the manager if the task is his
-	//		-> Remove the button for the manager
-	//		Or
-	//		-> Check if is one of is tasks before sending the notification
 	public void askHelp(ActionEvent e) {
 		
 		try {
@@ -122,9 +122,29 @@ public class ControllerEditGroupTaskScene {
 													task);
 				
 				NotificationDatabase.createNotification(ask);
-				
 			}
+			
+			setHelpButton();
+			//changeHelpButton(false);
+			
+			showNotification("You have successfully request for help in this task!", false);
+			
 		} catch (SQLException sqle) {
+			App.connectionErrorMessage();
+		}
+		
+	}
+	
+	public void cancelHelpRequest() {
+		
+		try {
+			
+			NotificationDatabase.clearHelpRequests(task.getID());
+			setHelpButton();
+			//changeHelpButton(true);
+			showNotification("You have successfully canceled your request for help in this task!", false);
+			
+		} catch (SQLException e) {
 			App.connectionErrorMessage();
 		}
 		
@@ -158,19 +178,17 @@ public class ControllerEditGroupTaskScene {
 		
 		String newTaskName = taskNameField.getText();
 		if(newTaskName.isBlank()) {
-			showNotification("The Task needs a name!");
+			showNotification("The Task needs a name!", true);
 			taskNameField.getStyleClass().add("error");
 			return;
 		}
-		
-		if(newTaskName.length() > 128) {
-			showNotification("Task name exceeds maximum character length allowed!");
+		else if(newTaskName.length() > 128) {
+			showNotification("Task name exceeds maximum character length allowed!", true);
 			taskNameField.getStyleClass().add("error");
 			return;
 		}
-			
-		if(!newTaskName.equals(task.getName()) && group.checkName(newTaskName)) {
-			showNotification("Already exist a task with that name!");
+		else if(!newTaskName.equals(task.getName()) && group.checkName(newTaskName)) {
+			showNotification("Already exist a task with that name!", true);
 			taskNameField.getStyleClass().add("error");
 			return;
 		}
@@ -180,7 +198,12 @@ public class ControllerEditGroupTaskScene {
 		Account newAssignedTo = assignedToBox.getValue();
 		
 		try {
-			GroupTasksDatabase.updateTask(task.getID(), newTaskName, newDescription, newDeadline, checkButton.isSelected());
+			
+			if (task.isCompleted() != checkButton.isSelected()) {
+				GroupTasksDatabase.changeState(task.getID(), checkButton.isSelected());
+			}
+			
+			GroupTasksDatabase.updateTask(task.getID(), newTaskName, newDescription, newDeadline);
 			
 			if (newAssignedTo.equals(GroupTask.nobody)) {
 				GroupTasksDatabase.changeAssignedTo(task.getID(), null);
@@ -190,7 +213,6 @@ public class ControllerEditGroupTaskScene {
 			}
 			
 		} catch (SQLException exception) {
-			System.out.println(exception);
 			App.connectionErrorMessage();
 			return;
 		}
@@ -227,10 +249,13 @@ public class ControllerEditGroupTaskScene {
 	
 	public void changeState(ActionEvent e) {
 		
-		if(checkButton.isSelected())
+		if(checkButton.isSelected()) {
 			checkButton.setText("Completed");
-		else
+		}
+		else {
 			checkButton.setText("To be started");
+		}
+		setHelpButton();
 		
 	}
 	
@@ -247,11 +272,37 @@ public class ControllerEditGroupTaskScene {
 		
 	}
 	
-	private void showNotification(String notification) {
+	private void showNotification(String notification, boolean isError) {
 		
 		notificationLabel.setText(notification);
-		notificationLabel.setTextFill(Color.RED);
+		notificationLabel.setTextFill(isError ? Color.RED : Color.GREEN);
 		notificationLabel.setVisible(true);
+		
+	}
+	
+	private void setHelpButton() {
+		
+		if ( 	checkButton.isSelected() ||
+				!User.getAccount().getEmail().equals(task.getAssignedToEmail()) ||
+				User.getAccount().getEmail().equals(group.getManagerEmail())) {
+			
+			askHelpButton.setVisible(false);
+		}
+		else {
+			try {
+				if (NotificationDatabase.checkHelpRequest(task.getID())) {
+					askHelpButton.setText("Cancel help request");
+					askHelpButton.setOnAction(event -> cancelHelpRequest());
+				}
+				else {
+					askHelpButton.setText("Ask for help");
+					askHelpButton.setOnAction(event -> askHelp(event));
+				}
+				askHelpButton.setVisible(true);
+			} catch (SQLException e) {
+				App.connectionErrorMessage();
+			}
+		}
 		
 	}
 	

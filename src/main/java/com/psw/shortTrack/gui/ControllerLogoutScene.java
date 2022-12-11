@@ -594,7 +594,7 @@ public class ControllerLogoutScene {
 		TaskBar taskBar = (TaskBar)taskCheckBox.getParent();
 		Task task = taskBar.getTask();
 
-		try {
+		try {			
 			PersonalTasksDatabase.updateTask(task.getID(), task.getName(), task.getDescription(), task.getDeadlineDate(), taskCheckBox.isSelected());
 		} catch (SQLException exception) {
 			App.connectionErrorMessage();
@@ -619,7 +619,7 @@ public class ControllerLogoutScene {
 		GroupTask task = taskBar.getTask();
 		
 		try {
-			GroupTasksDatabase.updateTask(task.getID(), task.getName(), task.getDescription(), task.getDeadlineDate(), taskCheckBox.isSelected());
+			GroupTasksDatabase.changeState(task.getID(), taskCheckBox.isSelected());
 		} catch (SQLException exception) {
 			App.connectionErrorMessage();
 			return;
