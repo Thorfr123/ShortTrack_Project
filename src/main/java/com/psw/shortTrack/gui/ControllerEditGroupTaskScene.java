@@ -91,6 +91,11 @@ public class ControllerEditGroupTaskScene {
 		
     }
 	
+	//TODO: Show a message to the user so that he can see when the notification was sent
+	//TODO: The button only makes sense to the manager if the task is his
+	//		-> Remove the button for the manager
+	//		Or
+	//		-> Check if is one of is tasks before sending the notification
 	public void askHelp(ActionEvent e) {
 		
 		try {

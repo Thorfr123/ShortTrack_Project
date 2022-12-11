@@ -814,7 +814,7 @@ public class ControllerLogoutScene {
 				&& !((Group)loadList).getManagerEmail().equals(User.getAccount().getEmail());
 		
 		// Remove add tasks buttons and text fields for members, search lists and for the master with showMyTasks option
-		if(searchMode || isMemberOfTheGroup || !showAllTasks)
+		if(searchMode || isMemberOfTheGroup || (!showAllTasks && (loadList instanceof Group)))
 			newTaskBox.getChildren().remove(addTaskBox);
 		else if(!newTaskBox.getChildren().contains(addTaskBox))
 			newTaskBox.getChildren().add(addTaskBox);

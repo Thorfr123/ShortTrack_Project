@@ -27,8 +27,6 @@ public class Group extends TaskOrganizer{
 	
 	public String getManagerEmail() { return manager.getEmail(); }
 	
-	//public String getManagerName() { return manager.getName(); } //TODO: is not used
-	
 	public ArrayList<Account> getMemberAccounts() { return members; }
 	
 	public ArrayList<String> getMemberEmails() {
