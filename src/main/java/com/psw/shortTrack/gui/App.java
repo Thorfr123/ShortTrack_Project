@@ -2,6 +2,8 @@ package com.psw.shortTrack.gui;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 
 import com.psw.shortTrack.data.List;
 import com.psw.shortTrack.data.PersonalTask;
@@ -18,11 +20,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 public class App extends Application {
 	
 	private static String css;
 	private static Stage stage;
+	
+	private static Instant time1 = Instant.now();
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -170,30 +176,68 @@ public class App extends Application {
 	}
 	
 	/**
-	 * Loads a new scene
+	 * Loads a new scene with the fxml name
 	 */
-	public static void loadScene(Parent root) {
+	public static FXMLLoader loadScene(String fxml) {
 		
-		Scene scene = new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight());
-		scene.getStylesheets().add(css);
-		stage.setScene(scene);
-		stage.show();
-		
-		Platform.runLater(() -> scene.getRoot().requestFocus());
-		
+		try {
+			
+			FXMLLoader loader = new FXMLLoader(App.class.getResource(fxml));
+			Parent root = loader.load();
+			
+			Scene scene = new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight());
+			scene.getStylesheets().add(css);
+			
+			// Allow the user to refresh the logout scene every 10 seconds
+			if(fxml.equals("LogoutScene.fxml")) {
+				scene.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
+			        if (event.getCode() == KeyCode.F5) {
+			        	Instant time2 = Instant.now();
+			        	Duration timeElapsed = Duration.between(time1, time2);
+			        	if(timeElapsed.toMillis() > 10000) {
+				        	ControllerLogoutScene controller = loader.getController();
+				        	controller.initialize();
+			        	}
+			        	time1 = time2;
+			        }
+				});
+			}
+			// Allow the user to refresh the notification scene every 10 seconds
+			if(fxml.equals("NotificationScene.fxml")) {
+				scene.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
+			        if (event.getCode() == KeyCode.F5) {
+			        	Instant time2 = Instant.now();
+			        	Duration timeElapsed = Duration.between(time1, time2);
+			        	if(timeElapsed.toMillis() > 10000) {
+				        	ControllerNotificationScene controller = loader.getController();
+				        	controller.refreshPage();
+			        	}
+			        	time1 = time2;
+			        }
+				});
+			}
+			
+			stage.setScene(scene);
+			stage.show();
+
+			Platform.runLater(() -> scene.getRoot().requestFocus());
+			
+			return loader;
+			
+		} catch (IOException exception) {
+			exception.printStackTrace();
+			return null;
+		}
+
 	}
 	
 	/**
 	 * Loads the main window scene
 	 */
 	public static void loadMainScene() {
-		
-		try {
-			Parent root = FXMLLoader.load(App.class.getResource(User.isLogedIn() ? "LogoutScene.fxml" : "LoginScene.fxml"));
-			loadScene(root);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+
+		String fxml = User.isLogedIn() ? "LogoutScene.fxml" : "LoginScene.fxml";
+		loadScene(fxml);
 		
 	}
 	

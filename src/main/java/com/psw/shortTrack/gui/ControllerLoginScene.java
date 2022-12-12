@@ -1,6 +1,5 @@
 package com.psw.shortTrack.gui;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,7 +10,6 @@ import com.psw.shortTrack.database.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
@@ -68,8 +66,6 @@ public class ControllerLoginScene {
 	private HBox addTaskBox;
 	@FXML
 	private VBox searchVerticalBox;
-
-	private Parent root;
 	
 	private static ArrayList<List> lists;
 	private static TaskOrganizer loadList;
@@ -150,23 +146,13 @@ public class ControllerLoginScene {
 			return;
 		}
 		
-		try {
-			root = FXMLLoader.load(getClass().getResource("LogoutScene.fxml"));
-			App.loadScene(root);
-		} catch (IOException exception) {
-			exception.printStackTrace();
-		}
+		App.loadScene("LogoutScene.fxml");
 		
 	}
 	
 	public void signUp(ActionEvent e) {
 		
-		try {
-			root = FXMLLoader.load(getClass().getResource("SignUpScene.fxml"));
-			App.loadScene(root);
-		} catch (IOException exception) {
-			exception.printStackTrace();
-		}
+		App.loadScene("SignUpScene.fxml");
 		
 	}
 	
@@ -275,18 +261,9 @@ public class ControllerLoginScene {
 		
 		tasksBox.getChildren().add(taskBar);
 		
-		try {
-			
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditTaskScene.fxml"));
-			root = loader.load();
-			
-			ControllerEditTaskScene controller = loader.getController();
-			controller.initData(newTask, loadList);
-			App.loadScene(root);
-			
-		} catch (IOException exeption) {
-			exeption.printStackTrace();
-		}
+		FXMLLoader loader = App.loadScene("EditTaskScene.fxml");
+		ControllerEditTaskScene controller = loader.getController();
+		controller.initData(newTask, loadList);
 		
 	}
 	
@@ -303,17 +280,9 @@ public class ControllerLoginScene {
 	
 	public void editList(ActionEvent e) {
 		
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditListScene.fxml"));
-			root = loader.load();
-			
-			ControllerEditListScene controller = loader.getController();
-			controller.initData((List)loadList);
-			App.loadScene(root);
-
-		} catch (IOException exeption) {
-			exeption.printStackTrace();
-		}	
+		FXMLLoader loader = App.loadScene("EditListScene.fxml");
+		ControllerEditListScene controller = loader.getController();
+		controller.initData((List)loadList);
 		
 	}
 	
@@ -322,20 +291,11 @@ public class ControllerLoginScene {
 		Button taskButton = (Button)e.getSource();
 		TaskBar taskBar = (TaskBar)taskButton.getParent();
 		Task task = taskBar.getTask();
-		
-		try {
-			
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditTaskScene.fxml"));
-			root = loader.load();
-			
-			ControllerEditTaskScene controller = loader.getController();
-			controller.initData(task, loadList);	
-			App.loadScene(root);
-			
-		} catch (IOException exeption) {
-			exeption.printStackTrace();
-		}
-		
+
+		FXMLLoader loader = App.loadScene("EditTaskScene.fxml");		
+		ControllerEditTaskScene controller = loader.getController();
+		controller.initData(task, loadList);	
+	
 	}
 	
 	public void checkTask(ActionEvent e) {

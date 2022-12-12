@@ -1,6 +1,5 @@
 package com.psw.shortTrack.gui;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -26,7 +25,6 @@ import com.psw.shortTrack.database.PersonalTasksDatabase;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -95,8 +93,6 @@ public class ControllerLogoutScene {
 	private VBox searchVerticalBox;
 	@FXML
 	private HBox listOptionsBox;
-
-	private Parent root;
 	
 	private static ArrayList<List> lists;
 	private static ArrayList<Group> groups;
@@ -131,11 +127,13 @@ public class ControllerLogoutScene {
 		}
 		
 		// Loads Search by options
+		choiceBox.getItems().clear();
 		choiceBox.setValue("Search by");
 		choiceBox.getItems().addAll(searchOptions);
 		choiceBox.setOnAction(this::searchOption);
 		
 		// Loads sort by options
+		sortByMenu.getItems().clear();
 		for (String option : SortBy.options()) {
 			MenuItem item = new MenuItem(option);
 			item.setOnAction(this::sortTasks);
@@ -143,6 +141,7 @@ public class ControllerLogoutScene {
 		}
 		
 		// Loads personal list buttons
+		listsBox.getChildren().clear();
 		for(List l : lists) {
 			ListButton listButton = new ListButton(l);
 			listButton.setOnAction(event -> {
@@ -152,6 +151,7 @@ public class ControllerLogoutScene {
 		}
 		
 		// Loads group buttons
+		groupsBox.getChildren().clear();
 		for(Group g : groups) {
 			GroupButton groupButton = new GroupButton(g);
 			groupButton.setOnAction(event -> {
@@ -199,40 +199,24 @@ public class ControllerLogoutScene {
 		loadList = null;
 		
 		App.readLocalFiles();
-		
-		try {
-			root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
-			App.loadScene(root);
-		} catch (IOException exception) {
-			exception.printStackTrace();
-		}
+
+		App.loadScene("LoginScene.fxml");
 		
 	}
 	
 	public void editAccount(ActionEvent e) {
 		
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditAccountScene.fxml"));
-			root = loader.load();	
-			ControllerEditAccountScene controller = loader.getController();
-			controller.initData();
-			App.loadScene(root);
-		} catch (IOException exception) {
-			exception.printStackTrace();
-		}
+		FXMLLoader loader = App.loadScene("EditAccountScene.fxml");
+		ControllerEditAccountScene controller = loader.getController();
+		controller.initData();
 		
 	}
 	
 	public void notifications(ActionEvent e) {
 		
 		removeErrorNotifications();
-		
-		try {
-			root = FXMLLoader.load(getClass().getResource("NotificationScene.fxml"));
-			App.loadScene(root);
-		} catch (IOException exception) {
-			exception.printStackTrace();
-		}
+
+		App.loadScene("NotificationScene.fxml");
 		
 	}
 	
@@ -240,30 +224,14 @@ public class ControllerLogoutScene {
 	public void editListOrGroup(ActionEvent e) {
 		
 		if(loadList instanceof List) {
-			try {
-				FXMLLoader loader = new FXMLLoader(getClass().getResource("EditListScene.fxml"));
-				root = loader.load();
-				
-				ControllerEditListScene controller = loader.getController();
-				controller.initData((List)loadList);	
-				App.loadScene(root);
-				
-			} catch (IOException exeption) {
-				exeption.printStackTrace();
-			}	
+			FXMLLoader loader = App.loadScene("EditListScene.fxml");
+			ControllerEditListScene controller = loader.getController();
+			controller.initData((List)loadList);
 		}
 		else if(loadList instanceof Group) {
-			try {
-				FXMLLoader loader = new FXMLLoader(getClass().getResource("EditGroupScene.fxml"));
-				root = loader.load();
-				
-				ControllerEditGroupScene controller = loader.getController();
-				controller.initData((Group)loadList);	
-				App.loadScene(root);
-				
-			} catch (IOException exeption) {
-				exeption.printStackTrace();
-			}	
+			FXMLLoader loader = App.loadScene("EditGroupScene.fxml");
+			ControllerEditGroupScene controller = loader.getController();
+			controller.initData((Group)loadList);
 		}
 			
 	}
@@ -274,17 +242,9 @@ public class ControllerLogoutScene {
 		TaskBar taskBar = (TaskBar)taskButton.getParent();
 		Task task = taskBar.getTask();
 
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditTaskScene.fxml"));
-			root = loader.load();
-				
-			ControllerEditTaskScene controller = loader.getController();
-			controller.initData(task,loadList);	
-			App.loadScene(root);
-				
-		} catch (IOException exeption) {
-			exeption.printStackTrace();
-		}
+		FXMLLoader loader = App.loadScene("EditTaskScene.fxml");
+		ControllerEditTaskScene controller = loader.getController();
+		controller.initData(task,loadList);			
 		
 	}
 	
@@ -293,18 +253,11 @@ public class ControllerLogoutScene {
 		Button taskButton = (Button)e.getSource();
 		GroupTaskBar taskBar = (GroupTaskBar)taskButton.getParent();
 		GroupTask task = taskBar.getTask();
-		
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditGroupTaskScene.fxml"));
-			root = loader.load();
-			
-			ControllerEditGroupTaskScene controller = loader.getController();
-			controller.initData(task,loadList);	
-			App.loadScene(root);
-			
-		} catch (IOException exeption) {
-			exeption.printStackTrace();
-		}
+
+		FXMLLoader loader = App.loadScene("EditGroupTaskScene.fxml");
+		ControllerEditGroupTaskScene controller = loader.getController();
+		controller.initData(task,loadList);	
+
 	}
 		
 	public void addList(ActionEvent e) {
@@ -421,18 +374,10 @@ public class ControllerLogoutScene {
 	        changeGroup(event);
 	    });
 		groupsBox.getChildren().add(groupButton);
-		
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("EditGroupScene.fxml"));
-			root = loader.load();
-			
-			ControllerEditGroupScene controller = loader.getController();
-			controller.initData(newGroup);
-			App.loadScene(root);
-			
-		} catch (IOException exeption) {
-			exeption.printStackTrace();
-		}
+
+		FXMLLoader loader = App.loadScene("EditGroupScene.fxml");
+		ControllerEditGroupScene controller = loader.getController();
+		controller.initData(newGroup);
 		
 	}
 	
@@ -521,32 +466,16 @@ public class ControllerLogoutScene {
 		
 		if(newTask == null)
 			return;
-		
+
 		if(loadList instanceof List) {
-			try {
-				FXMLLoader loader = new FXMLLoader(getClass().getResource("EditTaskScene.fxml"));
-				root = loader.load();
-				
-				ControllerEditTaskScene controller = loader.getController();
-				controller.initData(newTask, loadList);	
-				App.loadScene(root);
-				
-			} catch (IOException exeption) {
-				exeption.printStackTrace();
-			}
+			FXMLLoader loader = App.loadScene("EditTaskScene.fxml");	
+			ControllerEditTaskScene controller = loader.getController();
+			controller.initData(newTask, loadList);	
 		}
 		else if(loadList instanceof Group) {
-			try {
-				FXMLLoader loader = new FXMLLoader(getClass().getResource("EditGroupTaskScene.fxml"));
-				root = loader.load();
-				
-				ControllerEditGroupTaskScene controller = loader.getController();
-				controller.initData((GroupTask)newTask, loadList);	
-				App.loadScene(root);
-				
-			} catch (IOException exeption) {
-				exeption.printStackTrace();
-			}
+			FXMLLoader loader = App.loadScene("EditGroupTaskScene.fxml");
+			ControllerEditGroupTaskScene controller = loader.getController();
+			controller.initData((GroupTask)newTask, loadList);		
 		}
 		
 	}

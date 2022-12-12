@@ -125,4 +125,15 @@ public class ControllerNotificationScene {
 		
 	}
 	
+	public void refreshPage() {
+		
+		try {
+			User.setNotifications(NotificationDatabase.getAllNotifications(User.getAccount()));
+			initialize();
+		} catch (SQLException exception) {
+			App.connectionErrorMessage();			
+		}
+		
+	}
+	
 }

@@ -1,6 +1,5 @@
 package com.psw.shortTrack.gui;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,8 +13,6 @@ import com.psw.shortTrack.database.PersonalListsDatabase;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -35,8 +32,6 @@ public class ControllerSignUpScene {
 	private PasswordField repeatPasswordField;
 	@FXML 
 	private Label notificationLabel;
-	
-	private Parent root;
 
 	public void create(ActionEvent e) {
 		
@@ -79,26 +74,15 @@ public class ControllerSignUpScene {
 		}
 		User.setGroups(groups);
 		User.setLists(lists);
-		
-		
-		try {
-			root = FXMLLoader.load(getClass().getResource("LogoutScene.fxml"));
-			App.loadScene(root);
-		} catch (IOException exception) {
-			exception.printStackTrace();
-		}
+
+		App.loadScene("LogoutScene.fxml");
 	}
 	
 	public void cancel(ActionEvent e) {
 		
 		removeErrorNotifications();
-		
-		try {
-			root = FXMLLoader.load(getClass().getResource("LoginScene.fxml"));
-			App.loadScene(root);
-		} catch (IOException exception) {
-			exception.printStackTrace();
-		}
+
+		App.loadScene("LoginScene.fxml");
 		
 	}
 	
