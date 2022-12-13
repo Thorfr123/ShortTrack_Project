@@ -38,13 +38,13 @@ public class Account {
 	public static String checkValidName(String name) {
 		
 		if (name.isBlank()) {
-			return "Name cannot be empty!";
+			return "None of the name fields can be empty!";
 		}
 		else if(name.contains(" ")) {
-			return "Name cannot contain white spaces!";
+			return "None of the name fields can contain white spaces!";
 		}
 		else if (name.matches(".*\\d+.*")) {
-			return "Name cannot contain numbers!";
+			return "None of the name fields can contain numbers!";
 		}
 		else if(name.length() > 30) {
 			return "Name length exceeds maximum character length allowed!";

@@ -1,10 +1,12 @@
 package com.psw.shortTrack.gui;
 
+import java.security.InvalidParameterException;
 import java.sql.SQLException;
 import java.util.Collections;
 
 import com.psw.shortTrack.data.Account;
 import com.psw.shortTrack.data.User;
+import com.psw.shortTrack.database.NotFoundException;
 import com.psw.shortTrack.database.AccountsDatabase;
 
 import javafx.event.ActionEvent;
@@ -20,6 +22,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 public class ControllerEditAccountScene {
@@ -111,7 +114,7 @@ public class ControllerEditAccountScene {
 	    saveEmail.setOnAction(event -> {
 	    	saveEmail(event);
 		});
-	
+	    
 		emailCancel = createButton("Cancel");
 		emailCancel.setOnAction(event -> {
 			resetEmailLayout(event);
@@ -157,11 +160,22 @@ public class ControllerEditAccountScene {
 		if(alert.showAndWait().get() == ButtonType.OK){
 			try {
 				
-				AccountsDatabase.deleteAccount(account.getEmail());
-				User.setLogedIn(false);
+				if (!AccountsDatabase.deleteAccount(account.getEmail())) {
+					
+					if (!AccountsDatabase.checkEmail(account.getEmail())) {
+						showNotification("There was an error trying to delete your account! Please, try again later.", true);
+						return;
+					}
+					
+				}
 				
-				App.readLocalFiles();
-				App.loadMainScene();
+				alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Account deleted");
+				alert.setHeaderText("You have successfully deleted your account and all your data!");
+				alert.setContentText("You will return to the offline mode of the application");
+				alert.showAndWait();
+				
+				logout();
 				
 			} catch (SQLException sqle) {
 				App.connectionErrorMessage();
@@ -181,26 +195,18 @@ public class ControllerEditAccountScene {
     	
     	String notif = null;
     	if (newFirstName.equals(firstName) && newLastName.equals(lastName)) {
-    		showNotification("Name didn't change!");
-    		return;
-    	}
-    	else if (newFirstName.isBlank()) {
-    		showNotification("First name cannot be empty!");
+    		showNotification("You have to type a new name in order to change it!", true);
     		newFirstNameField.getStyleClass().add("error");
-    		return;
-    	}
-    	else if (newLastName.isBlank()) {
-    		showNotification("Last name cannot be empty!");
     		newLastNameField.getStyleClass().add("error");
     		return;
     	}
     	else if ((notif = Account.checkValidName(newFirstName)) != null) {
-    		showNotification(notif);
+    		showNotification(notif, true);
     		newFirstNameField.getStyleClass().add("error");
     		return;
     	}
     	else if ((notif = Account.checkValidName(newLastName)) != null) {
-    		showNotification(notif);
+    		showNotification(notif, true);
     		newLastNameField.getStyleClass().add("error");
     		return;
     	}
@@ -208,17 +214,23 @@ public class ControllerEditAccountScene {
     	String newName = newFirstName + " " + newLastName;
     	
     	try {
-    		if (!AccountsDatabase.changeName(account.getEmail(), newName)) {
-    			showNotification("Unknown error!");
-    			return;
-    		}
+    		
+    		AccountsDatabase.changeName(account.getEmail(), newName);			
+    		
+    		account.setName(newName);
+    		showNotification("You have successfully changed your name!", false);
+    		
+    	}
+    	catch (NotFoundException anfe) {
+    		App.accountDeletedMessage();
+			logout();
+			return;
     	}
     	catch (SQLException sqle) {
     		App.connectionErrorMessage();
     		return;
     	}
     	
-    	account.setName(newName);
     }
     
     @FXML
@@ -231,10 +243,10 @@ public class ControllerEditAccountScene {
     	
     	emailChangePasswordLabel.getChildren().add(passwordLabel);
     	
-    	currentPasswordBox.getChildren().add(currentPasswordField);
-    	currentPasswordBox.getChildren().add(emailCancel);
+    	currentPasswordBox.getChildren().addAll(currentPasswordField, emailCancel);
     	
     	newEmailField.setDisable(false);	
+    	
     }
     
     
@@ -244,57 +256,60 @@ public class ControllerEditAccountScene {
     	
     	String newEmail = newEmailField.getText();
     	String currentPassword = currentPasswordField.getText();
-    	String notif = null;
     	
+    	String notif = null;
     	if (newEmail.equals(account.getEmail())) {
-    		showNotification("Email didn't change!");
+    		showNotification("You need to type your new email in order to change it!", true);
+    		newEmailField.getStyleClass().add("error");
     		return;
     	}
     	else if (newEmail.isBlank()) {
+    		showNotification("New email cannot be empty!", true);
     		newEmailField.getStyleClass().add("error");
-    		showNotification("New email cannot be empty!");
     		return;
     	}
     	else if (currentPassword.isBlank()) {
+    		showNotification("You need to insert your current password in order to change your email!", true);
     		currentPasswordField.getStyleClass().add("error");
-    		showNotification("You need to insert your current password!");
     		return;
     	}
     	else if ((notif = Account.checkValidEmail(newEmail)) != null) {
-    		showNotification(notif);
+    		showNotification(notif, true);
     		newEmailField.getStyleClass().add("error");
     		return;
     	}
     	
     	try {
-			if (AccountsDatabase.checkLogin(account.getEmail(), currentPassword)) {
-				if (AccountsDatabase.checkEmail(newEmail)) {
-					if (!AccountsDatabase.changeEmail(account.getEmail(), newEmail)) {
-						showNotification("Unknown error!");
-						return;
-					}
-				}
-				else {
-					showNotification("This email is already in use!");
-					newEmailField.getStyleClass().add("error");
-					return;
-				}
-			}
-			else {
-				showNotification("Wrong password! Please, try again.");
-				currentPasswordField.getStyleClass().add("error");
+    		
+    		if (!AccountsDatabase.changeEmail(account.getEmail(), currentPassword, newEmail)) {
+    			showNotification("This email is already in use!", true);
+				newEmailField.getStyleClass().add("error");
 				return;
-			}
-		} catch (SQLException e1) {
+    		}
+    		
+    		account.setEmail(newEmail);
+			showNotification("Your email was changed successfully!", false);
+			
+			resetEmailLayout(e);
+        	
+		}
+    	catch (InvalidParameterException ipe) {
+    		showNotification("Wrong password! Please, try again!", true);
+			currentPasswordField.getStyleClass().add("error");
+			return;
+    	}
+    	catch (NotFoundException anfe) {
+    		App.accountDeletedMessage();
+			logout();
+			return;
+    	}
+    	catch (SQLException e1) {
 			App.connectionErrorMessage();
 			return;
 		}
     	
-    	account.setEmail(newEmail);
-    	resetEmailLayout(e);
-    	
     }
-       
+    
     @FXML
     public void changePassword(ActionEvent e) {
     	
@@ -303,16 +318,14 @@ public class ControllerEditAccountScene {
     	changePasswordLabel.setText("Current password");
     	
     	changePasswordBox.getChildren().removeAll(passwordInstructionsLabel, changePasswordFill,changePasswordButton);
-    	changePasswordBox.getChildren().add(currentPasswordField);
-    	changePasswordBox.getChildren().add(passwordCancel);
+    	changePasswordBox.getChildren().addAll(currentPasswordField, passwordCancel);
     	
-    	newPasswordBox.getChildren().add(newPasswordLabel);
-    	newPasswordBox.getChildren().add(newPasswordField);
+    	newPasswordBox.getChildren().addAll(newPasswordLabel, newPasswordField);
     	
-    	confirmNewPasswordBox.getChildren().add(confirmNewPasswordLabel);
-    	confirmNewPasswordBox.getChildren().add(confirmNewPasswordField);
+    	confirmNewPasswordBox.getChildren().addAll(confirmNewPasswordLabel, confirmNewPasswordField);
     	
     	savePasswordBox.getChildren().add(savePassword);
+    	
     }
     
 	private void savePassword(ActionEvent e) {
@@ -322,54 +335,57 @@ public class ControllerEditAccountScene {
 		String currentPassword = currentPasswordField.getText();
 		String newPassword = newPasswordField.getText();
 		String confirmNewPassword = confirmNewPasswordField.getText();
-		String notif = null;
 		
+		String notif = null;
 		if (currentPassword.isBlank()) {
 			currentPasswordField.getStyleClass().add("error");
-			showNotification("Please, insert your current password!");
+			showNotification("Please, insert your current password!", true);
 			return;
 		}
 		else if (newPassword.isBlank()) {
 			newPasswordField.getStyleClass().add("error");
-			showNotification("Please, insert a new password!");
+			showNotification("Please, insert your new password!", true);
 			return;
 		}
 		else if (confirmNewPassword.isBlank()) {
 			confirmNewPasswordField.getStyleClass().add("error");
-			showNotification("Please, confirm your new password!");
+			showNotification("Please, confirm your new password!", true);
 			return;
 		}
 		else if (newPassword.equals(currentPassword)) {
 			newPasswordField.getStyleClass().add("error");
-			showNotification("New password cannot be the same as your current one.");
+			showNotification("New password cannot be the same as your current one.", true);
 			return;
 		}
 		else if ((notif = Account.checkValidPassword(newPassword, confirmNewPassword)) != null) {
 			newPasswordField.getStyleClass().add("error");
 			confirmNewPasswordField.getStyleClass().add("error");
-			showNotification(notif);
+			showNotification(notif, true);
 			return;
 		}
 		
 		try {
-			if (AccountsDatabase.checkLogin(account.getEmail(), currentPassword)) {
-				if (!AccountsDatabase.changePassword(account.getEmail(), currentPassword, newPassword)) {
-					showNotification("Unknown error!");
-					return;
-				}			
-			}
-			else {
+			
+			if (!AccountsDatabase.changePassword(account.getEmail(), currentPassword, newPassword)) {
+				showNotification("Wrong current password! Please, try again!", true);
 				currentPasswordField.getStyleClass().add("error");
-				showNotification("Wrong current password! Please, try again.");
 				return;
 			}
+			
+			showNotification("Your password was changed successfully!", false);
+			resetPasswordLayout(e);
+			
+		}
+		catch (NotFoundException anf) {
+			App.accountDeletedMessage();
+			logout();
+			return;
 		}
 		catch (SQLException sqle) {
 			App.connectionErrorMessage();
 			return;
 		}
 		
-		resetPasswordLayout(e);
 	}
 
     private void removeErrorNotifications() {
@@ -382,12 +398,15 @@ public class ControllerEditAccountScene {
 		confirmNewPasswordField.getStyleClass().removeAll(Collections.singleton("error"));
 		
 		notificationLabel.setVisible(false);
+		
 	}
       
-	private void showNotification(String notification) {
+	private void showNotification(String notification, boolean isError) {
 		
 		notificationLabel.setText(notification);
+		notificationLabel.setTextFill(isError ? Color.RED : Color.GREEN);
 		notificationLabel.setVisible(true);
+		
 	}
 	
 	private void resetEmailLayout(ActionEvent e) {
@@ -411,7 +430,8 @@ public class ControllerEditAccountScene {
 		
     	newEmailField.setText(account.getEmail());
     	newEmailField.setDisable(true);
-    	currentPasswordField.setText("");
+    	currentPasswordField.clear();
+    	
 	}
 	
     private void resetPasswordLayout(ActionEvent e) {
@@ -450,32 +470,46 @@ public class ControllerEditAccountScene {
     	if (savePasswordBox.getChildren().contains(savePassword))
     		savePasswordBox.getChildren().remove(savePassword);
 		
-    	currentPasswordField.setText("");
-    	newPasswordField.setText("");
-    	confirmNewPasswordField.setText("");
+    	currentPasswordField.clear();
+    	newPasswordField.clear();
+    	confirmNewPasswordField.clear();
     	
 	}
     
     private Label createLabel(String text) {
+    	
     	Label label = new Label(text);
     	label.setFont(Font.font(18));
     	return label;
+    	
     }
     
     private Button createButton(String name) {
+    	
     	Button newButton = new Button(name);
 	    newButton.setFont(Font.font(14));
 	    newButton.setPrefSize(70, 30);
 	    newButton.setAlignment(Pos.CENTER);
 	    newButton.setFocusTraversable(false);
     	return newButton;
+    	
     }
     
     private PasswordField createPasswordField() {
+    	
     	PasswordField field = new PasswordField();
 		field.setFont(Font.font(14));
 		field.setFocusTraversable(false);
     	HBox.setHgrow(field, Priority.ALWAYS);
     	return field;
+    	
+    }
+    
+    private void logout() {
+    	
+    	User.setLogedIn(false);
+		App.readLocalFiles();
+		App.loadMainScene();
+		
     }
 }

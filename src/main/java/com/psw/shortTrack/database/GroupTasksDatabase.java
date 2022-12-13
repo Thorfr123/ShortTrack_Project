@@ -109,23 +109,28 @@ public class GroupTasksDatabase extends Database {
 	
 	/**
 	 * Updates groupTask data in the database. You need to provide all the updated data.
+	 * Before changing the data, it verifies if the user is still the manager.
 	 * 
 	 * @param id Task's id
+	 * @param email User's email
 	 * @param newName Task's new name
 	 * @param newDescription Task's new description
 	 * @param newDeadline Task's new deadline date
 	 * @param newState Task's new completed state
 	 * @param newAssignedTo Task's new assigned to member
-	 * @return (True) Success; (False) Otherwise (The task doesn't exist, i.e)
+	 * @return (True) Success; (False) Otherwise (The user has no privileges to edit the task, the task doesn't exist or null values)
 	 * 
 	 * @throws SQLException If there was an error in the connection to the database
 	 */
-	public static boolean updateTask(int id, String newName, String newDescription, LocalDate newDeadline) throws SQLException {
+	public static boolean updateTask(int id, String email, String newName, String newDescription, LocalDate newDeadline) throws SQLException {
 		
 		return (executeUpdate(
-				"UPDATE projeto.group_tasks SET name=" + toSQL((String)newName) + ",description=" 
-				+ toSQL((String)newDescription) + ",deadline_date=" + toSQL((LocalDate)newDeadline) + "\r\n"
-				+ "WHERE id=" + toSQL(id) + ";"
+				"UPDATE projeto.group_tasks\r\n"
+				+ "SET name=" + toSQL((String)newName) + ",description=" + toSQL((String)newDescription) 
+				+ ",deadline_date=" + toSQL((LocalDate)newDeadline) + "\r\n"
+				+ "FROM projeto.groups WHERE group_id=groups.id\r\n"
+				+ "AND group_tasks.id=" + toSQL(id) + " AND (assigned_to=" + toSQL((String)email) 
+				+ " OR manager=" + toSQL((String)email) + ");"
 		) > 0);
 		
 	}
@@ -133,7 +138,9 @@ public class GroupTasksDatabase extends Database {
 	// TODO: comment
 	public static boolean changeState(int id, boolean newState) throws SQLException {
 		
-		NotificationDatabase.clearHelpRequests(id);
+		if (newState)
+			NotificationDatabase.clearHelpRequests(id);
+		
 		return (executeUpdate(
 				"UPDATE projeto.group_tasks SET state=" + toSQL(newState) + " WHERE id=" + toSQL(id) + ";"
 		) > 0);
@@ -146,7 +153,7 @@ public class GroupTasksDatabase extends Database {
 		NotificationDatabase.clearHelpRequests(id);
 		return(executeUpdate(
 				"UPDATE projeto.group_tasks SET assigned_to=" + toSQL((String)assignedTo) + "\r\n"
-				+ "WHERE id=" + toSQL(id)
+				+ "WHERE id=" + toSQL(id) + ";"
 		) > 0);
 	}
 	
@@ -189,4 +196,29 @@ public class GroupTasksDatabase extends Database {
 		return arrayTask;
 		
 	}
+	
+	//TODO
+	public static boolean hasPrivilege(int id, String email) throws SQLException {
+		
+		if (!existTask(id)) {
+			throw new NotFoundException();
+		}
+		return executeQueryReturnBoolean(
+			"SELECT EXISTS(SELECT 1 FROM projeto.group_tasks LEFT JOIN projeto.groups ON group_id=groups.id\r\n"
+			+ "WHERE group_tasks.id=" + toSQL(id) 
+			+ " AND (assigned_to=" + toSQL((String)email) + " OR groups.manager=" + toSQL((String)email) + "));"
+		);
+		
+	}
+	
+	//TODO
+	public static boolean existTask(int id) throws SQLException {
+		
+		return executeQueryReturnBoolean(
+			"SELECT EXISTS(SELECT 1 FROM projeto.group_tasks WHERE id=" + toSQL(id) + ");"
+		);
+		
+	}
+	
+	
 }

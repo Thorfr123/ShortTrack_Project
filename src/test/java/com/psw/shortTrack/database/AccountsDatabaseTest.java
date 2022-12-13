@@ -1,6 +1,5 @@
 package com.psw.shortTrack.database;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -170,7 +169,7 @@ public class AccountsDatabaseTest {
 	@Test
 	void Given_ThatParamsAreValid_When_ChangeName_ReturnTrue() {
 		try {
-			assertTrue(AccountsDatabase.changeName("ggg@gmail.com", "New Name"));
+			AccountsDatabase.changeName("ggg@gmail.com", "New Name");
 			AccountsDatabase.changeName("ggg@gmail.com", "Conta Teste");
 		} catch (SQLException e) {
 			fail("Network problems");
@@ -180,8 +179,13 @@ public class AccountsDatabaseTest {
 	@Test
 	void Given_ThatParamsAreInValid_When_ChangeName_ReturnTrue() {
 		try {
-			assertFalse(AccountsDatabase.changeName("notInUse@gmail.com", "Not Valid"));
-		} catch (SQLException e) {
+			AccountsDatabase.changeName("notInUse@gmail.com", "Not Valid");
+			//assertFalse(AccountsDatabase.changeName("notInUse@gmail.com", "Not Valid"));
+			fail("It didn't throw the expected exception");
+		}
+		catch (NotFoundException anfe) {
+		}
+		catch (SQLException e) {
 			fail("Network problems");
 		}
 	}
@@ -190,15 +194,13 @@ public class AccountsDatabaseTest {
 	void Given_ThatUserChangesToValidEmail_When_ChangeEmail_ReturnTrue() {
 		try {
 			// Return da funcao
-			assertTrue(AccountsDatabase.changeEmail("ggg@gmail.com", "gggAlterado@gmail.com"));
+			assertTrue(AccountsDatabase.changeEmail("ggg@gmail.com", "12345", "gggAlterado@gmail.com"));
 			// Email alterado na tabela de accounts
 			assertNull(AccountsDatabase.getAccount("ggg@gmail.com"));
 			assertNotNull(AccountsDatabase.getAccount("gggAlterado@gmail.com"));
-			// Email alterado nos members
-			assertEquals(0 , GroupsDatabase.getAllGroups(AccountsDatabase.getAccount("ggg@gmail.com")).size());
 			assertNotEquals(0 , GroupsDatabase.getAllGroups(AccountsDatabase.getAccount("gggAlterado@gmail.com")).size());
 			// Return to original
-			AccountsDatabase.changeEmail("gggAlterado@gmail.com", "ggg@gmail.com");
+			AccountsDatabase.changeEmail("gggAlterado@gmail.com", "12345", "ggg@gmail.com");
 		} catch (SQLException e) {
 			fail("Network problems");
 		}
@@ -208,14 +210,15 @@ public class AccountsDatabaseTest {
 	void Given_ThatUserChangesToInvalidEmail_When_ChangeEmail_ReturnFalse() {
 		try {
 			// Return da funcao
-			assertFalse(AccountsDatabase.changeEmail("notInUse@gmail.com", "teste@gmail.com"));
+			assertFalse(AccountsDatabase.changeEmail("notInUse@gmail.com", "password", "teste@gmail.com"));
 			// Email alterado na tabela de accounts
 			assertNotNull(AccountsDatabase.getAccount("ggg@gmail.com"));
 			// Email alterado nos members
 			assertNotEquals(0 , GroupsDatabase.getAllGroups(AccountsDatabase.getAccount("ggg@gmail.com")).size());
 			assertNotEquals(0 , GroupsDatabase.getAllGroups(AccountsDatabase.getAccount("teste@gmail.com")).size());
+		} catch (NotFoundException anfe) {
+
 		} catch (SQLException e) {
-			System.out.println(e.getSQLState());
 			fail("Network problems");
 		}
 	}

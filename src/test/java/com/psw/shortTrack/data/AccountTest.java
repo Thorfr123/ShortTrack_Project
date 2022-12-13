@@ -30,21 +30,21 @@ public class AccountTest {
 	
 	@Test
 	void Given_ThatNameHasNumbers_WhenCheckValidName_ReturnError() {
-		assertEquals("Name cannot contain numbers!", Account.checkValidName("2Mike"));
-		assertEquals("Name cannot contain numbers!", Account.checkValidName("John24"));
-		assertEquals("Name cannot contain numbers!", Account.checkValidName("Mi4ck23ae2l"));
+		assertEquals("None of the name fields can contain numbers!", Account.checkValidName("2Mike"));
+		assertEquals("None of the name fields can contain numbers!", Account.checkValidName("John24"));
+		assertEquals("None of the name fields can contain numbers!", Account.checkValidName("Mi4ck23ae2l"));
 	}
 	
 	@Test
 	void Given_ThatNameIsEmpty_WhenCheckValidName_ReturnError() {
-		assertEquals("Name cannot be empty!", Account.checkValidName(""));
+		assertEquals("None of the name fields can be empty!", Account.checkValidName(""));
 	}
 	
 	@Test
 	void Given_ThatNameHasWhiteSpaces_WhenCheckValidName_ReturnError() {
-		assertEquals("Name cannot contain white spaces!", Account.checkValidName(" Joaquim"));
-		assertEquals("Name cannot contain white spaces!", Account.checkValidName("Antó nio"));
-		assertEquals("Name cannot contain white spaces!", Account.checkValidName("Manuel "));
+		assertEquals("None of the name fields can contain white spaces!", Account.checkValidName(" Joaquim"));
+		assertEquals("None of the name fields can contain white spaces!", Account.checkValidName("Antó nio"));
+		assertEquals("None of the name fields can contain white spaces!", Account.checkValidName("Manuel "));
 	}
 	
 	@Test

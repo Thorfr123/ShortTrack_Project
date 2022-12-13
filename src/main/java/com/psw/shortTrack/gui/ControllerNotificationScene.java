@@ -10,6 +10,8 @@ import com.psw.shortTrack.database.GroupsDatabase;
 import com.psw.shortTrack.database.NotificationDatabase;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -101,19 +103,36 @@ public class ControllerNotificationScene {
 		
 		try {
 			
-			GroupTasksDatabase.changeAssignedTo(notification.getRefTask().getID(), User.getAccount().getEmail());
-			NotificationDatabase.clearHelpRequests(notification.getRefTask().getID());
+			// Verifica se o pedido ainda está ativo
+			if (NotificationDatabase.checkHelpRequest(notification.getRefTask().getID())) {
+				
+				GroupTasksDatabase.changeAssignedTo(notification.getRefTask().getID(), User.getAccount().getEmail());
+				NotificationDatabase.clearHelpRequests(notification.getRefTask().getID());
+				
+				Notification response = new Notification(	notification.getResponseType(), 
+															User.getAccount(), 
+															notification.getSource(), 
+															notification.getRefGroup(),
+															notification.getRefTask());
+				NotificationDatabase.createNotification(response);
+				
+			}
+			else {
+				
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Help request error");
+				alert.setHeaderText("It seems someone in your group has already accepted this help request or it was canceled.");
+				//alert.setContentText("You will be logged out of your account!");
+				alert.showAndWait();
+				
+			}
+			
 			deleteNotification(notification, notificationBar);
 			
-			Notification response = new Notification(	notification.getResponseType(), 
-														User.getAccount(), 
-														notification.getSource(), 
-														notification.getRefGroup(),
-														notification.getRefTask());
-			NotificationDatabase.createNotification(response);
-			
 		} catch (SQLException sqle) {
+			
 			App.connectionErrorMessage();
+		
 		}
 		
 	}

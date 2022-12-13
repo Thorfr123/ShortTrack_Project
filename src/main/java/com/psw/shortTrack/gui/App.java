@@ -38,6 +38,7 @@ public class App extends Application {
 		readLocalFiles();
 		
 		try {
+			
 			ClassLoader classLoader = getClass().getClassLoader();
 			String icon_str = classLoader.getResource("teste_icon.png").toExternalForm();
 			Image icon = new Image(icon_str);
@@ -175,6 +176,18 @@ public class App extends Application {
 		
 	}
 	
+	// TODO:comment
+	public static void accountDeletedMessage() {
+		
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle("Account deleted");
+		alert.setHeaderText("It seems your account was deleted in another session!");
+		alert.setContentText("You will be logged out of your account!");
+		
+		alert.showAndWait();
+		
+	}
+	
 	/**
 	 * Loads a new scene with the fxml name
 	 */
@@ -203,7 +216,7 @@ public class App extends Application {
 				});
 			}
 			// Allow the user to refresh the notification scene every 10 seconds
-			if(fxml.equals("NotificationScene.fxml")) {
+			else if(fxml.equals("NotificationScene.fxml")) {
 				scene.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
 			        if (event.getCode() == KeyCode.F5) {
 			        	Instant time2 = Instant.now();

@@ -19,13 +19,14 @@ public class GroupsDatabase extends Database{
 	 * It doesn't verify if the members' accounts exists
 	 * 
 	 * @param group Group that you want to add in the database
-	 * @return (True) Success; (False) Error - If the manager account doesn't exist or null values
+	 * @return (True) Success; (False) If the manager account doesn't exist
 	 * 
 	 * @throws SQLException If a database access error occurs
 	 */
 	public static boolean createGroup(Group group) throws SQLException {
 		
 		try {
+			
 			group.setID(executeQueryReturnInt(
 				"INSERT INTO projeto.groups (name, manager, members)\r\n"
 				+ "VALUES (" + toSQL((String)group.getName()) + "," + toSQL((String)group.getManagerEmail()) + "," 
@@ -33,6 +34,7 @@ public class GroupsDatabase extends Database{
 				+ "RETURNING id;")
 			);
 			return true;
+			
 		} catch(PSQLException psql) {
 			if (psql.getSQLState().startsWith("23")) {
 				return false;
@@ -47,15 +49,23 @@ public class GroupsDatabase extends Database{
 	 * It also deletes the tasks of this group, because the database is configured to delete on cascade
 	 * 
 	 * @param id Group's id
-	 * @return (True) If it was deleted; (False) If the group doesn't exist
+	 * @return (True) If it was deleted; (False) If the group still exists
 	 * 
 	 * @throws SQLException If a database access error occurs
 	 */
 	public static boolean deleteGroup(int id) throws SQLException {
 		
-		return (executeUpdate(
+		if (executeUpdate(
 			"DELETE FROM projeto.groups WHERE id=" + toSQL(id) + ";"
-		) > 0);
+		) > 0) {
+			return true;
+		}
+		else if (existGroup(id)) {
+			return false;
+		}
+		else {
+			throw new SQLException("Unknown error");
+		}
 		
 	}
 	
@@ -118,35 +128,57 @@ public class GroupsDatabase extends Database{
 	 * 
 	 * @param id Integer with group's id
 	 * @param newGroupName String with group's new name
-	 * @return (True) Success; (False) Error (Group doesn't exist)
 	 * 
+	 * @throws NotFoundException Group doesn't exist
 	 * @throws SQLException If a database access error occurs
 	 */
-	public static boolean changeName(int id, String newGroupName) throws SQLException {
+	public static void changeName(int id, String newGroupName) throws SQLException {
 		
-		return (executeUpdate(
+		if (executeUpdate(
 			"UPDATE projeto.groups SET name=" + toSQL((String)newGroupName) + " WHERE id=" + toSQL(id) + ";"
-		) > 0);
+		) > 0) {
+			return;
+		}
+		else if (!existGroup(id)) {
+			throw new NotFoundException();
+		}
+		else {
+			throw new SQLException("Unknown error");
+		}
 		
 	}
 	
+	//TODO: Verify code
 	/**
 	 * Removes a member from one group and assigns his tasks to NULL.
 	 * 
 	 * @param id Group's id
 	 * @param member Account of the member to remove
-	 * @return (True) Success; (False) Member wasn't in the group or the group doesn't exist
+	 * @return (True) Success; (False) Member doesn't belong to the group
 	 * 
+	 * @throws NotFoundException If group doesn't exist
 	 * @throws SQLException If a database access error occurs
 	 */
 	public static boolean removeMember(int id, Account member) throws SQLException {
-		//TODO: verificar se este codigo é todo necessário
-		return(executeUpdate(
+
+		if (executeUpdate(
 			"UPDATE projeto.groups SET members=("
 			+ "SELECT array_remove(members,'" + member.getEmail() + "') FROM projeto.groups WHERE id='" + id + "') "
 			+ "WHERE id='"+id+"';\r\n"
 			+ "UPDATE projeto.group_tasks SET assigned_to=NULL WHERE group_id='" + id + "' AND assigned_to='" + member.getEmail() + "';"
-		) > 0);
+		) > 0) {
+			return true;
+		}
+		else if (!existGroup(id)) {
+			throw new NotFoundException();
+		}
+		else if (!belongsToGroup(id, member.getEmail())) {
+			return false;
+		}
+		else {
+			throw new SQLException("Unknown error");
+		}
+			
 	}
 
 	// TODO: Verify code
@@ -161,11 +193,38 @@ public class GroupsDatabase extends Database{
 	 */
 	public static boolean addMember(int id, Account member) throws SQLException {
 		
-		return (executeUpdate(
+		if (executeUpdate(
 			"UPDATE projeto.groups SET members=("
 			+ "SELECT array_append(members,'" + member.getEmail() + "') FROM projeto.groups WHERE id='" + id + "') "
 			+ "WHERE id='" + id + "';\r\n"
-		) > 0);
+		) > 0) {
+			return true;
+		}
+		else if (!existGroup(id)) {
+			return false;
+		}
+		else {
+			throw new SQLException("Unknown error");
+		}
 		
 	}
+	
+	// TODO
+	private static boolean existGroup(int id) throws SQLException {
+		
+		return executeQueryReturnBoolean(
+			"SELECT EXISTS(SELECT 1 FROM projeto.groups WHERE id=" + toSQL(id) + ";"
+		);
+		
+	}
+	
+	// TODO
+	private static boolean belongsToGroup(int id, String email) throws SQLException {
+		
+		return executeQueryReturnBoolean(
+			"SELECT EXISTS(SELECT 1 FROM projeto.groups WHERE id=" + toSQL(id) + " AND email=ANY(members);"	
+		);
+		
+	}
+	
 }

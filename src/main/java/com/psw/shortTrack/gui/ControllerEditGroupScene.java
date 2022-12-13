@@ -10,6 +10,7 @@ import com.psw.shortTrack.data.User;
 import com.psw.shortTrack.data.Notification.NotificationType;
 import com.psw.shortTrack.database.AccountsDatabase;
 import com.psw.shortTrack.database.GroupsDatabase;
+import com.psw.shortTrack.database.NotFoundException;
 import com.psw.shortTrack.database.NotificationDatabase;
 
 import javafx.event.ActionEvent;
@@ -58,12 +59,12 @@ public class ControllerEditGroupScene {
 			groupNameField.setOpacity(1);
 			memberList.setDisable(true);
 			memberList.setOpacity(1);
-			editGroupBox.getChildren().remove(addMembersBox);
-			editGroupBox.getChildren().remove(managerButtonsBox);
+			editGroupBox.getChildren().removeAll(addMembersBox, managerButtonsBox);
 		}
 		else {
 			editGroupBox.getChildren().remove(memberButtonsBox);
 		}
+		
     }
 	
 	public void delete(ActionEvent e) {
@@ -72,23 +73,26 @@ public class ControllerEditGroupScene {
 		
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("Delete Group");
-		alert.setHeaderText("You're about to delete this group and lose this data!");
-		alert.setContentText("Are you sure you really want to delete the group?");
+		alert.setHeaderText("You're about to delete this group and lose all its data!");
+		alert.setContentText("Are you sure you really want to delete this group?");
 
 		if(alert.showAndWait().get() == ButtonType.OK){
-			
 			try {
-				GroupsDatabase.deleteGroup(group.getID());
+				
+				if (!GroupsDatabase.deleteGroup(group.getID())) {
+					showNotification("There was an error trying to delete this group! Please, try again later.", true);
+					return;
+				}
+				
+				User.getGroups().remove(group);
+				group = null;
+				
+				App.loadMainScene();
+				
 			} catch (SQLException exception) {
 				App.connectionErrorMessage();
 				return;
 			}
-			
-			User.getGroups().remove(group);
-			group = null;
-			
-			App.loadMainScene();
-			
 		}
 		
 	}
@@ -99,6 +103,11 @@ public class ControllerEditGroupScene {
 		
 		String newGroupName = groupNameField.getText();
 		
+		Group g = null;
+		if (newGroupName.equals(group.getName())) {
+			App.loadMainScene();
+			return;
+		}
 		if(newGroupName.isBlank()) {
 			showNotification("The Group needs a name!", true);
 			groupNameField.getStyleClass().add("error");
@@ -109,31 +118,31 @@ public class ControllerEditGroupScene {
 			groupNameField.getStyleClass().add("error");
 			return;
 		}
-		else if(newGroupName.equals(group.getName())) {
-			App.loadMainScene();
-		}
-		
-		Group g = User.checkGroupName(newGroupName);
-		if((g != null) && (g != group)) {
+		else if ((g = User.checkGroupName(newGroupName)) != null && g != group) {
 			showNotification("Already exist a group with that name!", true);
+			groupNameField.getStyleClass().add("error");
 			return;
 		}
 		
 		if(User.isLogedIn()) {
 			try {
 				
-				GroupsDatabase.changeName(group.getID(),newGroupName);
-
-			} catch (SQLException exception) {
+				GroupsDatabase.changeName(group.getID(), newGroupName);
+				
+				group.setName(newGroupName);
+				App.loadMainScene();
+				
+			}
+			catch (NotFoundException nfe) {
+				App.loadMainScene();
+				return;
+			}
+			catch (SQLException exception) {
 				App.connectionErrorMessage();
 				return;
 			}
 		}
 
-		group.setName(newGroupName);
-		
-		App.loadMainScene();
-		
 	}
 	
 	public void cancel(ActionEvent e) {
@@ -143,13 +152,16 @@ public class ControllerEditGroupScene {
 		// Cancel the complete task creation
 		if(group.getName().isBlank()) {
 			try {
+				
 				GroupsDatabase.deleteGroup(group.getID());
+				
+				User.getGroups().remove(group);
+				group = null;
+			
 			} catch (SQLException exception) {
 				App.connectionErrorMessage();
 				return;
 			}
-			User.getGroups().remove(group);
-			group = null;
 		}
 		
 		App.loadMainScene();
@@ -159,24 +171,26 @@ public class ControllerEditGroupScene {
 	public void leave(ActionEvent e) {
 		
 		removeErrorNotifications();
+		
 		try {
 			
+			GroupsDatabase.removeMember(group.getID(), User.getAccount());
 			Notification leave = new Notification(NotificationType.leftGroup, User.getAccount(), group.getManagerAccount(), group);
 			NotificationDatabase.createNotification(leave);
-			GroupsDatabase.removeMember(group.getID(), User.getAccount());
+			
+			App.loadMainScene();
 			
 		} catch (SQLException exception) {
 			App.connectionErrorMessage();
 			return;
 		}
 		
-		App.loadMainScene();
-		
 	}
 	
 	public void addMember(ActionEvent e) {
 		
 		removeErrorNotifications();
+		
 		String newMember = memberTextField.getText();
 		
 		if(newMember.isBlank())
@@ -201,7 +215,7 @@ public class ControllerEditGroupScene {
 			return;
 		}
 		
-		try {			
+		try {
 			Account newMemberAccount = AccountsDatabase.getAccount(newMember);
 			if (newMemberAccount == null) {
 				showNotification("There is no account with this email!", true);
@@ -230,6 +244,7 @@ public class ControllerEditGroupScene {
 	public void removeMember(ActionEvent e) {
 		
 		removeErrorNotifications();
+		
 		Account memberToRemove = memberList.getSelectionModel().getSelectedItem();
 		
 		if(memberToRemove == null)

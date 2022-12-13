@@ -1,5 +1,6 @@
 package com.psw.shortTrack.database;
 
+import java.security.InvalidParameterException;
 import java.sql.*;
 
 import org.postgresql.util.PSQLException;
@@ -48,7 +49,7 @@ public class AccountsDatabase extends Database{
 	 * Creates a new account in the database
 	 * 
 	 * @param account User's new account
-	 * @return (True) - if the account is created; (False) - Error - Email already in use or Null values
+	 * @return (True) - if the account is created; (False) - Email already in use
 	 * 
 	 * @throws SQLException If there is a network error
 	 */
@@ -56,14 +57,19 @@ public class AccountsDatabase extends Database{
 		
 		try {
 			
-			return (executeUpdate(
+			if (executeUpdate(
 				"INSERT INTO projeto.account (email, password, name)\r\n"
 				+ "VALUES (" + toSQL((String)account.getEmail()) + "," + toSQL((String)password) + "," 
 				+ toSQL((String)account.getName()) + ");"
-			) > 0);
+			) > 0) {
+				return true;
+			}
+			else {
+				throw new SQLException("Unknown error");
+			}
 			
 		} catch (PSQLException sqle) {
-			if (sqle.getSQLState().startsWith("23")) {
+			if (sqle.getSQLState().startsWith("23505")) {
 				return false;
 			}
 			throw sqle;
@@ -119,16 +125,29 @@ public class AccountsDatabase extends Database{
 	 * @param email String with the email
 	 * @param old_password String with the old password
 	 * @param new_password String with the new password
-	 * @return Either (True) If it succeeds or (False) If it fails (wrong password or email doesn't exist)
+	 * @return (True) If it succeeds or (False) Wrong password
 	 * 
+	 * @throws NotFoundException If the account was not found
 	 * @throws SQLException If there is a network error
 	 */
-	public static boolean changePassword(String email, String old_password, String new_password) throws SQLException{
+	public static boolean changePassword(String email, String old_password, String new_password) 
+			throws NotFoundException, SQLException{
 		
-		return (executeUpdate(
+		if (executeUpdate(
 			"UPDATE projeto.account SET password=" + toSQL((String)new_password) + "\r\n"
-			+"WHERE email="+ toSQL((String)email) + " AND password=" + toSQL((String)old_password) + ";"
-		) > 0);
+			+ "WHERE email="+ toSQL((String)email) + " AND password=" + toSQL((String)old_password) + ";"
+		) > 0) {
+			return true;
+		}
+		else if (checkEmail(email)) {
+			throw new NotFoundException();
+		}
+		else if (!checkLogin(email, old_password)) {
+			return false;
+		}
+		else {
+			throw new SQLException("Unknown error");
+		}
 	
 	}
 	
@@ -137,15 +156,23 @@ public class AccountsDatabase extends Database{
 	 * 
 	 * @param email String with the email
 	 * @param new_name String with the new name
-	 * @return Either (True) if it succeeds or (False) If it fails (Email doesn't exist)
 	 * 
+	 * @throws NotFoundException If the account was not found
 	 * @throws SQLException If there is a network error
 	 */
-	public static boolean changeName(String email, String new_name) throws SQLException {
+	public static void changeName(String email, String new_name) throws NotFoundException, SQLException {
 		
-		return (executeUpdate(
+		if (executeUpdate(
 			"UPDATE projeto.account SET name=" + toSQL((String)new_name) + " WHERE email=" + toSQL((String)email) + ";"
-		) > 0);
+		) > 0) {
+			return;
+		}
+		else if (checkEmail(email)) {
+			throw new NotFoundException();
+		}
+		else {
+			throw new SQLException("Unknown error");
+		}
 		
 	}
 
@@ -154,17 +181,33 @@ public class AccountsDatabase extends Database{
 	 * 
 	 * @param email String with user's current email
 	 * @param newEmail String with user's new email
-	 * @return Either (True) Success; (False) Error - Email doesn't exist, newEmail is already in use or Null values
+	 * @return (True) Success; (False) newEmail is already in use
 	 * 
+	 * @throws InvalidParameterException If the password is wrong
+	 * @throws NotFoundException If the user's account was deleted
 	 * @throws SQLException If there is a network error
 	 */
-	public static boolean changeEmail(String email, String newEmail) throws SQLException{
+	public static boolean changeEmail(String email, String password, String newEmail) 
+			throws InvalidParameterException, NotFoundException, SQLException{
+		
 		try {
 			
-			return (executeUpdate(
-				"UPDATE projeto.account SET email=" + toSQL((String)newEmail) + " WHERE email=" + toSQL((String)email) + ";"
+			if (executeUpdate(
+				"UPDATE projeto.account SET email=" + toSQL((String)newEmail) + "\r\n"
+				+ "WHERE email=" + toSQL((String)email) + " AND password=" + toSQL((String)password) + ";\r\n"
 				+ "UPDATE projeto.groups SET members=(SELECT array_replace(members," + toSQL((String)email) + "," + toSQL((String)newEmail) + "));"
-			) > 0);
+			) > 0) {
+				return true;
+			}
+			else if (checkEmail(email)) {
+				throw new NotFoundException();
+			}
+			else if (checkLogin(email, password)) {
+				throw new InvalidParameterException("Wrong password");
+			}
+			else {
+				throw new SQLException("Unknown error");
+			}
 			
 		} catch (PSQLException psql) {
 			if (psql.getSQLState().startsWith("23")) {

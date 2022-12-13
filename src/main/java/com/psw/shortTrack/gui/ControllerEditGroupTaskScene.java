@@ -13,6 +13,7 @@ import com.psw.shortTrack.data.SearchList;
 import com.psw.shortTrack.data.TaskOrganizer;
 import com.psw.shortTrack.data.User;
 import com.psw.shortTrack.database.GroupTasksDatabase;
+import com.psw.shortTrack.database.NotFoundException;
 import com.psw.shortTrack.database.NotificationDatabase;
 
 import javafx.event.ActionEvent;
@@ -24,6 +25,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 
@@ -125,12 +128,12 @@ public class ControllerEditGroupTaskScene {
 			}
 			
 			setHelpButton();
-			//changeHelpButton(false);
-			
 			showNotification("You have successfully request for help in this task!", false);
 			
 		} catch (SQLException sqle) {
+			
 			App.connectionErrorMessage();
+		
 		}
 		
 	}
@@ -139,13 +142,32 @@ public class ControllerEditGroupTaskScene {
 		
 		try {
 			
-			NotificationDatabase.clearHelpRequests(task.getID());
-			setHelpButton();
-			//changeHelpButton(true);
-			showNotification("You have successfully canceled your request for help in this task!", false);
-			
-		} catch (SQLException e) {
+			if (!GroupTasksDatabase.hasPrivilege(task.getID(), User.getAccount().getEmail())) {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Help cancel request error");
+				alert.setHeaderText("It seems this task is no longer assigned to you, so you cannot manage it.");
+				//alert.setContentText("You will be logged out of your account!");
+				alert.showAndWait();
+				App.loadMainScene();
+				return;
+			}
+			else {
+				NotificationDatabase.clearHelpRequests(task.getID());
+				setHelpButton();
+				showNotification("You have successfully canceled your request for help in this task!", false);
+			}
+		}
+		catch (NotFoundException nfe) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Help cancel request error");
+			alert.setHeaderText("It seems this task was deleted by the manager.");
+			alert.showAndWait();
+			App.loadMainScene();
+			return;
+		}
+		catch (SQLException e) {
 			App.connectionErrorMessage();
+			return;
 		}
 		
 	}
@@ -155,10 +177,14 @@ public class ControllerEditGroupTaskScene {
 		removeErrorNotifications();
 		
 		try {
+			
 			GroupTasksDatabase.deleteTask(task.getID());
+			
 		} catch (SQLException exception) {
+			
 			App.connectionErrorMessage();
 			return;
+			
 		}
 		
 		group.removeTask(task);
@@ -199,31 +225,64 @@ public class ControllerEditGroupTaskScene {
 		
 		try {
 			
-			if (task.isCompleted() != checkButton.isSelected()) {
-				GroupTasksDatabase.changeState(task.getID(), checkButton.isSelected());
+			if ( 	!GroupTasksDatabase.changeState(task.getID(), checkButton.isSelected()) ||
+					!GroupTasksDatabase.updateTask(task.getID(), User.getAccount().getEmail(), newTaskName, newDescription, newDeadline)) {
+				
+				if (!GroupTasksDatabase.existTask(task.getID())) {
+					
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("Error editing task");
+					alert.setHeaderText("It seems this task no longer exists!");
+					alert.setContentText("This can be caused because the manager deleted this task!");
+					alert.showAndWait();
+					return;
+					
+				}
+				else if (!GroupTasksDatabase.hasPrivilege(task.getID(), User.getAccount().getEmail())) {
+					
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("Error editing task");
+					alert.setHeaderText("It seems you haven't enough privileges to edit this task!");
+					alert.setContentText("This can be caused because this task is no longer assigned to you");
+					alert.showAndWait();
+					return;
+				}
+				
 			}
 			
-			GroupTasksDatabase.updateTask(task.getID(), newTaskName, newDescription, newDeadline);
+			if (newAssignedTo.getEmail() == null || !newAssignedTo.getEmail().equals(task.getAssignedToEmail())) {
+				
+				if (!GroupTasksDatabase.changeAssignedTo(task.getID(), newAssignedTo.getEmail())) {
+					
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("Error editing task");
+					alert.setHeaderText("There was an error when trying to assign this task to " + newAssignedTo.toString() + "!");
+					alert.setContentText("This can be caused, for example, if this member no longer belongs to the group.");
+					alert.showAndWait();
+					return;
+					
+				}
+				
+			}
 			
-			if (newAssignedTo.equals(GroupTask.nobody)) {
-				GroupTasksDatabase.changeAssignedTo(task.getID(), null);
-			}
-			else if (!newAssignedTo.getEmail().equals(task.getAssignedToEmail())) {
-				GroupTasksDatabase.changeAssignedTo(task.getID(), newAssignedTo.getEmail());
-			}
+			task.setName(newTaskName);
+			task.setDescription(newDescription);
+			task.setDeadline(newDeadline);
+			task.setCompleted(checkButton.isSelected());
+			task.setAssignedTo(newAssignedTo);
 			
 		} catch (SQLException exception) {
+			exception.printStackTrace();
+			System.out.println(exception.getMessage());
+			System.out.println(exception.getErrorCode());
+			System.out.println(exception.getSQLState());
+			System.out.println(exception.getStackTrace());
 			App.connectionErrorMessage();
 			return;
 		}
-		
-		task.setName(newTaskName);
-		task.setDescription(newDescription);
-		task.setDeadline(newDeadline);
-		task.setCompleted(checkButton.isSelected());
-		task.setAssignedTo(newAssignedTo);
-		
-		App.loadMainScene();
+		finally {
+			App.loadMainScene();
+		}
 		
 	}
 	
@@ -290,6 +349,7 @@ public class ControllerEditGroupTaskScene {
 		}
 		else {
 			try {
+				
 				if (NotificationDatabase.checkHelpRequest(task.getID())) {
 					askHelpButton.setText("Cancel help request");
 					askHelpButton.setOnAction(event -> cancelHelpRequest());
@@ -299,8 +359,11 @@ public class ControllerEditGroupTaskScene {
 					askHelpButton.setOnAction(event -> askHelp(event));
 				}
 				askHelpButton.setVisible(true);
+				
 			} catch (SQLException e) {
+				
 				App.connectionErrorMessage();
+				
 			}
 		}
 		

@@ -107,7 +107,7 @@ public class ControllerLogoutScene {
 	@FXML
     public void initialize() {
 		
-		User.setLogedIn(true);		
+		User.setLogedIn(true);
 		account = User.getAccount();
 		lists = User.getLists();
 		
@@ -779,11 +779,13 @@ public class ControllerLogoutScene {
 		int maxAttempts = 3;
         for (int count = 0; count < maxAttempts; count++) {
         	try {
-				User.setGroups(GroupsDatabase.getAllGroups(User.getAccount()));
+				
+        		User.setGroups(GroupsDatabase.getAllGroups(User.getAccount()));
 				groups = User.getGroups();
 				User.setNotifications(NotificationDatabase.getAllNotifications(account));
 				notifications = User.getNotifications();
 				break;
+				
 			} catch (SQLException exception) {
 				
 				exception.printStackTrace();
