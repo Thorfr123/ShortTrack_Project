@@ -188,6 +188,37 @@ public class App extends Application {
 		
 	}
 	
+	// TODO
+	public static void groupDeletedMessage() {
+		
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle("Group deleted");
+		alert.setHeaderText("It seems this group was deleted in another session!");
+		alert.setContentText("You will return to the main window!");
+		
+		alert.showAndWait();
+		
+	}
+	
+	//TODO
+	public static void taskDeletedMessage() {
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle("Error editing task");
+		alert.setHeaderText("It seems this task no longer exists!");
+		alert.setContentText("This can be caused because the manager deleted this task!");
+		
+		alert.showAndWait();
+	}
+	
+	public static void taskNoPrivilegesMessage() {
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle("Error editing task");
+		alert.setHeaderText("It seems you haven't enough privileges to edit this task!");
+		alert.setContentText("This can be caused because this task is no longer assigned to you");
+		
+		alert.showAndWait();
+	}
+	
 	/**
 	 * Loads a new scene with the fxml name
 	 */
@@ -196,7 +227,10 @@ public class App extends Application {
 		try {
 			
 			FXMLLoader loader = new FXMLLoader(App.class.getResource(fxml));
+			
 			Parent root = loader.load();
+					
+			System.out.println(fxml);
 			
 			Scene scene = new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight());
 			scene.getStylesheets().add(css);
@@ -209,14 +243,16 @@ public class App extends Application {
 			        	Duration timeElapsed = Duration.between(time1, time2);
 			        	if(timeElapsed.toMillis() > 10000) {
 				        	ControllerLogoutScene controller = loader.getController();
+				        	
 				        	controller.initialize();
+							
 			        	}
 			        	time1 = time2;
 			        }
 				});
 			}
 			// Allow the user to refresh the notification scene every 10 seconds
-			else if(fxml.equals("NotificationScene.fxml")) {
+			if(fxml.equals("NotificationScene.fxml")) {
 				scene.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
 			        if (event.getCode() == KeyCode.F5) {
 			        	Instant time2 = Instant.now();
@@ -229,15 +265,17 @@ public class App extends Application {
 			        }
 				});
 			}
-			
+			if (fxml.equals("LogoutScene.fxml") && !User.isLogedIn()) {
+				return null;
+			}
 			stage.setScene(scene);
 			stage.show();
 
 			Platform.runLater(() -> scene.getRoot().requestFocus());
-			
+
 			return loader;
-			
-		} catch (IOException exception) {
+		}
+		catch (IOException exception) {
 			exception.printStackTrace();
 			return null;
 		}

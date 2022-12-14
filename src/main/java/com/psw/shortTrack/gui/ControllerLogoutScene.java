@@ -18,10 +18,12 @@ import com.psw.shortTrack.data.TaskOrganizer;
 import com.psw.shortTrack.data.User;
 import com.psw.shortTrack.database.GroupTasksDatabase;
 import com.psw.shortTrack.database.GroupsDatabase;
+import com.psw.shortTrack.database.NotFoundException;
 import com.psw.shortTrack.database.NotificationDatabase;
 import com.psw.shortTrack.database.PersonalListsDatabase;
 import com.psw.shortTrack.database.PersonalTasksDatabase;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -111,8 +113,13 @@ public class ControllerLogoutScene {
 		account = User.getAccount();
 		lists = User.getLists();
 		
-		if(!updateDataFromDatabase())
+		//FIXME: verify if this is needed
+		if(!updateDataFromDatabase()) {
+			//System.out.println("Faz login.fxml");
+			//throw new SQLException();
+			User.setLogedIn(false);
 			return;
+		}
 
 		printNameLabel.setText(account.getName());
 		printEmailLabel.setText(account.getEmail());
@@ -323,7 +330,11 @@ public class ControllerLogoutScene {
 		Group newGroup = new Group(groupName,account);
 		
 		try {
-			GroupsDatabase.createGroup(newGroup);
+			if (!GroupsDatabase.createGroup(newGroup)) {
+				App.accountDeletedMessage();
+				App.loadMainScene();
+				return;
+			}
 		}
 		catch (SQLException exception) {
 			App.connectionErrorMessage();
@@ -360,7 +371,11 @@ public class ControllerLogoutScene {
 		Group newGroup = new Group(groupName,account);
 		
 		try {
-			GroupsDatabase.createGroup(newGroup);
+			if (!GroupsDatabase.createGroup(newGroup)) {
+				App.accountDeletedMessage();
+				App.loadMainScene();
+				return;
+			}
 		}
 		catch (SQLException exception) {
 			App.connectionErrorMessage();
@@ -438,7 +453,12 @@ public class ControllerLogoutScene {
 
 		try {
 			GroupTasksDatabase.createTask(newTask);
-		} catch (SQLException exception) {
+		} 
+		catch (NotFoundException nfe) {
+			App.groupDeletedMessage();
+			return null;
+		}
+		catch (SQLException exception) {
 			App.connectionErrorMessage();
 			return null;
 		}
@@ -548,8 +568,23 @@ public class ControllerLogoutScene {
 		GroupTask task = taskBar.getTask();
 		
 		try {
-			GroupTasksDatabase.changeState(task.getID(), taskCheckBox.isSelected());
-		} catch (SQLException exception) {
+			
+			if (GroupTasksDatabase.hasPrivilege(task.getID(), User.getAccount().getEmail())) {
+				GroupTasksDatabase.changeState(task.getID(), taskCheckBox.isSelected());
+			}
+			else {
+				App.taskNoPrivilegesMessage();
+				App.loadMainScene();
+				return;
+			}
+			
+		}
+		catch (NotFoundException nfe) {
+			App.taskDeletedMessage();
+			App.loadMainScene();
+			return;
+		}
+		catch (SQLException exception) {
 			App.connectionErrorMessage();
 			return;
 		}
@@ -777,7 +812,8 @@ public class ControllerLogoutScene {
 	private boolean updateDataFromDatabase() {
 		
 		int maxAttempts = 3;
-        for (int count = 0; count < maxAttempts; count++) {
+        for (int count = 1; count <= maxAttempts; count++) {
+        	
         	try {
 				
         		User.setGroups(GroupsDatabase.getAllGroups(User.getAccount()));
@@ -785,22 +821,32 @@ public class ControllerLogoutScene {
 				User.setNotifications(NotificationDatabase.getAllNotifications(account));
 				notifications = User.getNotifications();
 				break;
-				
+			
+        	}
+        	catch (NotFoundException nfe) {
+        		
+        		App.accountDeletedMessage();
+        		logout(null);
+        		return false;
+        		
 			} catch (SQLException exception) {
 				
-				exception.printStackTrace();
-				
-				if (++count == maxAttempts) {
+				if (count == maxAttempts) {
 					Alert alert = new Alert(AlertType.ERROR);
 					alert.setTitle("Connection Error");
 					alert.setHeaderText("Number of connection attempts exceeded!");
 					alert.setContentText("Your section will be terminated");
 
 					if(alert.showAndWait().get() == ButtonType.OK) {
-						ActionEvent e = new ActionEvent();
-						logout(e);
+						//ActionEvent e = new ActionEvent();
+						System.out.println("Faz");
+						
+						Platform.runLater(() -> logout(null));
+						
+						//logout(e);
+						//System.out.println("logout");
 						return false;	
-					}	
+					}
 				}
 				else
 					App.connectionErrorMessage();			

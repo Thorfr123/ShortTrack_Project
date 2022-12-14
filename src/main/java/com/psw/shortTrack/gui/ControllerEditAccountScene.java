@@ -161,12 +161,8 @@ public class ControllerEditAccountScene {
 			try {
 				
 				if (!AccountsDatabase.deleteAccount(account.getEmail())) {
-					
-					if (!AccountsDatabase.checkEmail(account.getEmail())) {
-						showNotification("There was an error trying to delete your account! Please, try again later.", true);
-						return;
-					}
-					
+					showNotification("There was an error trying to delete your account! Please, try again later.", true);
+					return;	
 				}
 				
 				alert = new Alert(AlertType.INFORMATION);

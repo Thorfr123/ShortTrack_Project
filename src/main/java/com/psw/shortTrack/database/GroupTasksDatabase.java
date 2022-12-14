@@ -19,11 +19,12 @@ public class GroupTasksDatabase extends Database {
 	 * Creates a new task in the database. 
 	 * 
 	 * @param task Group task to add to the database
-	 * @return (True) Success; (False) Error - The group or the assigned_to account doesn't exist or null values
+	 * @return (True) Success; (False) Error - The assigned_to account doesn't exist or null values
 	 * 
+	 * @throws NotFoundException If the group doesn't exist
 	 * @throws SQLException If there was an error to connect to the database
 	 */
-	public static boolean createTask(GroupTask task) throws SQLException {
+	public static boolean createTask(GroupTask task) throws NotFoundException, SQLException {
 		
 		try {
 			task.setID(executeQueryReturnInt(
@@ -37,8 +38,14 @@ public class GroupTasksDatabase extends Database {
 			return true;
 		} catch (PSQLException psql) {
 			if (psql.getSQLState().startsWith("23")) {
-				return false;
+				if (!GroupsDatabase.existGroup(task.getParentID())) {
+					throw new NotFoundException();
+				}
+				else {
+					return false;
+				}
 			}
+			
 			throw psql;
 		}
  		
@@ -48,15 +55,20 @@ public class GroupTasksDatabase extends Database {
 	 * Deletes a group task from database
 	 * 
 	 * @param id Task's id
-	 * @return (True) If it succeeds; (False) The task didn't exist
+	 * @return (True) If it succeeds; (False) The task still exists
 	 * 
 	 * @throws SQLException If there was an error in the connection to the database
 	 */
 	public static boolean deleteTask(int id) throws SQLException {
 		
-		return (executeUpdate(
+		if (executeUpdate(
 			"DELETE FROM projeto.group_tasks WHERE id=" + toSQL(id) + ";"
-		) > 0);
+		) > 0) {
+			return true;
+		}
+		else {
+			return !existTask(id);
+		}
 		
 	}
 	
@@ -77,7 +89,7 @@ public class GroupTasksDatabase extends Database {
 				"SELECT group_tasks.*, account.name AS assigned_name\r\n"
 				+ "FROM projeto.group_tasks LEFT JOIN projeto.account ON assigned_to=account.email\r\n"
 				+ "WHERE group_id=" + toSQL(group_id) + ";"
-			);			
+			);
 			
 			return resultSet_to_Task_Array(rs, null);
 		}
@@ -118,43 +130,89 @@ public class GroupTasksDatabase extends Database {
 	 * @param newDeadline Task's new deadline date
 	 * @param newState Task's new completed state
 	 * @param newAssignedTo Task's new assigned to member
-	 * @return (True) Success; (False) Otherwise (The user has no privileges to edit the task, the task doesn't exist or null values)
+	 * @return (True) Success; (False) If the user has no privileges to edit the task or null values
 	 * 
+	 * @throws NotFoundException If the task doesn't exist
 	 * @throws SQLException If there was an error in the connection to the database
 	 */
-	public static boolean updateTask(int id, String email, String newName, String newDescription, LocalDate newDeadline) throws SQLException {
+	public static boolean updateTask(int id, String email, String newName, String newDescription, LocalDate newDeadline) 
+			throws SQLException {
 		
-		return (executeUpdate(
+		if (executeUpdate(
 				"UPDATE projeto.group_tasks\r\n"
 				+ "SET name=" + toSQL((String)newName) + ",description=" + toSQL((String)newDescription) 
 				+ ",deadline_date=" + toSQL((LocalDate)newDeadline) + "\r\n"
 				+ "FROM projeto.groups WHERE group_id=groups.id\r\n"
 				+ "AND group_tasks.id=" + toSQL(id) + " AND (assigned_to=" + toSQL((String)email) 
 				+ " OR manager=" + toSQL((String)email) + ");"
-		) > 0);
+		) > 0) {
+			return true;
+		}
+		else if (!existTask(id)) {
+			throw new NotFoundException();
+		}
+		else {
+			return false;
+		}
 		
 	}
 	
-	// TODO: comment
-	public static boolean changeState(int id, boolean newState) throws SQLException {
+	/**
+	 * Updates the new state of a task to the database
+	 * 
+	 * @param id Task's id
+	 * @param newState New state of the task
+	 * @return (True) Success; (False) You have no privileges to edit the task
+	 * 
+	 * @throws NotFoundException If the task doesn't exist
+	 * @throws SQLException
+	 */
+	public static boolean changeState(int id, boolean newState) throws NotFoundException, SQLException {
 		
 		if (newState)
 			NotificationDatabase.clearHelpRequests(id);
 		
-		return (executeUpdate(
+		if (executeUpdate(
 				"UPDATE projeto.group_tasks SET state=" + toSQL(newState) + " WHERE id=" + toSQL(id) + ";"
-		) > 0);
+		) > 0) {
+			return true;
+		}
+		else if (!existTask(id)) {
+			throw new NotFoundException();
+		}
+		else {
+			return false;
+		}
 		
 	}
 	
-	//TODO: comment
-	public static boolean changeAssignedTo(int id, String assignedTo) throws SQLException{
+	/**
+	 * 
+	 * Changes the assigned to user of the task
+	 * 
+	 * @param id Task's id
+	 * @param assignedTo New assigned to's email
+	 * @return (True) Success; (False) 
+	 * 
+	 * @throws NotFoundException If the task doesn't exist
+	 * @throws SQLException If there is a connection error
+	 */
+	public static boolean changeAssignedTo(int id, String assignedTo) throws NotFoundException, SQLException{
 		
 		NotificationDatabase.clearHelpRequests(id);
-		return(executeUpdate(
+		if (executeUpdate(
 				"UPDATE projeto.group_tasks SET assigned_to=" + toSQL((String)assignedTo) + "\r\n"
 				+ "WHERE id=" + toSQL(id) + ";"
-		) > 0);
+		) > 0) {
+			return true;
+		}
+		else if (!existTask(id)) {
+			throw new NotFoundException();
+		}
+		else {
+			return false;
+		}
+		
 	}
 	
 	/**
@@ -197,8 +255,17 @@ public class GroupTasksDatabase extends Database {
 		
 	}
 	
-	//TODO
-	public static boolean hasPrivilege(int id, String email) throws SQLException {
+	/**
+	 * Checks if the user is either the manager or the assigned to person of the task
+	 * 
+	 * @param id Task's id
+	 * @param email User's email
+	 * @return (True) The user is the manager or the assigned to person of the task; (False) No privileges
+	 * 
+	 * @throws NotFoundException If the task doesn't exist
+	 * @throws SQLException If there is a connection error
+	 */
+	public static boolean hasPrivilege(int id, String email) throws NotFoundException, SQLException {
 		
 		if (!existTask(id)) {
 			throw new NotFoundException();
@@ -211,8 +278,16 @@ public class GroupTasksDatabase extends Database {
 		
 	}
 	
-	//TODO
-	public static boolean existTask(int id) throws SQLException {
+	/**
+	 * 
+	 * Checks if the task with the provided id exists in the database
+	 * 
+	 * @param id Task's id
+	 * @return (True) It exists; (False) Otherwise
+	 * 
+	 * @throws SQLException If there is a conenction error
+	 */
+	private static boolean existTask(int id) throws SQLException {
 		
 		return executeQueryReturnBoolean(
 			"SELECT EXISTS(SELECT 1 FROM projeto.group_tasks WHERE id=" + toSQL(id) + ");"

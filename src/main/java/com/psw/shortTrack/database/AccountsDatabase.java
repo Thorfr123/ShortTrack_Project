@@ -69,7 +69,7 @@ public class AccountsDatabase extends Database{
 			}
 			
 		} catch (PSQLException sqle) {
-			if (sqle.getSQLState().startsWith("23505")) {
+			if (sqle.getSQLState().startsWith("23")) {
 				return false;
 			}
 			throw sqle;
@@ -82,15 +82,20 @@ public class AccountsDatabase extends Database{
 	 * If it returns false, it means the email doesn't exist.
 	 * 
 	 * @param email String with user's email
-	 * @return Either (True) If it succeeds or (False) If it fails (Account didn't exist)
+	 * @return Either (True) If it succeeds or (False) Account still exists
 	 * 
 	 * @throws SQLException If there is a network error
 	 */
 	public static boolean deleteAccount(String email) throws SQLException {
 		
-		return (executeUpdate(
+		if (executeUpdate(
 			"DELETE FROM projeto.account WHERE email=" + toSQL((String)email) + ";"
-		) > 0);
+		) > 0) {
+			return true;
+		}
+		else {
+			return checkEmail(email);
+		}
 		
 	}
 	

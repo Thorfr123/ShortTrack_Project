@@ -9,6 +9,7 @@ import com.psw.shortTrack.data.List;
 import com.psw.shortTrack.data.User;
 import com.psw.shortTrack.database.AccountsDatabase;
 import com.psw.shortTrack.database.GroupsDatabase;
+import com.psw.shortTrack.database.NotFoundException;
 import com.psw.shortTrack.database.PersonalListsDatabase;
 
 import javafx.event.ActionEvent;
@@ -68,6 +69,10 @@ public class ControllerSignUpScene {
 		try {
 			groups = GroupsDatabase.getAllGroups(account);
 			lists = PersonalListsDatabase.getAllLists(account.getEmail());
+		}
+		catch (NotFoundException nfe) {
+			App.accountDeletedMessage();
+			return;
 		} catch (SQLException exeption) {
 			App.connectionErrorMessage();
 			return;

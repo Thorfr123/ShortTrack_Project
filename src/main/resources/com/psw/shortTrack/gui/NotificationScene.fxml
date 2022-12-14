@@ -27,6 +27,11 @@
                   </VBox>
                </content>
             </ScrollPane>
+            <Label fx:id="notificationLabel" alignment="CENTER" textFill="RED" VBox.vgrow="ALWAYS">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
             <HBox alignment="CENTER" spacing="80.0">
                <children>
                   <Button focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="200.0" mnemonicParsing="false" onAction="#close" style="-fx-background-color: #4385F4; -fx-text-fill: white;" text="Close" HBox.hgrow="ALWAYS">

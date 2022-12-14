@@ -111,7 +111,10 @@ public class ControllerEditGroupTaskScene {
 													group.getManagerAccount(),
 													group,
 													task);
-				NotificationDatabase.createNotification(ask);
+				if (!NotificationDatabase.createNotification(ask)) {
+					showNotification("There was an error trying to ask for help! Please, try again later.", true);
+					return;
+				}
 			}
 			
 			for (Account member : group.getMemberAccounts()) {
@@ -124,7 +127,10 @@ public class ControllerEditGroupTaskScene {
 													group,
 													task);
 				
-				NotificationDatabase.createNotification(ask);
+				if (!NotificationDatabase.createNotification(ask)) {
+					showNotification("There was an error trying to ask for help! Please, try again later.", true);
+					return;
+				}
 			}
 			
 			setHelpButton();
@@ -178,7 +184,10 @@ public class ControllerEditGroupTaskScene {
 		
 		try {
 			
-			GroupTasksDatabase.deleteTask(task.getID());
+			if (!GroupTasksDatabase.deleteTask(task.getID())) {
+				showNotification("There was an error trying to delete your task! Please, try again later.", true);
+				return;
+			}
 			
 		} catch (SQLException exception) {
 			
@@ -225,42 +234,22 @@ public class ControllerEditGroupTaskScene {
 		
 		try {
 			
-			if ( 	!GroupTasksDatabase.changeState(task.getID(), checkButton.isSelected()) ||
-					!GroupTasksDatabase.updateTask(task.getID(), User.getAccount().getEmail(), newTaskName, newDescription, newDeadline)) {
-				
-				if (!GroupTasksDatabase.existTask(task.getID())) {
-					
-					Alert alert = new Alert(AlertType.ERROR);
-					alert.setTitle("Error editing task");
-					alert.setHeaderText("It seems this task no longer exists!");
-					alert.setContentText("This can be caused because the manager deleted this task!");
-					alert.showAndWait();
-					return;
-					
-				}
-				else if (!GroupTasksDatabase.hasPrivilege(task.getID(), User.getAccount().getEmail())) {
-					
-					Alert alert = new Alert(AlertType.ERROR);
-					alert.setTitle("Error editing task");
-					alert.setHeaderText("It seems you haven't enough privileges to edit this task!");
-					alert.setContentText("This can be caused because this task is no longer assigned to you");
-					alert.showAndWait();
-					return;
-				}
-				
+			if (!GroupTasksDatabase.updateTask(task.getID(), User.getAccount().getEmail(), newTaskName, newDescription, newDeadline)) {
+				App.taskNoPrivilegesMessage();
+				return;
 			}
+			
+			GroupTasksDatabase.changeState(task.getID(), checkButton.isSelected());
 			
 			if (newAssignedTo.getEmail() == null || !newAssignedTo.getEmail().equals(task.getAssignedToEmail())) {
 				
 				if (!GroupTasksDatabase.changeAssignedTo(task.getID(), newAssignedTo.getEmail())) {
-					
 					Alert alert = new Alert(AlertType.ERROR);
 					alert.setTitle("Error editing task");
 					alert.setHeaderText("There was an error when trying to assign this task to " + newAssignedTo.toString() + "!");
 					alert.setContentText("This can be caused, for example, if this member no longer belongs to the group.");
 					alert.showAndWait();
 					return;
-					
 				}
 				
 			}
@@ -271,7 +260,12 @@ public class ControllerEditGroupTaskScene {
 			task.setCompleted(checkButton.isSelected());
 			task.setAssignedTo(newAssignedTo);
 			
-		} catch (SQLException exception) {
+		} 
+		catch (NotFoundException nfe) {
+			App.taskDeletedMessage();
+			return;
+		}
+		catch (SQLException exception) {
 			exception.printStackTrace();
 			System.out.println(exception.getMessage());
 			System.out.println(exception.getErrorCode());

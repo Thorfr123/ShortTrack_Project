@@ -2,6 +2,7 @@ package com.psw.shortTrack.database;
 
 import java.beans.PropertyVetoException;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -28,6 +29,10 @@ public class Database {
 	
 	private static ComboPooledDataSource dataSource;
 	
+	
+	
+	
+	
 	// Initial setup for the database
 	static {
 		try {
@@ -48,11 +53,23 @@ public class Database {
 	 */
 	protected static Connection getConnection() throws SQLException {
 		
-		Connection connection = dataSource.getConnection();
-		if (connection != null)
-			return connection;
-		else
-			throw new SQLException("Connection failed!");
+		//System.out.println("Pede conexão");
+		return DriverManager.getConnection(url, user, password);
+		
+		/*long start = System.currentTimeMillis();
+		
+		try {
+			Connection connection = dataSource.getConnection();
+			if (connection != null)
+				return connection;
+			else
+				throw new SQLException("Connection failed!");
+		} catch (SQLException sqle) {
+			
+			System.out.println(System.currentTimeMillis() - start);
+			
+			throw sqle;
+		}*/
 		
 	}
 	
@@ -63,13 +80,22 @@ public class Database {
 	 */
 	private static void config() throws PropertyVetoException {
 		
-		dataSource = new ComboPooledDataSource();
+		
+		try {
+			Class.forName(driver);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		/*dataSource = new ComboPooledDataSource();
 		dataSource.setDriverClass(driver);
 		dataSource.setJdbcUrl(url);
 		dataSource.setUser(user);
 		dataSource.setPassword(password);
 		// Define o numero máximo de conexões
-		dataSource.setMaxPoolSize(30);
+		dataSource.setMaxPoolSize(3);
+		dataSource.setMinPoolSize(3);
 		// Timeout de checkout (getConnection)
 		dataSource.setCheckoutTimeout(3000);
 		// Define o numero máximo de tentativas de checkout
@@ -81,7 +107,7 @@ public class Database {
 		// Segundos que as conexões não usadas para além do minimo (3 conexões) duram
 		dataSource.setMaxIdleTimeExcessConnections(180);
 		// Define a query a executar nos testes (query mais rapida)
-		dataSource.setPreferredTestQuery("SELECT 1");
+		dataSource.setPreferredTestQuery("SELECT 1");*/
 		
 	}
 	

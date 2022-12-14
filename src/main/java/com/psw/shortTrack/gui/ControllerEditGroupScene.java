@@ -127,7 +127,10 @@ public class ControllerEditGroupScene {
 		if(User.isLogedIn()) {
 			try {
 				
-				GroupsDatabase.changeName(group.getID(), newGroupName);
+				if (!GroupsDatabase.changeName(group.getID(), newGroupName)) {
+					showNotification("There was an error trying to save the name of this group! Please, try again later.", true);
+					return;
+				}
 				
 				group.setName(newGroupName);
 				App.loadMainScene();
@@ -174,13 +177,22 @@ public class ControllerEditGroupScene {
 		
 		try {
 			
-			GroupsDatabase.removeMember(group.getID(), User.getAccount());
+			if (!GroupsDatabase.removeMember(group.getID(), User.getAccount())) {
+				showNotification("There was an error trying to leave from this group! Please, try again later.", true);
+				return;
+			}
 			Notification leave = new Notification(NotificationType.leftGroup, User.getAccount(), group.getManagerAccount(), group);
 			NotificationDatabase.createNotification(leave);
 			
 			App.loadMainScene();
 			
-		} catch (SQLException exception) {
+		} 
+		catch (NotFoundException nfe) {
+			App.groupDeletedMessage();
+			App.loadMainScene();
+			return;
+		}
+		catch (SQLException exception) {
 			App.connectionErrorMessage();
 			return;
 		}
@@ -252,11 +264,20 @@ public class ControllerEditGroupScene {
 		
 		try {
 			
-			GroupsDatabase.removeMember(group.getID(), memberToRemove);
+			if (!GroupsDatabase.removeMember(group.getID(), memberToRemove)) {
+				showNotification("There was an error trying to remove this member from your group! Please, try again later", true);
+				return;
+			}
 			Notification remove = new Notification(NotificationType.removedFromGroup, User.getAccount(), memberToRemove, group);
 			NotificationDatabase.createNotification(remove);
 			
-		} catch (SQLException sqle) {
+		} 
+		catch (NotFoundException nfe) {
+			App.groupDeletedMessage();
+			App.loadMainScene();
+			return;
+		}
+		catch (SQLException sqle) {
 			App.connectionErrorMessage();
 			return;
 		}
