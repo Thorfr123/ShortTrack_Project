@@ -9,7 +9,6 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.psw.shortTrack.fileIO.FileIO;
 
 /*
@@ -27,18 +26,12 @@ public class Database {
 	private static final String user 		= "pswa0502";
 	private static final String password 	= "jKWlEeAs";
 	
-	private static ComboPooledDataSource dataSource;
-	
-	
-	
-	
-	
 	// Initial setup for the database
 	static {
 		try {
 			config();
 			setup();
-		} catch (PropertyVetoException pve) {
+		} catch (ClassNotFoundException pve) {
 			System.out.println("Database postgresql driver not found!");
 		} catch (SQLException sqle) {
 			System.out.println("Connection error in database setup");
@@ -52,62 +45,18 @@ public class Database {
 	 * @throws SQLException If a database access error occurs
 	 */
 	protected static Connection getConnection() throws SQLException {
-		
-		//System.out.println("Pede conexão");
 		return DriverManager.getConnection(url, user, password);
-		
-		/*long start = System.currentTimeMillis();
-		
-		try {
-			Connection connection = dataSource.getConnection();
-			if (connection != null)
-				return connection;
-			else
-				throw new SQLException("Connection failed!");
-		} catch (SQLException sqle) {
-			
-			System.out.println(System.currentTimeMillis() - start);
-			
-			throw sqle;
-		}*/
-		
 	}
 	
 	/**
 	 * Configures the database access pool
 	 * 
 	 * @throws PropertyVetoException If the specified driver is not valid (unreachable)
+	 * @throws ClassNotFoundException 
 	 */
-	private static void config() throws PropertyVetoException {
+	private static void config() throws ClassNotFoundException {
 		
-		
-		try {
-			Class.forName(driver);
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		/*dataSource = new ComboPooledDataSource();
-		dataSource.setDriverClass(driver);
-		dataSource.setJdbcUrl(url);
-		dataSource.setUser(user);
-		dataSource.setPassword(password);
-		// Define o numero máximo de conexões
-		dataSource.setMaxPoolSize(3);
-		dataSource.setMinPoolSize(3);
-		// Timeout de checkout (getConnection)
-		dataSource.setCheckoutTimeout(3000);
-		// Define o numero máximo de tentativas de checkout
-		dataSource.setAcquireRetryAttempts(5);
-		// Define o delay entre cada tentativa de checkout
-		dataSource.setAcquireRetryDelay(1000);
-		// Define um teste obrigatório da conexão ao chamar getConnection
-		dataSource.setTestConnectionOnCheckout(true);
-		// Segundos que as conexões não usadas para além do minimo (3 conexões) duram
-		dataSource.setMaxIdleTimeExcessConnections(180);
-		// Define a query a executar nos testes (query mais rapida)
-		dataSource.setPreferredTestQuery("SELECT 1");*/
+		Class.forName(driver);
 		
 	}
 	
