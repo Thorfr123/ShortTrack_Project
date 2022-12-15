@@ -1,7 +1,9 @@
 package com.psw.shortTrack.data;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -101,4 +103,23 @@ public class AccountTest {
 	void Given_ThatPasswordsAreInvalid_WhenCheckValidPassword_ReturnError() {
 		assertEquals("Password needs to be at least 8 characters length!", Account.checkValidPassword("small", "small"));
 	}
+	
+	@Test
+	void TestEquals() {
+		
+		Account acc = new Account("mail", "nome");
+		Account acc1 = new Account("mail", "nome");
+		Account acc2 = new Account("mail", "nomeErrado");
+		Account acc3 = new Account("mailErrado", "nome");
+		Account acc4 = new Account("mail", "nome");
+		
+		assertTrue(acc.equals(acc));
+		assertTrue(acc.equals(acc1));
+		assertTrue(acc1.equals(acc));
+		assertTrue(acc1.equals(acc4));
+		assertFalse(acc.equals(acc2));
+		assertFalse(acc2.equals(acc3));
+		
+	}
+	
 }

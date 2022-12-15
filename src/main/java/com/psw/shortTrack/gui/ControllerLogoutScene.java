@@ -22,6 +22,10 @@ import com.psw.shortTrack.database.NotFoundException;
 import com.psw.shortTrack.database.NotificationDatabase;
 import com.psw.shortTrack.database.PersonalListsDatabase;
 import com.psw.shortTrack.database.PersonalTasksDatabase;
+import com.psw.shortTrack.gui_elements.GroupButton;
+import com.psw.shortTrack.gui_elements.GroupTaskBar;
+import com.psw.shortTrack.gui_elements.ListButton;
+import com.psw.shortTrack.gui_elements.TaskBar;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -113,10 +117,7 @@ public class ControllerLogoutScene {
 		account = User.getAccount();
 		lists = User.getLists();
 		
-		//FIXME: verify if this is needed
 		if(!updateDataFromDatabase()) {
-			//System.out.println("Faz login.fxml");
-			//throw new SQLException();
 			User.setLogedIn(false);
 			return;
 		}
@@ -183,7 +184,7 @@ public class ControllerLogoutScene {
 		
 		if(loadList == null) {
 			listNameLabel.setText("Choose one List or Group!");
-			listOptionsBox.getChildren().remove(editListButton);
+			listOptionsBox.getChildren().remove(myTasksButton);
 			return;
 		}
 		else if(loadList instanceof Group) {
@@ -198,6 +199,7 @@ public class ControllerLogoutScene {
 			editListButton.setText("Edit List");
 		
 		loadTasks();
+		
     }
 	
 	public void logout(ActionEvent e) {
@@ -795,11 +797,13 @@ public class ControllerLogoutScene {
 		sortByMenu.setVisible(true);
 		
 		// Remove show my tasks / show all tasks for everyone besides master
-		if(!isMasterOfTheGroup)
+		if(!isMasterOfTheGroup) {
 			listOptionsBox.getChildren().remove(myTasksButton);
-		else if(!listOptionsBox.getChildren().contains(myTasksButton))
+		}
+		else if(!listOptionsBox.getChildren().contains(myTasksButton)) {
 			listOptionsBox.getChildren().add(myTasksButton);
-		
+		}
+			
 		myTasksButton.setVisible(true);
 		
 		if(showAllTasks)
@@ -814,12 +818,13 @@ public class ControllerLogoutScene {
 		int maxAttempts = 3;
         for (int count = 1; count <= maxAttempts; count++) {
         	
-        	try {
-				
+        	try {	
+        		
         		User.setGroups(GroupsDatabase.getAllGroups(User.getAccount()));
 				groups = User.getGroups();
+				
 				User.setNotifications(NotificationDatabase.getAllNotifications(account));
-				notifications = User.getNotifications();
+				notifications = User.getNotifications();				
 				break;
 			
         	}

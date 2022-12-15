@@ -163,6 +163,78 @@ public class App extends Application {
 	}
 	
 	/**
+	 * Loads a new scene with the fxml name
+	 */
+	public static FXMLLoader loadScene(String fxml) {
+		
+		try {
+			
+			FXMLLoader loader = new FXMLLoader(App.class.getResource(fxml));
+			Parent root = loader.load();
+			
+			Scene scene = new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight());
+			scene.getStylesheets().add(css);
+			
+			// Allow the user to refresh the logout scene every 10 seconds
+			if(fxml.equals("LogoutScene.fxml")) {
+				scene.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
+			        if (event.getCode() == KeyCode.F5) {
+			        	Instant time2 = Instant.now();
+			        	Duration timeElapsed = Duration.between(time1, time2);
+			        	if(timeElapsed.toMillis() > 10000) {
+				        	ControllerLogoutScene controller = loader.getController();
+				        	
+				        	controller.initialize();
+							
+			        	}
+			        	time1 = time2;
+			        }
+				});
+			}
+			// Allow the user to refresh the notification scene every 10 seconds
+			else if(fxml.equals("NotificationScene.fxml")) {
+				scene.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
+			        if (event.getCode() == KeyCode.F5) {
+			        	Instant time2 = Instant.now();
+			        	Duration timeElapsed = Duration.between(time1, time2);
+			        	if(timeElapsed.toMillis() > 10000) {
+				        	ControllerNotificationScene controller = loader.getController();
+				        	controller.refreshPage();
+			        	}
+			        	time1 = time2;
+			        }
+				});
+			}
+			// TODO: check this
+			if (fxml.equals("LogoutScene.fxml") && !User.isLogedIn()) {
+				return null;
+			}
+			
+			stage.setScene(scene);
+			stage.show();
+
+			Platform.runLater(() -> scene.getRoot().requestFocus());
+
+			return loader;
+		}
+		catch (IOException exception) {
+			exception.printStackTrace();
+			return null;
+		}
+
+	}
+	
+	/**
+	 * Loads the main window scene
+	 */
+	public static void loadMainScene() {
+
+		String fxml = User.isLogedIn() ? "LogoutScene.fxml" : "LoginScene.fxml";
+		loadScene(fxml);
+		
+	}
+	
+	/**
 	 * Shows the connection error alert
 	 */
 	public static void connectionErrorMessage() {
@@ -217,79 +289,6 @@ public class App extends Application {
 		alert.setContentText("This can be caused because this task is no longer assigned to you");
 		
 		alert.showAndWait();
-	}
-	
-	/**
-	 * Loads a new scene with the fxml name
-	 */
-	public static FXMLLoader loadScene(String fxml) {
-		
-		try {
-			
-			FXMLLoader loader = new FXMLLoader(App.class.getResource(fxml));
-			
-			Parent root = loader.load();
-					
-			System.out.println(fxml);
-			
-			Scene scene = new Scene(root, stage.getScene().getWidth(), stage.getScene().getHeight());
-			scene.getStylesheets().add(css);
-			
-			// Allow the user to refresh the logout scene every 10 seconds
-			if(fxml.equals("LogoutScene.fxml")) {
-				scene.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
-			        if (event.getCode() == KeyCode.F5) {
-			        	Instant time2 = Instant.now();
-			        	Duration timeElapsed = Duration.between(time1, time2);
-			        	if(timeElapsed.toMillis() > 10000) {
-				        	ControllerLogoutScene controller = loader.getController();
-				        	
-				        	controller.initialize();
-							
-			        	}
-			        	time1 = time2;
-			        }
-				});
-			}
-			// Allow the user to refresh the notification scene every 10 seconds
-			if(fxml.equals("NotificationScene.fxml")) {
-				scene.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
-			        if (event.getCode() == KeyCode.F5) {
-			        	Instant time2 = Instant.now();
-			        	Duration timeElapsed = Duration.between(time1, time2);
-			        	if(timeElapsed.toMillis() > 10000) {
-				        	ControllerNotificationScene controller = loader.getController();
-				        	controller.refreshPage();
-			        	}
-			        	time1 = time2;
-			        }
-				});
-			}
-			if (fxml.equals("LogoutScene.fxml") && !User.isLogedIn()) {
-				return null;
-			}
-			stage.setScene(scene);
-			stage.show();
-
-			Platform.runLater(() -> scene.getRoot().requestFocus());
-
-			return loader;
-		}
-		catch (IOException exception) {
-			exception.printStackTrace();
-			return null;
-		}
-
-	}
-	
-	/**
-	 * Loads the main window scene
-	 */
-	public static void loadMainScene() {
-
-		String fxml = User.isLogedIn() ? "LogoutScene.fxml" : "LoginScene.fxml";
-		loadScene(fxml);
-		
 	}
 	
 }

@@ -9,6 +9,8 @@ import com.psw.shortTrack.database.GroupTasksDatabase;
 import com.psw.shortTrack.database.GroupsDatabase;
 import com.psw.shortTrack.database.NotFoundException;
 import com.psw.shortTrack.database.NotificationDatabase;
+import com.psw.shortTrack.gui_elements.RequestNotificationBox;
+import com.psw.shortTrack.gui_elements.SimpleNotificationBox;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;

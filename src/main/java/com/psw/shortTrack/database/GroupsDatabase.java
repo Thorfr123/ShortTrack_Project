@@ -81,77 +81,69 @@ public class GroupsDatabase extends Database{
 	 */
 	public static ArrayList<Group> getAllGroups(Account user) throws NotFoundException, SQLException {
 		
-		try (Connection connection = getConnection()) {
-			
-			Statement stmt = connection.createStatement();
-			ResultSet rs = stmt.executeQuery(
-				"SELECT id, groups.name, members, account.email AS manager_email, account.name AS manager_name\r\n"
-				+ "FROM projeto.groups INNER JOIN projeto.account ON manager=email\r\n"
-				+ "WHERE manager=" + toSQL((String)user.getEmail()) + " OR " + toSQL((String)user.getEmail()) + "=ANY(members);"
-			);
-			
-			ArrayList<Group> all_groups = new ArrayList<Group>();
-			while (rs.next()) {
-				Account managerAccount = null;
-				ArrayList<Task> tasks = null;
-				ArrayList<Account> memberAccounts = new ArrayList<Account>();
-				
-				for (String member : (String[]) rs.getArray("members").getArray()) {
-					Account memberAccount = AccountsDatabase.getAccount(member);
-					if (memberAccount != null) {
-						memberAccounts.add(memberAccount);
-					}
-				}
-				
-				if (rs.getString("manager_email").equals(user.getEmail())) {
-					managerAccount = user;
-					tasks = GroupTasksDatabase.getAllTasks(rs.getInt("id"));
-				}
-				else {
-					managerAccount = new Account(rs.getString("manager_email"), rs.getString("manager_name"));
-					tasks = GroupTasksDatabase.getAllTasks(rs.getInt("id"), user);
-				}
-				
-				all_groups.add(	new Group( 	rs.getString("name"),
-											managerAccount,
-											rs.getInt("id"),
-											tasks,
-											memberAccounts));
-			}
-			
-			if (all_groups.size() == 0) {
-				if (AccountsDatabase.checkEmail(user.getEmail())) {
-					throw new NotFoundException();
-				}
-			}
-			
-			return all_groups;
-		}
-		
-	}
-	
-	/*public static ArrayList<Group> getAllGroupsTeste(Account user) throws NotFoundException, SQLException {
-		
 		try (Connection connection = Database.getConnection()){
 			
 			Statement stmt = connection.createStatement();
 			
+			String emailSQL = toSQL((String)user.getEmail());
 			ResultSet rs = stmt.executeQuery(
-				"SELECT group_tasks.*, groups.id , groups.manager as manager, groups.name as group_name, groups.members, account.name AS manager_name\r\n"
-				+ "FROM projeto.group_tasks\r\n"
-				+ "RIGHT JOIN projeto.groups ON group_id=groups.id\r\n"
-				+ "LEFT JOIN projeto.account ON manager=email\r\n"
-				+ "WHERE manager="+ toSQL((String)user.getEmail()) + " OR " + toSQL((String)user.getEmail()) + "=ANY(members)"
+				  "SELECT * FROM (\r\n"
+				+ "  SELECT g_t.*, g.id AS group_id_pk, g.manager AS manager_email, g.name AS group_name,"
+				+ "g.members, acc1.name AS manager_name, acc2.name AS assigned_to_name\r\n"
+				+ "  FROM projeto.groups g\r\n"
+				+ "  LEFT JOIN projeto.group_tasks g_t ON (g_t.group_id=g.id AND"
+				+ "(assigned_to=" + emailSQL + " OR manager=" + emailSQL + "))\r\n"
+				+ "  LEFT JOIN projeto.account acc1 ON manager=acc1.email\r\n"
+				+ "  LEFT JOIN projeto.account acc2 ON assigned_to=acc2.email\r\n"
+				+ "  WHERE manager=" + emailSQL + " OR " + emailSQL + "=ANY(members)\r\n"
+				+ "	 ORDER BY group_id_pk, id) AS t\r\n"
+				+ "NATURAL FULL JOIN (\r\n"
+				+ "  SELECT ARRAY(\r\n"
+				+ "    SELECT DISTINCT ARRAY[acc.email, acc.name]\r\n"
+				+ "    FROM projeto.account acc\r\n"
+				+ "    LEFT JOIN projeto.groups g ON email=ANY(g.members)"
+				+ "    WHERE g.manager=" + emailSQL + " OR " + emailSQL + "=ANY(g.members)\r\n"
+				+ ") AS member_accounts) AS q"
 			);
 			
 			ArrayList<Group> groups = new ArrayList<Group>();
-						
-			Group anterior = null;
+			ArrayList<Account> accounts = new ArrayList<Account>();
+			Group anterior = null;			
 			
 			while (rs.next()) {
 				
+				if (rs.getRow() == 1) {
+					/* Lê todos os membros de todos os grupos
+					 * Isto apenas é chamado uma vez porque as contas vêm repetidas em todas as linhas
+					 */
+					try {
+						
+						for (String[] row : (String[][]) rs.getArray("member_accounts").getArray()) {
+							
+							String email = row[0];
+							String name = row[1];
+							
+							Account newMember = new Account(email, name);
+							accounts.add(newMember);
+							
+						}
+						
+					}
+					catch (ClassCastException cceIgnore) {
+						/* Isto acontece quando o user ou não tem grupos ou tem grupos sem membros
+						 * Então dá exceção quando tenta dar cast do array para String[][] pq o array é unidimensional
+						 */
+						System.out.println("Este user não tem membros em nenhum dos seus grupos");
+					}
+				}
+				
+				
 				int group_id = rs.getInt("group_id_pk");
-				String manager_email = rs.getString("manager");
+				if (group_id == 0) {
+					continue;
+				}
+				
+				String manager_email = rs.getString("manager_email");
 				
 				if (anterior == null || group_id != anterior.getID()) {
 					Account managerAccount = null;
@@ -163,59 +155,44 @@ public class GroupsDatabase extends Database{
 					}
 					
 					ArrayList<Account> memberAccounts = new ArrayList<Account>();
+					
 					for (String member : (String[]) rs.getArray("members").getArray()) {
-						Account memberAccount = AccountsDatabase.getAccount(member);
-						if (memberAccount != null) {
-							memberAccounts.add(memberAccount);
+							
+						for (Account m : accounts) {
+							if (m.getEmail().equals(member)) {
+								memberAccounts.add(m);
+								break;
+							}
 						}
+							
 					}
 					
 					Group novo = new Group(	rs.getString("group_name"),
 											managerAccount,
-											rs.getInt("id"),
+											rs.getInt("group_id_pk"),
 											new ArrayList<Task>(),
 											memberAccounts);
 					groups.add(novo);
 					anterior = novo;
 				}
 				
-				String deadline_str = rs.getString("deadline_date");
-				LocalDate deadline = null;
-				if (deadline_str != null)
-					deadline = LocalDate.parse(deadline_str);
-				String created_str = rs.getString("created_date");
-				LocalDate createdDate = null;
-				if (created_str != null)
-					createdDate = LocalDate.parse(created_str);
-				
-				Account assignTo = null;
-				if (rs.getString("assigned_to") != null) {
-					assignTo = new Account(rs.getString("assigned_to"), rs.getString("assigned_name"));
+				if (rs.getInt("id") == 0) {
+					continue;
 				}
 				
-				anterior.getTaskList().add(new GroupTask(rs.getString("name"),
-												rs.getInt("id"),
-												rs.getString("description"),
-												createdDate,
-												deadline,
-												rs.getBoolean("state"),
-												rs.getInt("group_id"),
-												assignTo
-												));				
+				anterior.getTaskList().add( constructTask(rs) );
 			}
 			
+			if (groups.size() == 0) {
+				if (AccountsDatabase.checkEmail(user.getEmail())) {
+					throw new NotFoundException();
+				}
+			}
 			
-			
-			
-			
+			return groups;
 		}
 		
-		
-		
-		
-		
-		return null;
-	}*/
+	}
 
 	/**
 	 * Changes the name of the group in the database.
@@ -255,6 +232,11 @@ public class GroupsDatabase extends Database{
 	 */
 	public static boolean removeMember(int id, Account member) throws NotFoundException, SQLException {
 
+		executeUpdate(
+			"DELETE FROM projeto.notifications\r\n"
+			+ "WHERE source=" + toSQL((String)member.getEmail()) + " AND group_id=" + toSQL(id) + ";"
+		);
+		
 		if (executeUpdate(
 			"UPDATE projeto.groups SET members=("
 			+ "SELECT array_remove(members,'" + member.getEmail() + "') FROM projeto.groups WHERE id='" + id + "') "
@@ -332,6 +314,33 @@ public class GroupsDatabase extends Database{
 			"SELECT EXISTS(SELECT 1 FROM projeto.groups WHERE id=" + toSQL(id) + " AND email=ANY(members);"	
 		);
 		
+	}
+	
+	private static Task constructTask(ResultSet rs) throws SQLException {
+		
+		String deadline_str = rs.getString("deadline_date");
+		LocalDate deadline = null;
+		if (deadline_str != null)
+			deadline = LocalDate.parse(deadline_str);
+		String created_str = rs.getString("created_date");
+		LocalDate createdDate = null;
+		if (created_str != null)
+			createdDate = LocalDate.parse(created_str);
+		
+		Account assignTo = null;
+		if (rs.getString("assigned_to") != null) {
+			assignTo = new Account(rs.getString("assigned_to"), rs.getString("assigned_to_name"));
+		}
+		
+		return new GroupTask(rs.getString("name"),
+										rs.getInt("id"),
+										rs.getString("description"),
+										createdDate,
+										deadline,
+										rs.getBoolean("state"),
+										rs.getInt("group_id"),
+										assignTo
+										);
 	}
 	
 }

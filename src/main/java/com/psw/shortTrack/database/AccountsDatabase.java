@@ -120,6 +120,7 @@ public class AccountsDatabase extends Database{
 				return new Account(email, rs.getString("name"));
 			else
 				return null;
+		
 		}
 		
 	}

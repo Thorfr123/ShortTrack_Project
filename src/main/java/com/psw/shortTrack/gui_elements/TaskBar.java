@@ -1,8 +1,7 @@
-package com.psw.shortTrack.gui;
+package com.psw.shortTrack.gui_elements;
 
-import com.psw.shortTrack.data.Account;
-import com.psw.shortTrack.data.Group;
-import com.psw.shortTrack.data.GroupTask;
+import com.psw.shortTrack.data.List;
+import com.psw.shortTrack.data.Task;
 import com.psw.shortTrack.data.User;
 
 import javafx.geometry.Pos;
@@ -14,27 +13,24 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
-public class GroupTaskBar extends HBox{
+public class TaskBar extends HBox{
 	
 	private Button taskButton;
 	private CheckBox taskCheckBox;
-	private GroupTask task;
+	private Task task;
 	
-	public GroupTaskBar(GroupTask task, Boolean searchMode) {
+	public TaskBar(Task task, Boolean searchMode) {
 		
 		super();
 		
 		this.task = task;
-		Group group = User.getGroup(task.getParentID());
 		
 		String taskName = task.getName();
-		String taskDeadlineDate;
-		Account assignedTo = task.getAssignedToAccount();
+		String taskDeadlineDate = "";
 		
-		if(task.getDeadlineDate() == null)
-			taskDeadlineDate = "";
-		else
+		if (task.getDeadlineDate() != null) {
 			taskDeadlineDate = task.getDeadlineDate().toString();
+		}
 		                    
 		setSpacing(10.0);
 		setAlignment(Pos.CENTER_LEFT);
@@ -53,22 +49,13 @@ public class GroupTaskBar extends HBox{
 		taskBox3.getChildren().add(label2);
 		HBox.setHgrow(label2,Priority.ALWAYS);
 		label2.setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
-		label2.setMinSize(100.0,Double.MIN_VALUE);
 		
-		Label label3 = new Label();
-		if(assignedTo != null) {
-			label3.setText("Assign to: " + assignedTo.toString());
+		if(searchMode) {
+			List list = User.getList(task.getParentID());		
+			Label label3 = new Label("List: " + list.getName());
 			label3.getStyleClass().add("taskFooter");
 			taskBox3.getChildren().add(label3);
 			label3.setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
-		}
-		
-		if(searchMode) {
-			HBox.setHgrow(label3,Priority.ALWAYS);
-			Label label4 = new Label("Group: " + group.getName());
-			label4.getStyleClass().add("taskFooter");
-			taskBox3.getChildren().add(label4);
-			label4.setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
 		}
 
 		taskBox2.getChildren().add(label1);
@@ -89,7 +76,7 @@ public class GroupTaskBar extends HBox{
 		
 	}
 	
-	public GroupTaskBar(GroupTask task) {
+	public TaskBar(Task task) {
 		this(task,false);
 	}
 	
@@ -101,9 +88,8 @@ public class GroupTaskBar extends HBox{
 		return taskCheckBox;
 	}
 	
-	public GroupTask getTask() {
+	public Task getTask() {
 		return task;
 	}
 
 }
-

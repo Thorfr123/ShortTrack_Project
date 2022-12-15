@@ -79,31 +79,40 @@ public class NotificationDatabase extends Database{
 			
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(
-				"SELECT notifications.id, type, source, notifications.group_id, groups.name AS group_name, task_id, group_tasks.name AS task_name\r\n"
+				"SELECT notifications.id,"
+				+ "		type,"
+				+ "		source,"
+				+ "		s_acc.name AS source_name,"
+				+ "		notifications.group_id,"
+				+ "		groups.name AS group_name,"
+				+ "		task_id,"
+				+ "		group_tasks.name AS task_name\r\n"
 				+ "FROM projeto.notifications\r\n"
 				+ "LEFT JOIN projeto.groups ON group_id=groups.id\r\n"
 				+ "LEFT JOIN projeto.group_tasks ON task_id=group_tasks.id\r\n"
+				+ "LEFT JOIN projeto.account s_acc ON source=s_acc.email\r\n"
 				+ "WHERE destination=" + toSQL((String)user.getEmail()) + ";"
 			);
 			
 			ArrayList<Notification> allNotif = new ArrayList<Notification>();
+			
 			while (rs.next()) {
-				Account source = AccountsDatabase.getAccount(rs.getString("source"));
-				if (source != null) {
-					
-					int group_id = rs.getInt("group_id");
-					int task_id = rs.getInt("task_id");
-					Group ref_group = group_id != 0 ? new Group(group_id, rs.getString("group_name")) : null;
-					Task ref_task = task_id != 0 ? new GroupTask(task_id, rs.getString("task_name")) : null;
-					
-					allNotif.add(new Notification(	rs.getInt("id"),
-													rs.getInt("type"),
-													source,
-													user,
-													ref_group,
-													ref_task));
-				}
+				
+				Account source = new Account(rs.getString("source"), rs.getString("source_name"));
+				int group_id = rs.getInt("group_id");
+				int task_id = rs.getInt("task_id");
+				Group ref_group = group_id != 0 ? new Group(group_id, rs.getString("group_name")) : null;
+				Task ref_task = task_id != 0 ? new GroupTask(task_id, rs.getString("task_name")) : null;
+				
+				allNotif.add(new Notification(	rs.getInt("id"),
+												rs.getInt("type"),
+												source,
+												user,
+												ref_group,
+												ref_task));
+				
 			}
+			
 			return allNotif;
 		}
 		

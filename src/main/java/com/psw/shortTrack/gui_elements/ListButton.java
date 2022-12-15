@@ -1,4 +1,4 @@
-package com.psw.shortTrack.gui;
+package com.psw.shortTrack.gui_elements;
 
 import com.psw.shortTrack.data.List;
 

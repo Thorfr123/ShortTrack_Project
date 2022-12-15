@@ -282,6 +282,7 @@ public class ControllerEditGroupScene {
 			return;
 		}
 		
+		group.getMemberAccounts().remove(memberToRemove);
 		memberList.getItems().remove(memberToRemove);
 		
 		showNotification("You have successfully removed " + memberToRemove.toString(), false);

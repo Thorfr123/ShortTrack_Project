@@ -8,9 +8,6 @@ import com.psw.shortTrack.data.Group;
 import com.psw.shortTrack.data.List;
 import com.psw.shortTrack.data.User;
 import com.psw.shortTrack.database.AccountsDatabase;
-import com.psw.shortTrack.database.GroupsDatabase;
-import com.psw.shortTrack.database.NotFoundException;
-import com.psw.shortTrack.database.PersonalListsDatabase;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -50,12 +47,15 @@ public class ControllerSignUpScene {
 		String name = firstName + " " +  lastName;
 		Account account;
 		try {
+			
 			account = new Account(email,name);
 			if (!AccountsDatabase.createAccount(account, password)) {
-				showNotification("There was an unknown error");
+				showNotification("Email already in use!");
+				emailField.getStyleClass().add("error");
 				return;
 			}
-		} catch (SQLException e1) {
+			
+		} catch (SQLException sqle) {
 			App.connectionErrorMessage();
 			return;
 		}
@@ -63,29 +63,15 @@ public class ControllerSignUpScene {
 		User.setAccount(account);
 		
 		App.writeLocalFiles();
-
-		ArrayList<Group> groups;
-		ArrayList<List> lists; 
-		try {
-			groups = GroupsDatabase.getAllGroups(account);
-			lists = PersonalListsDatabase.getAllLists(account.getEmail());
-		}
-		catch (NotFoundException nfe) {
-			App.accountDeletedMessage();
-			return;
-		} catch (SQLException exeption) {
-			App.connectionErrorMessage();
-			return;
-		}
-		User.setGroups(groups);
-		User.setLists(lists);
+		
+		User.setGroups(new ArrayList<Group>(0));
+		User.setLists(new ArrayList<List>(0));
 
 		App.loadScene("LogoutScene.fxml");
+		
 	}
 	
 	public void cancel(ActionEvent e) {
-		
-		removeErrorNotifications();
 
 		App.loadScene("LoginScene.fxml");
 		
@@ -137,9 +123,6 @@ public class ControllerSignUpScene {
 			repeatPasswordField.getStyleClass().add("error");
 			return false;
 		}
-		else if(!checkDatabase(email)) {
-			return false;
-		}
 
 		return true;
 	}
@@ -161,22 +144,6 @@ public class ControllerSignUpScene {
 		repeatPasswordField.getStyleClass().removeAll(Collections.singleton("error"));
 		notificationLabel.setVisible(false);
 		
-	}
-	
-	private boolean checkDatabase(String email) {
-		
-		try {
-			if(!AccountsDatabase.checkEmail(email)) {
-				showNotification("Email already in use!");
-				emailField.getStyleClass().add("error");
-				return false;
-			}
-		} catch (SQLException e) {
-			App.connectionErrorMessage();
-			return false;
-		}
-		
-		return true;
 	}
 	
 }

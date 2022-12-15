@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import com.psw.shortTrack.data.*;
 import com.psw.shortTrack.database.*;
+import com.psw.shortTrack.gui_elements.ListButton;
+import com.psw.shortTrack.gui_elements.TaskBar;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
