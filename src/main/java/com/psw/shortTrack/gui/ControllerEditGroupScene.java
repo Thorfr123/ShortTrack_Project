@@ -104,13 +104,13 @@ public class ControllerEditGroupScene {
 		String newGroupName = groupNameField.getText();
 		
 		Group g = null;
-		if (newGroupName.equals(group.getName())) {
-			App.loadMainScene();
-			return;
-		}
 		if(newGroupName.isBlank()) {
 			showNotification("The Group needs a name!", true);
 			groupNameField.getStyleClass().add("error");
+			return;
+		}
+		else if (newGroupName.equals(group.getName())) {
+			App.loadMainScene();
 			return;
 		}
 		else if(newGroupName.length() > 128) {

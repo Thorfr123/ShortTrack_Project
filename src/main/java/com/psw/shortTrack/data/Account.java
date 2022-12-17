@@ -19,28 +19,7 @@ public class Account {
 	public void setName(String name) { this.name = name; }
 
 	public void setEmail(String email) { this.email = email; }
-	
-	
-	/*public boolean equals(Object acc) {
 		
-		if (this == acc) {
-			return true;
-		} else if (acc == null) {
-			return false;
-		}
-		else if (acc.getClass() == Account.class) {
-			return email.equals(((Account)acc).getEmail());
-		}
-		else if (acc.getClass() == String.class) {
-			return email.equals(acc);
-		}
-		else {
-			return false;
-		}
-		
-	}*/
-	
-	
 	@Override
 	public String toString() {
 		if(email != null)

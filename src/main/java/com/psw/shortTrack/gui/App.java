@@ -156,7 +156,6 @@ public class App extends Application {
 			FileIO.writeIdCountersToFile(PersonalTask.idCount, List.idCount);
 			
 		} catch (IOException e) {
-			// XXX: Maybe throw the exception
 			System.out.println("Erro a tentar escrever o ficheiro de backup local!");
 		}
 		
@@ -205,7 +204,7 @@ public class App extends Application {
 			        }
 				});
 			}
-			// TODO: check this
+			
 			if (fxml.equals("LogoutScene.fxml") && !User.isLogedIn()) {
 				return null;
 			}
@@ -243,52 +242,60 @@ public class App extends Application {
 		alert.setTitle("Connection Error");
 		alert.setHeaderText("The connection to the database was lost!");
 		alert.setContentText("Error! Please, check your connection");
-
 		alert.showAndWait();
 		
 	}
 	
-	// TODO:comment
+	/**
+	 * Shows the account deleted error alert
+	 */
 	public static void accountDeletedMessage() {
 		
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle("Account deleted");
 		alert.setHeaderText("It seems your account was deleted in another session!");
 		alert.setContentText("You will be logged out of your account!");
-		
 		alert.showAndWait();
 		
 	}
 	
-	// TODO
+	/**
+	 * Shows the group deleted error alert
+	 */
 	public static void groupDeletedMessage() {
 		
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle("Group deleted");
 		alert.setHeaderText("It seems this group was deleted in another session!");
 		alert.setContentText("You will return to the main window!");
-		
 		alert.showAndWait();
 		
 	}
 	
-	//TODO
+	/**
+	 * Shows the task deleted error alert
+	 */
 	public static void taskDeletedMessage() {
+		
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle("Error editing task");
 		alert.setHeaderText("It seems this task no longer exists!");
 		alert.setContentText("This can be caused because the manager deleted this task!");
-		
 		alert.showAndWait();
+		
 	}
 	
+	/**
+	 * Shows the user has no privileges error alert
+	 */
 	public static void taskNoPrivilegesMessage() {
+		
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle("Error editing task");
 		alert.setHeaderText("It seems you haven't enough privileges to edit this task!");
 		alert.setContentText("This can be caused because this task is no longer assigned to you");
-		
 		alert.showAndWait();
+		
 	}
 	
 }

@@ -39,7 +39,7 @@ public class GroupsDatabase extends Database{
 			
 		} catch(PSQLException psql) {
 			if (psql.getSQLState().startsWith("23")) {
-				throw new NotFoundException();
+				throw new NotFoundException("The manager account was not found");
 			}
 			throw psql;
 		}
@@ -133,7 +133,6 @@ public class GroupsDatabase extends Database{
 						/* Isto acontece quando o user ou não tem grupos ou tem grupos sem membros
 						 * Então dá exceção quando tenta dar cast do array para String[][] pq o array é unidimensional
 						 */
-						System.out.println("Este user não tem membros em nenhum dos seus grupos");
 					}
 				}
 				
@@ -143,37 +142,12 @@ public class GroupsDatabase extends Database{
 					continue;
 				}
 				
-				String manager_email = rs.getString("manager_email");
-				
 				if (anterior == null || group_id != anterior.getID()) {
-					Account managerAccount = null;
-					if (user.getEmail().equals(manager_email)) {
-						managerAccount = user;
-					}
-					else {
-						managerAccount = new Account(manager_email, rs.getString("manager_name"));
-					}
 					
-					ArrayList<Account> memberAccounts = new ArrayList<Account>();
-					
-					for (String member : (String[]) rs.getArray("members").getArray()) {
-							
-						for (Account m : accounts) {
-							if (m.getEmail().equals(member)) {
-								memberAccounts.add(m);
-								break;
-							}
-						}
-							
-					}
-					
-					Group novo = new Group(	rs.getString("group_name"),
-											managerAccount,
-											rs.getInt("group_id_pk"),
-											new ArrayList<Task>(),
-											memberAccounts);
+					Group novo = constructGroup(rs, user, accounts);
 					groups.add(novo);
 					anterior = novo;
+					
 				}
 				
 				if (rs.getInt("id") == 0) {
@@ -185,7 +159,7 @@ public class GroupsDatabase extends Database{
 			
 			if (groups.size() == 0) {
 				if (AccountsDatabase.checkEmail(user.getEmail())) {
-					throw new NotFoundException();
+					throw new NotFoundException("User's account was not found");
 				}
 			}
 			
@@ -211,7 +185,7 @@ public class GroupsDatabase extends Database{
 			return true;
 		}
 		else if (!existGroup(id)) {
-			throw new NotFoundException();
+			throw new NotFoundException("Group was not found");
 		}
 		else {
 			return false;
@@ -219,7 +193,6 @@ public class GroupsDatabase extends Database{
 		
 	}
 	
-	//TODO: Verify code
 	/**
 	 * Removes a member from one group and assigns his tasks to NULL.
 	 * 
@@ -246,7 +219,7 @@ public class GroupsDatabase extends Database{
 			return true;
 		}
 		else if (!existGroup(id)) {
-			throw new NotFoundException();
+			throw new NotFoundException("Group was not found");
 		}
 		else {
 			return !belongsToGroup(id, member.getEmail());
@@ -254,7 +227,6 @@ public class GroupsDatabase extends Database{
 			
 	}
 
-	// TODO: Verify code
 	/**
 	 * Adds a member to a group in the database.
 	 * 
@@ -275,7 +247,7 @@ public class GroupsDatabase extends Database{
 			return true;
 		}
 		else if (!existGroup(id)) {
-			throw new NotFoundException();
+			throw new NotFoundException("Group was not found");
 		}
 		else {
 			return (belongsToGroup(id, member.getEmail()));
@@ -316,6 +288,56 @@ public class GroupsDatabase extends Database{
 		
 	}
 	
+	/**
+	 *  Constructs a new group from the result set
+	 *  
+	 * @param rs Result Set
+	 * @param user User's Account
+	 * @param accounts Array with members accounts
+	 * @return new Group
+	 * 
+	 * @throws SQLException If there is an error
+	 */
+	private static Group constructGroup(ResultSet rs, Account user, ArrayList<Account> accounts) throws SQLException {
+		
+		String manager_email = rs.getString("manager_email");
+		Account managerAccount = null;
+		if (user.getEmail().equals(manager_email)) {
+			managerAccount = user;
+		}
+		else {
+			managerAccount = new Account(manager_email, rs.getString("manager_name"));
+		}
+		
+		ArrayList<Account> memberAccounts = new ArrayList<Account>();
+		
+		for (String member : (String[]) rs.getArray("members").getArray()) {
+				
+			for (Account m : accounts) {
+				if (m.getEmail().equals(member)) {
+					memberAccounts.add(m);
+					break;
+				}
+			}
+				
+		}
+		
+		return new Group(	rs.getString("group_name"),
+							managerAccount,
+							rs.getInt("group_id_pk"),
+							new ArrayList<Task>(),
+							memberAccounts);
+		
+	}
+	
+	/**
+	 * Constructs a new task from the result set
+	 * 
+	 * @param rs ResultSet
+	 * @return new Task
+	 * 
+	 * @throws SQLException If there was an error
+	 */
 	private static Task constructTask(ResultSet rs) throws SQLException {
 		
 		String deadline_str = rs.getString("deadline_date");

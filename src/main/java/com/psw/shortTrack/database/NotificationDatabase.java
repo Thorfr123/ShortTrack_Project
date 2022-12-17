@@ -136,6 +136,14 @@ public class NotificationDatabase extends Database{
 		
 	}
 	
+	/**
+	 * Checks if there is a help request in a task
+	 * 
+	 * @param task_id Task to check
+	 * @return (True) Exists; (False) Otherwise
+	 * 
+	 * @throws SQLException If there was a connection error
+	 */
 	public static boolean checkHelpRequest(int task_id) throws SQLException {
 		
 		return executeQueryReturnBoolean(
@@ -145,7 +153,14 @@ public class NotificationDatabase extends Database{
 		
 	}
 	
-	//TODO:comment
+	/**
+	 * Deletes all the help request of a task
+	 * 
+	 * @param task_id
+	 * @return (True) Deleted; (False) Deleted nothing (didn't exist any)
+	 * 
+	 * @throws SQLException If there was a connection error
+	 */
 	public static boolean clearHelpRequests(int task_id) throws SQLException {
 		
 		return executeUpdate(

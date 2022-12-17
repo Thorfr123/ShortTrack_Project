@@ -10,47 +10,33 @@ public class User {
 	private static Boolean logedIn = false;
 	private static ArrayList<Notification> notifications = new ArrayList<Notification>(0);
 	
-	public static ArrayList<List> getLists() {
-		return lists;
-	}
+	public static ArrayList<List> getLists() { return lists; }
 	
-	public static ArrayList<Group> getGroups() {
-		return groups;
-	}
+	public static ArrayList<Group> getGroups() { return groups; }
 	
-	public static Account getAccount() {
-		return account;
-	}
+	public static Account getAccount() { return account; }
 	
-	public static void setAccount(Account account) {
-		User.account = account;
-	}
+	public static void setAccount(Account account) { User.account = account; }
 	
-	public static void setLists(ArrayList<List> lists) {
-		User.lists = lists;
-	}
+	public static void setLists(ArrayList<List> lists) { User.lists = lists; }
 	
-	public static void setGroups(ArrayList<Group> groups) {
-		User.groups = groups;
-	}
+	public static void setGroups(ArrayList<Group> groups) { User.groups = groups; }
 	
-	public static boolean checkListName(String listName) {
-		for (List l : lists) {
-			if (l.getName().equals(listName))
-				return true;
+	public static ArrayList<Notification> getNotifications() { return notifications; }
+	
+	public static void setNotifications(ArrayList<Notification> notifications) { User.notifications = notifications; }
+	
+	public static Boolean isLogedIn() { return logedIn; }
+	
+	public static void setLogedIn(Boolean newState) {
+		logedIn = newState;
+		
+		if(!logedIn) {
+			setGroups(null);
+			setLists(null);
+			setAccount(null);
 		}
-		
-		return false;
-	}
-	
-	public static Group checkGroupName(String groupName) {
-		
-		for(Group g : groups) {
-			if(g.getName().equals(groupName) && g.getManagerEmail().equals(account.getEmail()))
-				return g;
-		}
-		
-		return null;
+			
 	}
 	
 	public static List getList(int ID) {
@@ -73,27 +59,23 @@ public class User {
 		return null;
 	}
 	
-	public static Boolean isLogedIn() {
-		return logedIn;
-	}
-	
-	public static void setLogedIn(Boolean newState) {
-		logedIn = newState;
-		
-		if(!logedIn) {
-			setGroups(null);
-			setLists(null);
-			setAccount(null);
+	public static boolean checkListName(String listName) {
+		for (List l : lists) {
+			if (l.getName().equals(listName))
+				return true;
 		}
-			
+		
+		return false;
 	}
 	
-	public static ArrayList<Notification> getNotifications() {
-		return notifications;
-	}
-	
-	public static void setNotifications(ArrayList<Notification> notifications) {
-		User.notifications = notifications;
+	public static Group checkGroupName(String groupName) {
+		
+		for(Group g : groups) {
+			if(g.getName().equals(groupName) && g.getManagerEmail().equals(account.getEmail()))
+				return g;
+		}
+		
+		return null;
 	}
 	
 }

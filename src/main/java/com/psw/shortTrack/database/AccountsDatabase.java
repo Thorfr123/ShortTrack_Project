@@ -146,7 +146,7 @@ public class AccountsDatabase extends Database{
 			return true;
 		}
 		else if (checkEmail(email)) {
-			throw new NotFoundException();
+			throw new NotFoundException("The account was not found");
 		}
 		else if (!checkLogin(email, old_password)) {
 			return false;
@@ -174,7 +174,7 @@ public class AccountsDatabase extends Database{
 			return;
 		}
 		else if (checkEmail(email)) {
-			throw new NotFoundException();
+			throw new NotFoundException("The account was not found");
 		}
 		else {
 			throw new SQLException("Unknown error");
@@ -206,7 +206,7 @@ public class AccountsDatabase extends Database{
 				return true;
 			}
 			else if (checkEmail(email)) {
-				throw new NotFoundException();
+				throw new NotFoundException("The account was not found");
 			}
 			else if (checkLogin(email, password)) {
 				throw new InvalidParameterException("Wrong password");
