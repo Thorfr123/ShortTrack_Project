@@ -1,11 +1,8 @@
 package com.psw.shortTrack.database;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 import org.postgresql.util.PSQLException;
 
@@ -59,47 +56,6 @@ public class PersonalTasksDatabase extends Database {
 	}
 	
 	/**
-	 * Returns all the tasks from the list in the database
-	 * 
-	 * @param id_list List
-	 * @return ArrayList with all the list's tasks
-	 * 
-	 * @throws SQLException If there was an error in the database connection
-	 */
-	public static ArrayList<Task> getAllTasks (int id_list) throws SQLException {
-		
-		try (Connection connection = getConnection()){
-			
-			Statement stmt = connection.createStatement();
-			ResultSet rs = stmt.executeQuery(
-				"SELECT * FROM projeto.personal_tasks WHERE list_id = '" + id_list + "';"
-			);
-			
-			ArrayList<Task> arrayTask = new ArrayList<Task>();
-			while (rs.next()) {
-				String deadline_str = rs.getString("deadline_date");
-				LocalDate deadline = null;
-				if (deadline_str != null)
-					deadline = LocalDate.parse(deadline_str);
-				String created_str = rs.getString("created_date");
-				LocalDate created = null;
-				if (created_str != null)
-					created = LocalDate.parse(created_str);
-				
-				arrayTask.add(new PersonalTask( rs.getString("name"),
-												rs.getInt("id"),
-												rs.getString("description"),
-												created,
-												deadline,
-												rs.getBoolean("state"),
-												rs.getInt("list_id")));
-			}
-			return arrayTask;
-		}
-		
-	}
-	
-	/**
 	 * Updates the task with new info to the database. You need to provide all the info.
 	 * 
 	 * @param id Task's id
@@ -119,6 +75,40 @@ public class PersonalTasksDatabase extends Database {
 			+ ", state=" + toSQL(newState) + "\r\n"
 			+ "WHERE id=" + toSQL(id) + ";"
 		) > 0);
+		
+	}
+	
+	/**
+	 * Get a personal task from the result set. If the task is invalid, it returns null.
+	 * 
+	 * @param rs Result Set
+	 * @return Task
+	 * 
+	 * @throws SQLException If there was an error
+	 */
+	protected static Task getTask(ResultSet rs) throws SQLException {
+		
+		int id = rs.getInt("task_id");
+		if (id <= 0) {
+			return null;
+		}
+			
+		String deadline_str = rs.getString("deadline_date");
+		LocalDate deadline = null;
+		if (deadline_str != null)
+			deadline = LocalDate.parse(deadline_str);
+		String created_str = rs.getString("created_date");
+		LocalDate created = null;
+		if (created_str != null)
+			created = LocalDate.parse(created_str);
+		
+		return new PersonalTask(rs.getString("task_name"),
+								id,
+								rs.getString("description"),
+								created,
+								deadline,
+								rs.getBoolean("state"),
+								rs.getInt("list_id"));
 		
 	}
 

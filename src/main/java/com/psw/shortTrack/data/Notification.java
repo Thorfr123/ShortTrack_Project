@@ -57,7 +57,7 @@ public class Notification {
 		this.id = id;
 	}
 	
-	public String buildMessage() {
+	private String buildMessage() {
 		switch (type) {
 		case invitateToGroup:
 			return (this.source.getName() + " invited you to the group " + ref_group.getName());

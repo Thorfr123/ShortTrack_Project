@@ -8,7 +8,9 @@ import java.util.ArrayList;
 
 import org.postgresql.util.PSQLException;
 
+import com.psw.shortTrack.data.Account;
 import com.psw.shortTrack.data.List;
+import com.psw.shortTrack.data.Task;
 import com.psw.shortTrack.data.User;
 
 public class PersonalListsDatabase extends Database{
@@ -57,32 +59,40 @@ public class PersonalListsDatabase extends Database{
 		
 	}
 	
-	/**
-	 * Returns all the lists and tasks of a user.
-	 * 
-	 * @param email User's email
-	 * @return ArrayList with all the lists of the user
-	 * 
-	 * @throws SQLException If there was an error in the database connection
-	 */
-	public static ArrayList<List> getAllLists (String email) throws SQLException {
+	public static ArrayList<List> getAllLists (Account account) throws SQLException {
 		
 		try (Connection connection = getConnection()){
 			
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(
-				"SELECT * FROM projeto.personal_lists WHERE email=" + toSQL((String)email) + ";"
+				"SELECT l.id AS list_id, l.name AS list_name, l.email, t.id AS task_id, t.name AS task_name,\r\n"
+				+ "t.description, t.created_date, t.deadline_date, t.state, t.list_id\r\n"
+				+ "FROM projeto.personal_lists l\r\n"
+				+ "LEFT JOIN projeto.personal_tasks t ON t.list_id=l.id\r\n"
+				+ "WHERE email=" + toSQL((String)account.getEmail()) + "\r\n"
+				+ "ORDER BY l.id, t.id;"
 			);
 			
 			ArrayList<List> arrayList = new ArrayList<List>();
+			List atual = null;
+			
 			while (rs.next()) {
-				int lst_id = rs.getInt("id");
 				
-				arrayList.add(new List(	rs.getString("name"), 
-										lst_id, 
-										PersonalTasksDatabase.getAllTasks(lst_id))
-				);
+				int lst_id = rs.getInt("list_id");
+				if (atual == null || lst_id != atual.getID()) {
+					
+					atual = new List(rs.getString("list_name"), lst_id, new ArrayList<Task>());
+					arrayList.add(atual);
+					
+				}
+				
+				Task t = PersonalTasksDatabase.getTask(rs);
+				if (t != null) {
+					atual.addTask(t);
+				}
+				
 			}
+			
 			return arrayList;
 		}
 		

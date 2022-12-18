@@ -1,11 +1,14 @@
 package com.psw.shortTrack.database;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
 import org.postgresql.util.PSQLException;
 
+import com.psw.shortTrack.data.Account;
 import com.psw.shortTrack.data.GroupTask;
+import com.psw.shortTrack.data.Task;
 
 public class GroupTasksDatabase extends Database {
 
@@ -63,6 +66,47 @@ public class GroupTasksDatabase extends Database {
 		else {
 			return !existTask(id);
 		}
+		
+	}
+	
+	/**
+	 * Gets a group task from the result set. If the task is invalid, it returns null.
+	 * 
+	 * @param rs Result Set
+	 * @return Task
+	 * 
+	 * @throws SQLException If there was an error
+	 */
+	protected static Task getTask(ResultSet rs) throws SQLException {
+		
+		int id = rs.getInt("id");
+		if (id <= 0) {
+			return null;
+		}
+		
+		String deadline_str = rs.getString("deadline_date");
+		LocalDate deadline = null;
+		if (deadline_str != null)
+			deadline = LocalDate.parse(deadline_str);
+		String created_str = rs.getString("created_date");
+		LocalDate createdDate = null;
+		if (created_str != null)
+			createdDate = LocalDate.parse(created_str);
+		
+		Account assignTo = null;
+		if (rs.getString("assigned_to") != null) {
+			assignTo = new Account(rs.getString("assigned_to"), rs.getString("assigned_to_name"));
+		}
+		
+		return new GroupTask(	rs.getString("name"),
+								id,
+								rs.getString("description"),
+								createdDate,
+								deadline,
+								rs.getBoolean("state"),
+								rs.getInt("group_id"),
+								assignTo
+								);
 		
 	}
 	

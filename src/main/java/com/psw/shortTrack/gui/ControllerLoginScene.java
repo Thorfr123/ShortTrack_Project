@@ -110,6 +110,7 @@ public class ControllerLoginScene {
 		}
 		
 		loadTasks();
+		
     }
 
 	public void login(ActionEvent e) {
@@ -139,9 +140,11 @@ public class ControllerLoginScene {
 		Account account = null;
 		ArrayList<List> lists;
 		try {
+			
 			account = AccountsDatabase.getAccount(email);
-			lists = PersonalListsDatabase.getAllLists(account.getEmail());
-			User.setAccount(account);	
+			lists = PersonalListsDatabase.getAllLists(account);
+			
+			User.setAccount(account);
 			User.setLists(lists);
 		} catch (SQLException exception) {
 			App.connectionErrorMessage();
@@ -204,7 +207,7 @@ public class ControllerLoginScene {
 		if(taskName.length() > 128) {
 			showNotification("Task name exceeds maximum character length allowed!",(Pane)newTaskBox);
 			return;
-		}	
+		}
 		else if(loadList.checkName(taskName)) {
 			showNotification("This Task already exist!",(Pane)newTaskBox);
 			return;
@@ -395,7 +398,7 @@ public class ControllerLoginScene {
 		
 		loadList = searchList;
 		loadTasks();
-
+		
 	}
 	
 	private void loadTasks() {
@@ -469,7 +472,6 @@ public class ControllerLoginScene {
 		else if(newBox.equals(searchVerticalBox))
 			searchBarField.getStyleClass().add("error");
 			
-		
 	}
 	
 	private void removeErrorNotifications() {

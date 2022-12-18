@@ -4,14 +4,12 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 import org.postgresql.util.PSQLException;
 
 import com.psw.shortTrack.data.Account;
 import com.psw.shortTrack.data.Group;
-import com.psw.shortTrack.data.GroupTask;
 import com.psw.shortTrack.data.Task;
 
 public class GroupsDatabase extends Database{
@@ -108,7 +106,7 @@ public class GroupsDatabase extends Database{
 			
 			ArrayList<Group> groups = new ArrayList<Group>();
 			ArrayList<Account> accounts = new ArrayList<Account>();
-			Group anterior = null;			
+			Group atual = null;
 			
 			while (rs.next()) {
 				
@@ -120,10 +118,7 @@ public class GroupsDatabase extends Database{
 						
 						for (String[] row : (String[][]) rs.getArray("member_accounts").getArray()) {
 							
-							String email = row[0];
-							String name = row[1];
-							
-							Account newMember = new Account(email, name);
+							Account newMember = new Account(row[0], row[1]);
 							accounts.add(newMember);
 							
 						}
@@ -138,26 +133,26 @@ public class GroupsDatabase extends Database{
 				
 				
 				int group_id = rs.getInt("group_id_pk");
-				if (group_id == 0) {
-					continue;
-				}
-				
-				if (anterior == null || group_id != anterior.getID()) {
+				if (group_id != 0) {
 					
-					Group novo = constructGroup(rs, user, accounts);
-					groups.add(novo);
-					anterior = novo;
+					if (atual == null || group_id != atual.getID()) {
+						
+						atual = constructGroup(rs, user, accounts);
+						groups.add(atual);
+						
+					}
+					
+					Task task = GroupTasksDatabase.getTask(rs);
+					if (task != null) {
+						atual.getTaskList().add(task);
+					}
 					
 				}
 				
-				if (rs.getInt("id") == 0) {
-					continue;
-				}
-				
-				anterior.getTaskList().add( constructTask(rs) );
 			}
 			
 			if (groups.size() == 0) {
+				// If there are no groups, it verifies if the user's account exists
 				if (AccountsDatabase.checkEmail(user.getEmail())) {
 					throw new NotFoundException("User's account was not found");
 				}
@@ -328,41 +323,6 @@ public class GroupsDatabase extends Database{
 							new ArrayList<Task>(),
 							memberAccounts);
 		
-	}
-	
-	/**
-	 * Constructs a new task from the result set
-	 * 
-	 * @param rs ResultSet
-	 * @return new Task
-	 * 
-	 * @throws SQLException If there was an error
-	 */
-	private static Task constructTask(ResultSet rs) throws SQLException {
-		
-		String deadline_str = rs.getString("deadline_date");
-		LocalDate deadline = null;
-		if (deadline_str != null)
-			deadline = LocalDate.parse(deadline_str);
-		String created_str = rs.getString("created_date");
-		LocalDate createdDate = null;
-		if (created_str != null)
-			createdDate = LocalDate.parse(created_str);
-		
-		Account assignTo = null;
-		if (rs.getString("assigned_to") != null) {
-			assignTo = new Account(rs.getString("assigned_to"), rs.getString("assigned_to_name"));
-		}
-		
-		return new GroupTask(rs.getString("name"),
-										rs.getInt("id"),
-										rs.getString("description"),
-										createdDate,
-										deadline,
-										rs.getBoolean("state"),
-										rs.getInt("group_id"),
-										assignTo
-										);
 	}
 	
 }
