@@ -3,7 +3,7 @@ This is the project developed during the first semester of the 1st year of the E
 
 ShortTrack is a simple to-do list platform that provides you a place where you can store and manage all your tasks
 
-<img src="https://user-images.githubusercontent.com/109107004/216429090-c79f82cd-4540-4dbb-818b-b85d68216f26.PNG" width="900" height="600">
+![ScreenShot10](https://user-images.githubusercontent.com/109107004/216448097-3ed43c5f-442e-4759-8eac-807c95fe098a.PNG)
 
 ## Installation
 
@@ -18,6 +18,6 @@ If you don't have access to that network, the app can still be used, but only of
 
 See [User Manual](https://github.com/Thorfr123/Projeto_PSW_ShortTrack/files/10573314/PSW_User_Manual.pdf) for further details.
 
-Credits to:\
+## Credits to:
 Jorge Ribeiro\
 José Carvalho
