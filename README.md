@@ -7,7 +7,7 @@ ShortTrack is a simple to-do list platform that provides you a place where you c
 
 ## Installation
 
-See [Installation Instructions](https://gitlab.com/psw_22_231/1meec_a05/a05_2/-/wikis/Installation-Instructions) in the wiki.
+See [Installation Instructions](https://github.com/Thorfr123/Projeto_PSW_ShortTrack/blob/master/Installation.md) in the repository.
 
 ## Prerequisites
 
@@ -16,7 +16,7 @@ If you don't have access to that network, the app can still be used, but only of
 
 ## Utilization
 
-See [User Manual](https://gitlab.com/psw_22_231/1meec_a05/a05_2/-/wikis/uploads/ba85ec8bb2ef25ffb0d8dfac86614be0/User_Manual.pdf) for further details.
+See [User Manual](https://github.com/Thorfr123/Projeto_PSW_ShortTrack/files/10573314/PSW_User_Manual.pdf) for further details.
 
 Credits to:\
 Jorge Ribeiro\
