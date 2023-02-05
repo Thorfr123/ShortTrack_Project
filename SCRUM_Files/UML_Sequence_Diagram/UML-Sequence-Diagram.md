@@ -1,5 +1,5 @@
-UML Sequence Diagram deliverable 
+# UML Sequence Diagram
 
-PDF Version: [Sequence_Diagram_v3.pdf](uploads/80a9eebf2d19919f0e08300a078544bf/Sequence_Diagram_v3.pdf)
+### PDF Version: [UML_Sequence_Diagram.pdf](https://github.com/Thorfr123/Projeto_PSW_ShortTrack/files/10611631/UML_Sequence_Diagram.pdf)
 
-![Sequence_Diagram_v3](uploads/20db12107ef0ffdd69db7efd5ca704ff/Sequence_Diagram_v3.png)
+![UML_Sequence_Diagram](https://user-images.githubusercontent.com/109107004/216833474-c08f9cc2-60e3-43fa-98e6-32b554b48c6d.png)
