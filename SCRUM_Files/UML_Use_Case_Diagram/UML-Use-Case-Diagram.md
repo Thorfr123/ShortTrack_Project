@@ -1,0 +1,5 @@
+UML Use Case Diagram deliverable
+
+PDF version: [TODO_LIST_PLATFORM__ShortTrack__-_UML_CASE_DIAGRAM.pdf](uploads/40061c4785651c5c8c4bf1715082a896/TODO_LIST_PLATFORM__ShortTrack__-_UML_CASE_DIAGRAM.pdf)
+
+![TODO_LIST_PLATFORM__ShortTrack__-_UML_CASE_DIAGRAM](uploads/f3bc942cb1699c082ae00c9bf5712b2e/TODO_LIST_PLATFORM__ShortTrack__-_UML_CASE_DIAGRAM.png)

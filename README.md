@@ -7,7 +7,7 @@ ShortTrack is a simple to-do list platform that provides you a place where you c
 
 ## Installation
 
-See the [Installation Instructions](https://github.com/Thorfr123/Projeto_PSW_ShortTrack/blob/master/installation.md) in the repository.
+See the [Installation Instructions](https://github.com/Thorfr123/Projeto_PSW_ShortTrack/blob/master/SCRUM_Files/Installation_Instructions/Installation.md) in the repository.
 
 ## Prerequisites
 

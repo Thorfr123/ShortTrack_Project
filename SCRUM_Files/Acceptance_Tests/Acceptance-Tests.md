@@ -1,0 +1,13 @@
+Acceptance tests deliverable
+
+![Test_Cases_Page_1_Login](uploads/d6ceb8497294bc04e87349e7cac3a98a/Test_Cases_Page_1_Login.png)
+
+![Test_Cases_Page_2_PersonalList](uploads/e96f69040fa4bbb7652d5930e615a6dc/Test_Cases_Page_2_PersonalList.png)
+
+![Test_Cases_Page_3_Group](uploads/990a5947222cf6ef86957914ba199626/Test_Cases_Page_3_Group.png)
+
+![Test_Cases_Page_4_PersonalTask](uploads/7a4f74a41f117b6d8e05273392d32950/Test_Cases_Page_4_PersonalTask.png)
+
+![Test_Cases_Page_5_GroupTask](uploads/eb4fb6abae091aa341b3b29df1bff04b/Test_Cases_Page_5_GroupTask.png)
+
+![Test_Cases_Page_6_Sort_Search](uploads/66d207d452ff003d9917ca05c7240bae/Test_Cases_Page_6_Sort_Search.png)
