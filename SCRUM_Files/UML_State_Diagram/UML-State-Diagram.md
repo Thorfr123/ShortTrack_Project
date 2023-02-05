@@ -1,7 +1,5 @@
-UML State Diagram deliverable
+# UML State Diagram
 
-Alterações realizadas: O evento de saída corresponde ao utilizar fechar a aplicação, estando este agora mais claro no diagrama.
+### PDF Version: [UML_State_Diagram.pdf](https://github.com/Thorfr123/Projeto_PSW_ShortTrack/files/10611632/UML_State_Diagram.pdf)
 
-PDF Version: [UML_State_Diagram.pdf](uploads/32fbe91d7b785d67109497aaaf0cd763/UML_State_Diagram.pdf)
-
-![UML_State_Diagram](uploads/e27e671b593b91c45bdb74ff850d2c7a/UML_State_Diagram.png)
+![UML_State_Diagram](https://user-images.githubusercontent.com/109107004/216833518-99705b50-7dd2-4e10-b36d-47c5f1915396.png)
