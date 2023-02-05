@@ -1,4 +1,6 @@
-# Sprint Goal:
+# Sprint 3: Spring Preview
+
+## Sprint Goal:
 
 Implementar toda a parte offline da aplicação, nomeadamente permitindo ao utilizador criar listas pessoais e organizar tarefas nas listas.
 Adicionalmente, os dados deverão ser guardados localmente para permitir ao utilizador reaver os dados numa nova inicialização da aplicação.
