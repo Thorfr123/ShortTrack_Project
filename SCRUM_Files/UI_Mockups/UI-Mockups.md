@@ -1,7 +1,3 @@
-UI (User Interface) Mockups deliverable.
+UI (User Interface) Mockups
 
-PDF Version: [UIMockups.pdf](uploads/15a3d0eb4a5e033bf61dccfe3f828050/UIMockups.pdf)
-
-A versão PNG do ficheiro não permite uma leitura adequada de todos os elementos dos UI Mockups sem dar zoom. Portanto, para visualizar melhor este artefacto é preferível usar a versão PDF.
-
-![UIMockups](uploads/349911b8735436e1f9fefc80c81917ea/UIMockups.png)
+![UI_Mockups](https://user-images.githubusercontent.com/109107004/216832884-d4c5b970-bf0b-474e-acdf-6b99c52ba16e.png)
