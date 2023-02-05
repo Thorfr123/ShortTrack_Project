@@ -1,5 +1,5 @@
-UML Class Diagram deliverable
+# UML Class Diagram
 
-PDF Version: [ClassDiagram_v6.pdf](uploads/410f1ad5bd286ea67565977df678a7b3/ClassDiagram_v6.pdf)
+## PDF Version: [UML_Class_Diagram.pdf](https://github.com/Thorfr123/Projeto_PSW_ShortTrack/files/10611605/UML_Class_Diagram.pdf)
 
-![ClassDiagram_v6](uploads/a158ae0ac427bd7d1829e528fd19d6d4/ClassDiagram_v6.png)
+![UML_Class_Diagram](https://user-images.githubusercontent.com/109107004/216832950-5aa26c7f-98d6-4dad-aa2b-9c6a32a77da4.png)
